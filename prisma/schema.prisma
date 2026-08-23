@@ -1,0 +1,1018 @@
+// ============================================================================
+// NOOR BRIDAL — Bridal E-Commerce & Business Management Platform
+// Merged master schema (Enterprise doc §42–64 + Solo Founder doc §49–51)
+//
+// Launch = lean operation (1 Super Admin, 1 location, 3 countries, English).
+// Foundation = enterprise-ready (roles, workflows, locations, gateway adapter,
+// country pricing, audit, segments) so Phase 2/3 needs no rebuild.
+//
+// DEV NOTE: this sandbox runs SQLite. Enums are stored as validated strings and
+// JSON payloads as serialized text so the same schema moves to PostgreSQL with
+// a provider switch only. (See MASTER_SPEC.md §15.)
+// ============================================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+// Identity, roles & security  (Enterprise §32–34, Solo §42–44, 59)
+// ---------------------------------------------------------------------------
+
+model User {
+  id               String    @id @default(cuid())
+  email            String    @unique
+  passwordHash     String
+  status           String    @default("ACTIVE") // ACTIVE | DISABLED
+  emailVerifiedAt  DateTime?
+  lastLoginAt      DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  roles            UserRole[]
+  sessions         Session[]
+  tokens           VerificationToken[]
+  loginAttempts    LoginAttempt[]
+  customer         Customer?
+  auditLogs        AuditLog[]
+  createdExpenses  Expense[]   @relation("ExpenseCreatedBy")
+}
+
+model Role {
+  id          String           @id @default(cuid())
+  key         String           @unique // SUPER_ADMIN | CUSTOMER | future custom roles
+  name        String
+  description String?
+  status      String           @default("ACTIVE")
+  users       UserRole[]
+  permissions RolePermission[]
+}
+
+model Permission {
+  id          String           @id @default(cuid())
+  key         String           @unique // e.g. orders.refund, products.manage
+  name        String
+  description String?
+  roles       RolePermission[]
+}
+
+model UserRole {
+  userId String
+  roleId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role   Role   @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roleId])
+  @@index([roleId])
+}
+
+model RolePermission {
+  roleId       String
+  permissionId String
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  tokenHash String   @unique
+  ip        String?
+  userAgent String?
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+// Email verification + password reset tokens (single table, purpose-scoped)
+model VerificationToken {
+  id        String    @id @default(cuid())
+  userId    String
+  purpose   String // EMAIL_VERIFY | PASSWORD_RESET
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model LoginAttempt {
+  id        String   @id @default(cuid())
+  email     String
+  ip        String?
+  success   Boolean
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [email], references: [email])
+
+  @@index([email, createdAt])
+}
+
+// ---------------------------------------------------------------------------
+// Customers  (Enterprise §19, 44 · Solo §14, 15, 28)
+// ---------------------------------------------------------------------------
+
+model Customer {
+  id             String    @id @default(cuid())
+  userId         String    @unique
+  firstName      String
+  lastName       String
+  whatsappNumber String
+  status         String    @default("ACTIVE")
+  segmentId      String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  user          User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  segment       CustomerSegment?   @relation(fields: [segmentId], references: [id])
+  addresses     CustomerAddress[]
+  orders        Order[]
+  carts         Cart[]
+  wishlist      Wishlist?
+  reviews       Review[]
+  tickets       SupportTicket[]
+  events        CustomerEvent[]
+  returnRequests ReturnRequest[]
+  couponRedemptions CouponRedemption[]
+  newsletter    NewsletterSubscriber[]
+
+  @@index([segmentId])
+}
+
+model CustomerSegment {
+  id          String     @id @default(cuid())
+  key         String     @unique // NEW | REPEAT | VIP | HIGH_VALUE | INACTIVE | custom
+  name        String
+  description String?
+  isSystem    Boolean    @default(false)
+  status      String     @default("ACTIVE")
+  customers   Customer[]
+}
+
+model CustomerAddress {
+  id            String  @id @default(cuid())
+  customerId    String
+  countryId     String
+  addressLine1  String
+  addressLine2  String?
+  city          String
+  state         String?
+  postalCode    String?
+  phone         String?
+  isDefault     Boolean @default(true)
+
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  country  Country  @relation(fields: [countryId], references: [id])
+
+  @@index([customerId])
+}
+
+// ---------------------------------------------------------------------------
+// Countries & markets  (Enterprise §3 · Solo §19)
+// ---------------------------------------------------------------------------
+
+model Country {
+  id         String   @id @default(cuid())
+  code       String   @unique // US | CA | PK
+  name       String
+  currency   String // USD | PKR
+  status     String   @default("ACTIVE")
+  sortOrder  Int      @default(0)
+
+  addresses        CustomerAddress[]
+  products         ProductCountry[]
+  prices           ProductPrice[]
+  shippingRules    ShippingRule[]
+  taxRules         TaxRule[]
+  orders           Order[]
+  gateways         PaymentGateway[] @relation("GatewayCountries")
+}
+
+// ---------------------------------------------------------------------------
+// Catalog: categories, products, attributes, variants, media  (Enterprise §5–7, 44–48 · Solo §8, 9, 12)
+// ---------------------------------------------------------------------------
+
+model Category {
+  id          String     @id @default(cuid())
+  parentId    String?
+  name        String
+  slug        String     @unique
+  description String?
+  image       String?
+  sortOrder   Int        @default(0)
+  status      String     @default("ACTIVE")
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  parent   Category?  @relation("CategoryTree", fields: [parentId], references: [id])
+  children Category[] @relation("CategoryTree")
+  products Product[]
+
+  @@index([parentId])
+}
+
+model Product {
+  id               String    @id @default(cuid())
+  categoryId       String?
+  name             String
+  slug             String    @unique
+  description      String
+  productType      String    @default("MADE_TO_ORDER") // MADE_TO_ORDER | READY_TO_WEAR
+  productionDaysMin Int      @default(30)
+  productionDaysMax Int      @default(45)
+  basePrice        Int // USD minor units (cents) — fallback price
+  salePrice        Int?
+  sizeChart        String?
+  careInstructions String?
+  isFeatured       Boolean   @default(false)
+  status           String    @default("ACTIVE") // ACTIVE | DRAFT | ARCHIVED
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  category       Category?           @relation(fields: [categoryId], references: [id])
+  media          ProductMedia[]
+  attributes     ProductAttribute[]
+  variants       ProductVariant[]
+  countries      ProductCountry[]
+  prices         ProductPrice[]
+  customizations ProductCustomization[]
+  carts          CartItem[]
+  wishlistItems  WishlistItem[]
+  orderItems     OrderItem[]
+  inventoryItems InventoryItem[]
+  events         CustomerEvent[]
+  reviews        Review[]
+
+  @@index([categoryId, status])
+  @@index([status, isFeatured])
+}
+
+model ProductCountry {
+  productId String
+  countryId String
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  country Country @relation(fields: [countryId], references: [id], onDelete: Cascade)
+
+  @@id([productId, countryId])
+}
+
+// Country-specific pricing (Enterprise launch list includes "country-specific pricing";
+// absent from source schemas — added per decision D-03 in MASTER_SPEC.md)
+model ProductPrice {
+  id        String  @id @default(cuid())
+  productId String
+  countryId String
+  price     Int
+  salePrice Int?
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  country Country @relation(fields: [countryId], references: [id])
+
+  @@unique([productId, countryId])
+}
+
+model Attribute {
+  id     String @id @default(cuid())
+  name   String
+  type   String @default("SELECT") // SELECT | TEXT
+  status String @default("ACTIVE")
+
+  values           AttributeValue[]
+  products         ProductAttribute[]
+  variantValues    VariantValue[]
+}
+
+model AttributeValue {
+  id          String @id @default(cuid())
+  attributeId String
+  value       String
+  swatch      String? // optional hex for colour swatches
+  sortOrder   Int    @default(0)
+  status      String @default("ACTIVE")
+
+  attribute     Attribute      @relation(fields: [attributeId], references: [id])
+  variantValues VariantValue[]
+}
+
+model ProductAttribute {
+  productId   String
+  attributeId String
+
+  product   Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  attribute Attribute @relation(fields: [attributeId], references: [id], onDelete: Cascade)
+
+  @@id([productId, attributeId])
+}
+
+model ProductVariant {
+  id        String  @id @default(cuid())
+  productId String
+  sku       String  @unique
+  barcode   String?
+  price     Int? // null → inherit product/country price
+  salePrice Int?
+  status    String  @default("ACTIVE")
+
+  product        Product          @relation(fields: [productId], references: [id], onDelete: Cascade)
+  values         VariantValue[]
+  inventoryItems InventoryItem[]
+  carts          CartItem[]
+  orderItems     OrderItem[]
+  wishlistItems  WishlistItem[]
+
+  @@index([productId, status])
+}
+
+model VariantValue {
+  id               String @id @default(cuid())
+  variantId        String
+  attributeId      String
+  attributeValueId String
+
+  variant        ProductVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  attribute      Attribute      @relation(fields: [attributeId], references: [id])
+  attributeValue AttributeValue @relation(fields: [attributeValueId], references: [id])
+
+  @@unique([variantId, attributeId])
+}
+
+model ProductMedia {
+  id       String  @id @default(cuid())
+  productId String
+  type     String  @default("IMAGE") // IMAGE | VIDEO
+  url      String
+  altText  String?
+  sortOrder Int    @default(0)
+  status   String  @default("ACTIVE")
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+}
+
+// ---------------------------------------------------------------------------
+// Customization  (Enterprise §7, 48 · Solo §11)
+// ---------------------------------------------------------------------------
+
+model CustomizationOption {
+  id     String @id @default(cuid())
+  name   String
+  status String @default("ACTIVE")
+
+  values   CustomizationValue[]
+  products ProductCustomization[]
+}
+
+model CustomizationValue {
+  id                   String @id @default(cuid())
+  customizationOptionId String
+  name                 String
+  additionalPrice      Int    @default(0) // USD minor units; PK markup mirrored in price row
+  status               String @default("ACTIVE")
+
+  option CustomizationOption @relation(fields: [customizationOptionId], references: [id])
+}
+
+model ProductCustomization {
+  productId              String
+  customizationOptionId  String
+
+  product  Product            @relation(fields: [productId], references: [id], onDelete: Cascade)
+  option   CustomizationOption @relation(fields: [customizationOptionId], references: [id], onDelete: Cascade)
+
+  @@id([productId, customizationOptionId])
+}
+
+// ---------------------------------------------------------------------------
+// Measurements — order-scoped, never a permanent profile  (Enterprise §8, 49 · Solo §13)
+// ---------------------------------------------------------------------------
+
+model MeasurementTemplate {
+  id        String  @id @default(cuid())
+  name      String
+  isDefault Boolean @default(false)
+  status    String  @default("ACTIVE")
+
+  fields MeasurementField[]
+}
+
+model MeasurementField {
+  id         String  @id @default(cuid())
+  templateId String
+  fieldName  String
+  fieldKey   String
+  unit       String  @default("in") // in | cm | text
+  inputType  String  @default("NUMBER") // NUMBER | TEXT
+  required   Boolean @default(true)
+  helpText   String?
+  sortOrder  Int     @default(0)
+
+  template MeasurementTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+}
+
+// ---------------------------------------------------------------------------
+// Cart & wishlist  (Enterprise §50 · Solo §16, 17)
+// ---------------------------------------------------------------------------
+
+model Cart {
+  id         String   @id @default(cuid())
+  customerId String
+  status     String   @default("ACTIVE") // ACTIVE | CONVERTED | ABANDONED
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  customer Customer   @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  items    CartItem[]
+
+  @@index([customerId, status])
+}
+
+model CartItem {
+  id                String  @id @default(cuid())
+  cartId            String
+  productId         String
+  variantId         String?
+  quantity          Int     @default(1)
+  customizationData String? // serialized JSON [{option,value,additionalPrice}]
+  measurementData   String? // serialized JSON {unit, fields:{...}}
+  savedForLater     Boolean @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  cart    Cart            @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product Product         @relation(fields: [productId], references: [id], onDelete: Cascade)
+  variant ProductVariant? @relation(fields: [variantId], references: [id])
+
+  @@index([cartId])
+}
+
+model Wishlist {
+  id         String @id @default(cuid())
+  customerId String @unique
+
+  customer Customer       @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  items    WishlistItem[]
+}
+
+model WishlistItem {
+  id        String   @id @default(cuid())
+  wishlistId String
+  productId String
+  variantId String?
+  createdAt DateTime @default(now())
+
+  wishlist Wishlist        @relation(fields: [wishlistId], references: [id], onDelete: Cascade)
+  product  Product         @relation(fields: [productId], references: [id], onDelete: Cascade)
+  variant  ProductVariant? @relation(fields: [variantId], references: [id])
+
+  @@unique([wishlistId, productId])
+}
+
+// ---------------------------------------------------------------------------
+// Orders  (Enterprise §13–15, 51 · Solo §22–25, 55) — snapshot-based
+// ---------------------------------------------------------------------------
+
+model Order {
+  id                 String    @id @default(cuid())
+  orderNumber        String    @unique
+  customerId         String
+  countryId          String
+  currency           String
+  subtotal           Int
+  discountAmount     Int       @default(0)
+  couponId           String?
+  couponCode         String?
+  shippingAmount     Int       @default(0)
+  taxAmount          Int       @default(0)
+  totalAmount        Int
+  paymentStatus      String    @default("PENDING") // PENDING | PAID | FAILED | REFUNDED | PARTIALLY_REFUNDED
+  stageId            String? // current workflow stage
+  stageName          String    @default("New") // denormalised for lists
+  estimatedDelivery  DateTime?
+  shippingAddress    String // serialized JSON snapshot
+  termsAcceptedAt    DateTime?
+  customerNote       String?
+  adminNotes         String?
+  isManual           Boolean   @default(false)
+  placedAt           DateTime  @default(now())
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  customer      Customer              @relation(fields: [customerId], references: [id])
+  country       Country               @relation(fields: [countryId], references: [id])
+  stage         WorkflowStage?        @relation(fields: [stageId], references: [id])
+  coupon        Coupon?               @relation(fields: [couponId], references: [id])
+  items         OrderItem[]
+  measurements  OrderMeasurement[]
+  payments      Payment[]
+  refunds       Refund[]
+  history       OrderWorkflowHistory[]
+  invoice       Invoice?
+  shipments     Shipment[]
+  tickets       SupportTicket[]
+  returnRequests ReturnRequest[]
+  redemptions   CouponRedemption[]
+
+  @@index([customerId, placedAt])
+  @@index([stageId])
+  @@index([paymentStatus])
+  @@index([placedAt])
+}
+
+model OrderItem {
+  id                 String  @id @default(cuid())
+  orderId            String
+  productId          String
+  variantId          String?
+  productName        String
+  sku                String
+  quantity           Int
+  unitPrice          Int
+  lineTotal          Int
+  customizationData  String? // serialized JSON snapshot
+  measurementSnapshot String? // serialized JSON snapshot
+
+  order   Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product         @relation(fields: [productId], references: [id])
+  variant ProductVariant? @relation(fields: [variantId], references: [id])
+
+  @@index([orderId])
+}
+
+model OrderMeasurement {
+  id         String @id @default(cuid())
+  orderId    String
+  fieldName  String
+  fieldValue String
+  unit       String @default("in")
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+}
+
+// ---------------------------------------------------------------------------
+// Configurable workflow  (Enterprise §12, 52 · Solo §23) — stages are data
+// ---------------------------------------------------------------------------
+
+model WorkflowDefinition {
+  id         String @id @default(cuid())
+  name       String
+  entityType String @default("ORDER")
+  status     String @default("ACTIVE")
+
+  stages WorkflowStage[]
+}
+
+model WorkflowStage {
+  id           String  @id @default(cuid())
+  workflowId   String
+  name         String
+  sortOrder    Int     @default(0)
+  isSystem     Boolean @default(false) // Cancelled / Refunded — cannot be deleted
+  isTerminal   Boolean @default(false)
+  status       String  @default("ACTIVE")
+
+  workflow WorkflowDefinition   @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+  orders   Order[]
+  historyFrom OrderWorkflowHistory[] @relation("FromStage")
+  historyTo   OrderWorkflowHistory[] @relation("ToStage")
+
+  @@index([workflowId, sortOrder])
+}
+
+model OrderWorkflowHistory {
+  id           String   @id @default(cuid())
+  orderId      String
+  fromStageId  String?
+  toStageId    String?
+  changedById  String?
+  note         String?
+  createdAt    DateTime @default(now())
+
+  order     Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  fromStage WorkflowStage?  @relation("FromStage", fields: [fromStageId], references: [id])
+  toStage   WorkflowStage?  @relation("ToStage", fields: [toStageId], references: [id])
+
+  @@index([orderId, createdAt])
+}
+
+// ---------------------------------------------------------------------------
+// Inventory  (Enterprise §17, 18, 53 · Solo §26, 27) — location-ready
+// ---------------------------------------------------------------------------
+
+model Location {
+  id     String @id @default(cuid())
+  name   String
+  type   String @default("CENTRAL") // CENTRAL | WAREHOUSE | OUTLET
+  status String @default("ACTIVE")
+
+  inventoryItems InventoryItem[]
+}
+
+model InventoryItem {
+  id                String @id @default(cuid())
+  productId         String
+  variantId         String?
+  locationId        String?
+  stockQuantity     Int    @default(0)
+  reservedQuantity  Int    @default(0)
+  lowStockThreshold Int    @default(3)
+
+  product   Product          @relation(fields: [productId], references: [id], onDelete: Cascade)
+  variant   ProductVariant?  @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  location  Location?        @relation(fields: [locationId], references: [id])
+  transactions InventoryTransaction[]
+
+  @@index([productId, variantId])
+}
+
+model InventoryTransaction {
+  id             String   @id @default(cuid())
+  inventoryItemId String
+  type           String // STOCK_IN | STOCK_OUT | RESERVATION | RELEASE | ADJUSTMENT
+  quantity       Int // signed delta
+  reason         String?
+  referenceType  String? // ORDER | MANUAL | RETURN
+  referenceId    String?
+  createdById    String?
+  createdAt      DateTime @default(now())
+
+  inventoryItem InventoryItem @relation(fields: [inventoryItemId], references: [id], onDelete: Cascade)
+
+  @@index([inventoryItemId, createdAt])
+}
+
+// ---------------------------------------------------------------------------
+// Payments — gateway adapter pattern, no card data stored  (Enterprise §30, 54 · Solo §21, 61)
+// ---------------------------------------------------------------------------
+
+model PaymentGateway {
+  id                  String  @id @default(cuid())
+  name                String
+  provider            String // MOCK | STRIPE | PAYFAST | SAFEPAY | ...
+  status              String  @default("ACTIVE")
+  supportedCountries  String  @default("US,CA,PK") // csv; per-market availability
+  configuration       String? // serialized JSON — credentials encrypted in production
+  isDefault           Boolean @default(false)
+
+  payments Payment[]
+  countries Country[] @relation("GatewayCountries")
+}
+
+model Payment {
+  id                String    @id @default(cuid())
+  orderId           String
+  gatewayId         String?
+  transactionId     String?
+  amount            Int
+  currency          String
+  status            String    @default("PENDING") // PENDING | SUCCESS | FAILED | REFUNDED
+  responseReference String?
+  createdAt         DateTime  @default(now())
+
+  order   Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  gateway PaymentGateway? @relation(fields: [gatewayId], references: [id])
+  refunds Refund[]
+
+  @@index([orderId])
+}
+
+model Refund {
+  id           String    @id @default(cuid())
+  orderId      String
+  paymentId    String?
+  amount       Int
+  currency     String
+  reason       String?
+  status       String    @default("PENDING") // PENDING | APPROVED | PROCESSED | REJECTED
+  processedById String?
+  createdAt    DateTime  @default(now())
+  processedAt  DateTime?
+
+  order   Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  payment Payment? @relation(fields: [paymentId], references: [id])
+}
+
+// ---------------------------------------------------------------------------
+// Shipping & tax  (Enterprise §11, 29, 55, 56 · Solo §19, 20)
+// ---------------------------------------------------------------------------
+
+model ShippingRule {
+  id         String  @id @default(cuid())
+  countryId  String
+  name       String
+  price      Int
+  estDaysMin Int     @default(5)
+  estDaysMax Int     @default(10)
+  status     String  @default("ACTIVE")
+
+  country Country @relation(fields: [countryId], references: [id])
+
+  @@unique([countryId])
+}
+
+model Shipment {
+  id             String    @id @default(cuid())
+  orderId        String
+  providerName   String?
+  trackingNumber String?
+  status         String    @default("PENDING") // PENDING | SHIPPED | IN_TRANSIT | DELIVERED
+  shippedAt      DateTime?
+  deliveredAt    DateTime?
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+}
+
+model TaxRule {
+  id            String   @id @default(cuid())
+  countryId     String
+  region        String? // future: state/province-level rates
+  name          String
+  rateBps       Int // basis points: 500 = 5%
+  effectiveFrom DateTime @default(now())
+  effectiveTo   DateTime?
+  status        String   @default("ACTIVE")
+
+  country Country @relation(fields: [countryId], references: [id])
+
+  @@index([countryId, status])
+}
+
+// ---------------------------------------------------------------------------
+// Marketing  (Enterprise §19–22, 57, 58 · Solo §28–32)
+// ---------------------------------------------------------------------------
+
+model Coupon {
+  id               String    @id @default(cuid())
+  code             String    @unique
+  description      String?
+  discountType     String // PERCENT | FIXED
+  discountValue    Int // PERCENT → basis points (1000 = 10%); FIXED → minor units
+  fixedCurrency    String? // for FIXED type
+  startsAt         DateTime  @default(now())
+  endsAt           DateTime?
+  usageLimit       Int? // total redemptions allowed
+  usageCount       Int       @default(0)
+  perCustomerLimit Int?
+  status           String    @default("ACTIVE")
+
+  rules      CouponRule[]
+  orders     Order[]
+  redemptions CouponRedemption[]
+}
+
+model CouponRule {
+  id        String @id @default(cuid())
+  couponId  String
+  ruleType  String // PRODUCT | CATEGORY | COUNTRY | SEGMENT | MIN_ORDER
+  ruleValue String
+
+  coupon Coupon @relation(fields: [couponId], references: [id], onDelete: Cascade)
+
+  @@index([couponId])
+}
+
+model CouponRedemption {
+  id         String   @id @default(cuid())
+  couponId   String
+  orderId    String
+  customerId String
+  createdAt  DateTime @default(now())
+
+  coupon   Coupon  @relation(fields: [couponId], references: [id])
+  order    Order   @relation(fields: [orderId], references: [id])
+  customer Customer @relation(fields: [customerId], references: [id])
+
+  @@index([couponId])
+}
+
+model CustomerEvent {
+  id        String   @id @default(cuid())
+  customerId String?
+  sessionId String?
+  eventType String // PRODUCT_VIEW | ADD_TO_CART | REMOVE_FROM_CART | WISHLIST_ADD | CHECKOUT_START | PURCHASE
+  productId String?
+  metadata  String? // serialized JSON
+  createdAt DateTime @default(now())
+
+  customer Customer? @relation(fields: [customerId], references: [id])
+  product  Product?  @relation(fields: [productId], references: [id])
+
+  @@index([eventType, createdAt])
+  @@index([customerId])
+}
+
+model NewsletterSubscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  customerId String?
+  status    String   @default("SUBSCRIBED") // SUBSCRIBED | UNSUBSCRIBED
+  createdAt DateTime @default(now())
+
+  customer Customer? @relation(fields: [customerId], references: [id])
+}
+
+// ---------------------------------------------------------------------------
+// Reviews, support, returns  (Enterprise §25, 26, 27 · Solo §35–37)
+// ---------------------------------------------------------------------------
+
+model Review {
+  id        String   @id @default(cuid())
+  customerId String
+  productId String
+  orderId   String?
+  rating    Int // 1–5
+  title     String?
+  body      String?
+  status    String   @default("PENDING") // PENDING | APPROVED | REJECTED | HIDDEN
+  createdAt DateTime @default(now())
+
+  customer Customer @relation(fields: [customerId], references: [id])
+  product  Product  @relation(fields: [productId], references: [id])
+
+  @@index([productId, status])
+}
+
+model SupportTicket {
+  id        String   @id @default(cuid())
+  customerId String
+  orderId   String?
+  subject   String
+  priority  String   @default("NORMAL") // LOW | NORMAL | HIGH
+  status    String   @default("OPEN") // OPEN | IN_PROGRESS | RESOLVED | CLOSED
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  customer Customer          @relation(fields: [customerId], references: [id])
+  order    Order?            @relation(fields: [orderId], references: [id])
+  messages SupportMessage[]
+
+  @@index([status, createdAt])
+}
+
+model SupportMessage {
+  id         String   @id @default(cuid())
+  ticketId   String
+  senderType String // CUSTOMER | ADMIN
+  message    String
+  createdAt  DateTime @default(now())
+
+  ticket SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+  @@index([ticketId])
+}
+
+model ReturnRequest {
+  id         String    @id @default(cuid())
+  orderId    String
+  customerId String
+  type       String // RETURN | REFUND | EXCHANGE
+  reason     String
+  status     String    @default("REQUESTED") // REQUESTED | APPROVED | REJECTED | COMPLETED
+  adminNote  String?
+  createdAt  DateTime  @default(now())
+  resolvedAt DateTime?
+
+  order    Order    @relation(fields: [orderId], references: [id])
+  customer Customer @relation(fields: [customerId], references: [id])
+
+  @@index([status])
+}
+
+// ---------------------------------------------------------------------------
+// Invoices & finance  (Enterprise §16, 28 · Solo §38, 40)
+// ---------------------------------------------------------------------------
+
+model Invoice {
+  id            String   @id @default(cuid())
+  orderId       String   @unique
+  invoiceNumber String   @unique // e.g. INV-2026-00001
+  amount        Int
+  currency      String
+  issuedAt      DateTime @default(now())
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
+
+model Expense {
+  id         String   @id @default(cuid())
+  title      String
+  category   String? // FABRIC | LABOUR | SHIPPING | MARKETING | TOOLS | OTHER
+  amount     Int
+  currency   String   @default("USD")
+  incurredAt DateTime @default(now())
+  note       String?
+  createdById String?
+  createdAt  DateTime @default(now())
+
+  createdBy User? @relation("ExpenseCreatedBy", fields: [createdById], references: [id])
+}
+
+// ---------------------------------------------------------------------------
+// CMS, blog, FAQs  (Enterprise §23, 24, 62 · Solo §33, 34)
+// ---------------------------------------------------------------------------
+
+model CmsPage {
+  id             String   @id @default(cuid())
+  title          String
+  slug           String   @unique
+  content        String
+  seoTitle       String?
+  seoDescription String?
+  status         String   @default("PUBLISHED")
+  updatedAt      DateTime @updatedAt
+}
+
+model CmsBanner {
+  id        String  @id @default(cuid())
+  title     String
+  subtitle  String?
+  imageUrl  String
+  linkUrl   String?
+  ctaLabel  String?
+  sortOrder Int     @default(0)
+  status    String  @default("ACTIVE")
+}
+
+model BlogPost {
+  id             String    @id @default(cuid())
+  title          String
+  slug           String    @unique
+  excerpt        String?
+  content        String
+  featuredImage  String?
+  seoTitle       String?
+  seoDescription String?
+  status         String    @default("PUBLISHED")
+  publishedAt    DateTime  @default(now())
+}
+
+model Faq {
+  id        String @id @default(cuid())
+  question  String
+  answer    String
+  sortOrder Int    @default(0)
+  status    String @default("ACTIVE")
+}
+
+// ---------------------------------------------------------------------------
+// Platform: settings, email outbox (dev), audit  (Enterprise §33, 34, 63, 64 · Solo §42–44)
+// ---------------------------------------------------------------------------
+
+model SystemSetting {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  value       String
+  category    String // GENERAL | COUNTRY | TAX | SHIPPING | PAYMENT | EMAIL | SECURITY | CMS | SEO | MARKETING | MAINTENANCE
+  valueType   String   @default("string") // string | int | bool | json
+  encrypted   Boolean  @default(false)
+  updatedById String?
+  updatedAt   DateTime @updatedAt
+}
+
+// Dev-mode transactional email outbox (production swaps in a provider adapter)
+model EmailLog {
+  id        String   @id @default(cuid())
+  toEmail   String
+  subject   String
+  body      String
+  purpose   String // VERIFY_EMAIL | RESET_PASSWORD | ORDER_CONFIRMATION | NEWSLETTER
+  status    String   @default("SENT") // SENT | FAILED
+  createdAt DateTime @default(now())
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  actorUserId String?
+  actorLabel  String?
+  action      String // e.g. product.price_updated, order.stage_changed
+  entityType  String
+  entityId    String?
+  oldValue    String?
+  newValue    String?
+  ip          String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+
+  user User? @relation(fields: [actorUserId], references: [id])
+
+  @@index([entityType, entityId])
+  @@index([createdAt])
+}

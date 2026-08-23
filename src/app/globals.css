@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #211d1a;
+  --color-cream: #faf8f4;
+  --color-sand: #f3ede3;
+  --color-parchment: #ece4d7;
+  --color-line: #e2d9cb;
+  --color-gold: #b08a5a;
+  --color-gold-deep: #8d6a40;
+  --color-rose: #b9737b;
+  --color-moss: #5d6b56;
+  --font-display: Georgia, "Times New Roman", serif;
+}
+
+body {
+  background: var(--color-cream);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 bg-ink text-cream px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] transition hover:bg-stone-700 disabled:opacity-40 disabled:cursor-not-allowed;
+  }
+  .btn-gold {
+    @apply inline-flex items-center justify-center gap-2 bg-gold text-white px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] transition hover:bg-gold-deep disabled:opacity-40 disabled:cursor-not-allowed;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 border border-line bg-white px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-ink transition hover:border-gold disabled:opacity-40;
+  }
+  .btn-sm {
+    @apply px-4 py-2;
+  }
+  .input {
+    @apply w-full border border-line bg-white px-3 py-2.5 text-sm outline-none transition focus:border-gold;
+  }
+  .label {
+    @apply mb-1.5 block text-[10px] font-semibold uppercase tracking-[0.14em] text-stone-500;
+  }
+  .card {
+    @apply border border-line bg-white;
+  }
+  .th {
+    @apply px-4 py-3 text-left text-[10px] font-semibold uppercase tracking-[0.12em] text-stone-500;
+  }
+  .td {
+    @apply px-4 py-3 align-middle text-sm;
+  }
+  .badge {
+    @apply inline-flex items-center gap-1 border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em];
+  }
+  .section-title {
+    @apply font-[family-name:var(--font-display)] text-2xl tracking-tight sm:text-3xl;
+  }
+  .eyebrow {
+    @apply text-[10px] font-semibold uppercase tracking-[0.28em] text-gold-deep;
+  }
+}
