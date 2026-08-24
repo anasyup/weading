@@ -37,6 +37,8 @@ export async function saveProduct(formData: FormData) {
     careInstructions: String(formData.get("careInstructions") ?? "").trim() || null,
     isFeatured: formData.get("isFeatured") === "on",
     status: String(formData.get("status") ?? "DRAFT"),
+    seoTitle: String(formData.get("seoTitle") ?? "").trim() || null,
+    seoDescription: String(formData.get("seoDescription") ?? "").trim() || null,
   };
 
   // Country availability
@@ -183,4 +185,46 @@ export async function setProductStatus(formData: FormData) {
     newValue: { status },
   });
   revalidatePath("/admin/products");
+}
+
+
+// ---------------------------------------------------------------------------
+// Category management (Solo §8 · Enterprise §23)
+// ---------------------------------------------------------------------------
+export async function saveCategory(formData: FormData) {
+  const admin = await requireAdmin();
+  const id = String(formData.get("id") ?? "");
+  const name = String(formData.get("name") ?? "").trim();
+  if (!name) return;
+  const slug = String(formData.get("slug") ?? "").trim() || name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  const data = {
+    name,
+    slug,
+    description: String(formData.get("description") ?? "").trim() || null,
+    seoTitle: String(formData.get("seoTitle") ?? "").trim() || null,
+    seoDescription: String(formData.get("seoDescription") ?? "").trim() || null,
+    sortOrder: parseInt(String(formData.get("sortOrder")), 10) || 0,
+    status: String(formData.get("status") ?? "ACTIVE"),
+  };
+  if (id) {
+    await prisma.category.update({ where: { id }, data });
+  } else {
+    const exists = await prisma.category.findUnique({ where: { slug } });
+    if (!exists) await prisma.category.create({ data });
+  }
+  await audit({ actor: admin, action: id ? "category.updated" : "category.created", entityType: "category", entityId: id || slug });
+  revalidatePath("/admin/products");
+  revalidatePath("/shop");
+}
+
+export async function toggleCategory(formData: FormData) {
+  const admin = await requireAdmin();
+  const id = String(formData.get("categoryId"));
+  const category = await prisma.category.findUnique({ where: { id } });
+  if (!category) return;
+  const status = category.status === "ACTIVE" ? "HIDDEN" : "ACTIVE";
+  await prisma.category.update({ where: { id }, data: { status } });
+  await audit({ actor: admin, action: "category.status_changed", entityType: "category", entityId: id, newValue: { status } });
+  revalidatePath("/admin/products");
+  revalidatePath("/shop");
 }

@@ -45,6 +45,7 @@ export default async function AdminOrdersPage({
           <h1 className="mt-2 font-[family-name:var(--font-display)] text-3xl">Orders</h1>
         </div>
         <div className="flex gap-2">
+          <a href="/api/admin/export?type=orders" className="btn-ghost btn-sm">⬇ CSV</a>
           <Link href="/admin/orders/new" className="btn-gold btn-sm">+ Manual order</Link>
           <form className="flex gap-2">
             <input name="q" defaultValue={q ?? ""} placeholder="Search order #, name, email…" className="input !w-64" />

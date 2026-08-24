@@ -1,5 +1,4 @@
 // AUTO-GENERATED from prisma/schema.prisma (PostgreSQL DDL) — do not edit by hand.
-// Regenerate: npx prisma migrate diff --from-empty --to-schema-datamodel prisma/schema.prisma --script
 export const SCHEMA_SQL = `-- CreateSchema
 CREATE SCHEMA IF NOT EXISTS "public";
 
@@ -153,6 +152,8 @@ CREATE TABLE "Category" (
     "name" TEXT NOT NULL,
     "slug" TEXT NOT NULL,
     "description" TEXT,
+    "seoTitle" TEXT,
+    "seoDescription" TEXT,
     "image" TEXT,
     "sortOrder" INTEGER NOT NULL DEFAULT 0,
     "status" TEXT NOT NULL DEFAULT 'ACTIVE',
@@ -176,6 +177,8 @@ CREATE TABLE "Product" (
     "salePrice" INTEGER,
     "sizeChart" TEXT,
     "careInstructions" TEXT,
+    "seoTitle" TEXT,
+    "seoDescription" TEXT,
     "isFeatured" BOOLEAN NOT NULL DEFAULT false,
     "status" TEXT NOT NULL DEFAULT 'ACTIVE',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -634,6 +637,20 @@ CREATE TABLE "CustomerEvent" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "CustomerEvent_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "MarketingCampaign" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "channel" TEXT NOT NULL DEFAULT 'EMAIL',
+    "startDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "endDate" TIMESTAMP(3),
+    "status" TEXT NOT NULL DEFAULT 'ACTIVE',
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "MarketingCampaign_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -1257,3 +1274,12 @@ ALTER TABLE "_GatewayCountries" ADD CONSTRAINT "_GatewayCountries_A_fkey" FOREIG
 ALTER TABLE "_GatewayCountries" ADD CONSTRAINT "_GatewayCountries_B_fkey" FOREIGN KEY ("B") REFERENCES "PaymentGateway"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 `;
+
+// Incremental migrations for databases created by an older SCHEMA_SQL.
+export const MIGRATIONS: string[] = [
+  // v2 — product & category SEO fields
+  `ALTER TABLE "Product" ADD COLUMN "seoTitle" TEXT;`,
+  `ALTER TABLE "Product" ADD COLUMN "seoDescription" TEXT;`,
+  `ALTER TABLE "Category" ADD COLUMN "seoTitle" TEXT;`,
+  `ALTER TABLE "Category" ADD COLUMN "seoDescription" TEXT;`,
+];

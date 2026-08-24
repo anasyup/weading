@@ -38,6 +38,18 @@ export async function removeCartItem(formData: FormData) {
   await updateCartItem(formData);
 }
 
+export async function toggleSaveForLater(formData: FormData) {
+  const user = await requireCustomer();
+  const itemId = String(formData.get("itemId"));
+  const item = await prisma.cartItem.findUnique({ where: { id: itemId }, include: { cart: true } });
+  if (!item || item.cart.customerId !== user.customerId) return;
+  await prisma.cartItem.update({
+    where: { id: itemId },
+    data: { savedForLater: !item.savedForLater },
+  });
+  revalidatePath("/cart");
+}
+
 export async function removeWishlistItem(formData: FormData) {
   const user = await requireCustomer();
   const itemId = String(formData.get("itemId"));

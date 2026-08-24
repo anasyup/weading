@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { runProductionSeed } from "@/lib/seed-core";
-import { SCHEMA_SQL } from "@/lib/schema-sql";
+import { SCHEMA_SQL, MIGRATIONS } from "@/lib/schema-sql";
 
 // One-time remote setup endpoint:
 //   POST /api/setup  with header  x-setup-key: <SETUP_KEY env value>
@@ -30,6 +30,17 @@ export async function POST(req: Request) {
       }
     }
 
+    // 1b. Incremental migrations (ALTERs) — tolerated if already applied
+    let migrated = 0;
+    for (const stmt of MIGRATIONS) {
+      try {
+        await prisma.$executeRawUnsafe(stmt);
+        migrated++;
+      } catch {
+        // already applied
+      }
+    }
+
     // 2. + 3. Seed + admin (skips anything already present)
     const summary = await runProductionSeed(
       prisma,
@@ -41,7 +52,7 @@ export async function POST(req: Request) {
       data: { actorLabel: "setup", action: "platform.setup", entityType: "system", newValue: JSON.stringify({ tablesCreated: created, skipped }) },
     }).catch(() => {});
 
-    return NextResponse.json({ ok: true, statementsCreated: created, statementsSkipped: skipped, summary });
+    return NextResponse.json({ ok: true, statementsCreated: created, statementsSkipped: skipped, migrationsApplied: migrated, summary });
   } catch (e) {
     return NextResponse.json({ ok: false, error: e instanceof Error ? e.message : "setup failed" }, { status: 500 });
   }

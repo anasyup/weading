@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db";
 import { formatMoney } from "@/lib/money";
+import { recalcSegments } from "./actions";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Customers" };
@@ -20,7 +21,13 @@ export default async function AdminCustomersPage() {
     <div className="mx-auto max-w-6xl">
       <p className="eyebrow">Relationships</p>
       <h1 className="mt-2 font-[family-name:var(--font-display)] text-3xl">Customers</h1>
-      <p className="mt-2 text-sm text-stone-600">{customers.length} registered</p>
+      <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-stone-600">
+        <span>{customers.length} registered</span>
+        <a href="/api/admin/export?type=customers" className="btn-ghost btn-sm">⬇ CSV</a>
+        <form action={recalcSegments}>
+          <button className="btn-ghost btn-sm">↻ Recalculate segments</button>
+        </form>
+      </div>
 
       <div className="mt-6 overflow-x-auto border border-line bg-white">
         <table className="w-full min-w-[860px]">

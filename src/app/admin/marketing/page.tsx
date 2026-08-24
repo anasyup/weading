@@ -1,14 +1,25 @@
 import { prisma } from "@/lib/db";
 import { formatMoney } from "@/lib/money";
-import { createCoupon, toggleCoupon, setSubscriberStatus } from "./actions";
+import { createCoupon, toggleCoupon, setSubscriberStatus, createCampaign, toggleCampaign, sendRecoveryEmail } from "./actions";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Marketing" };
 
 export default async function AdminMarketingPage() {
-  const [coupons, subscribers] = await Promise.all([
+  const abandonedSince = new Date(Date.now() - 48 * 60 * 60 * 1000);
+  const [coupons, subscribers, campaigns, abandonedCarts] = await Promise.all([
     prisma.coupon.findMany({ include: { rules: true, _count: { select: { redemptions: true } } }, orderBy: { startsAt: "desc" } }),
     prisma.newsletterSubscriber.findMany({ orderBy: { createdAt: "desc" }, take: 100 }),
+    prisma.marketingCampaign.findMany({ orderBy: { startDate: "desc" } }),
+    prisma.cart.findMany({
+      where: { status: "ACTIVE", updatedAt: { lt: abandonedSince }, items: { some: { savedForLater: false } } },
+      include: {
+        customer: { include: { user: { select: { email: true } } } },
+        items: { where: { savedForLater: false }, include: { product: { select: { name: true } } } },
+      },
+      orderBy: { updatedAt: "asc" },
+      take: 20,
+    }),
   ]);
 
   return (
@@ -113,6 +124,91 @@ export default async function AdminMarketingPage() {
             <div className="flex items-end">
               <button className="btn-primary btn-sm w-full">Create coupon</button>
             </div>
+          </form>
+        </details>
+      </section>
+
+      {/* Abandoned carts (48h+) */}
+      <section>
+        <h2 className="mb-4 text-[11px] font-semibold uppercase tracking-[0.18em]">
+          Abandoned carts ({abandonedCarts.length}) — idle &gt; 48h
+        </h2>
+        <div className="card divide-y divide-line">
+          {abandonedCarts.map((c) => (
+            <div key={c.id} className="flex flex-wrap items-center justify-between gap-3 p-4">
+              <div className="min-w-0">
+                <p className="text-sm font-medium">
+                  {c.customer.firstName} {c.customer.lastName}
+                  <span className="ml-2 text-xs font-normal text-stone-400">{c.customer.user.email}</span>
+                </p>
+                <p className="mt-0.5 text-xs text-stone-500">
+                  {c.items.map((i) => i.product.name).join(", ")} · idle since{" "}
+                  {c.updatedAt.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                </p>
+              </div>
+              <form action={sendRecoveryEmail}>
+                <input type="hidden" name="cartId" value={c.id} />
+                <button className="btn-primary btn-sm">Send recovery email</button>
+              </form>
+            </div>
+          ))}
+          {abandonedCarts.length === 0 && (
+            <p className="p-4 text-sm text-stone-500">No abandoned carts — nice. A daily cron also sends these automatically.</p>
+          )}
+        </div>
+      </section>
+
+      {/* Campaigns */}
+      <section>
+        <h2 className="mb-4 text-[11px] font-semibold uppercase tracking-[0.18em]">Campaigns ({campaigns.length})</h2>
+        <div className="overflow-x-auto border border-line bg-white">
+          <table className="w-full min-w-[640px]">
+            <thead className="border-b border-line bg-sand/60"><tr>
+              <th className="th">Name</th><th className="th">Channel</th><th className="th">Window</th>
+              <th className="th">Status</th><th className="th"></th>
+            </tr></thead>
+            <tbody className="divide-y divide-line">
+              {campaigns.map((c) => (
+                <tr key={c.id}>
+                  <td className="td font-medium">{c.name}</td>
+                  <td className="td text-stone-600">{c.channel}</td>
+                  <td className="td text-xs text-stone-500">
+                    {c.startDate.toLocaleDateString("en-US", { month: "short", day: "numeric" })} →{" "}
+                    {c.endDate ? c.endDate.toLocaleDateString("en-US", { month: "short", day: "numeric" }) : "∞"}
+                  </td>
+                  <td className="td">
+                    <span className={`badge ${c.status === "ACTIVE" ? "border-moss/40 bg-moss/10 text-moss" : "border-line text-stone-500"}`}>
+                      {c.status}
+                    </span>
+                  </td>
+                  <td className="td">
+                    <form action={toggleCampaign}>
+                      <input type="hidden" name="campaignId" value={c.id} />
+                      <button className="text-[10px] uppercase tracking-wider text-stone-500 underline hover:text-gold-deep">
+                        {c.status === "ACTIVE" ? "Pause" : "Activate"}
+                      </button>
+                    </form>
+                  </td>
+                </tr>
+              ))}
+              {campaigns.length === 0 && (
+                <tr><td colSpan={5} className="td py-6 text-center text-stone-500">No campaigns yet.</td></tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+        <details className="mt-4 border border-line bg-white">
+          <summary className="cursor-pointer px-5 py-3.5 text-[11px] font-semibold uppercase tracking-[0.16em]">+ New campaign</summary>
+          <form action={createCampaign} className="grid gap-3 border-t border-line p-5 sm:grid-cols-4">
+            <div><label className="label">Name *</label><input name="name" required placeholder="Eid Collection 2026" className="input" /></div>
+            <div><label className="label">Channel</label>
+              <select name="channel" className="input">
+                {["EMAIL", "INSTAGRAM", "FACEBOOK", "WHATSAPP", "OTHER"].map((c) => <option key={c}>{c}</option>)}
+              </select>
+            </div>
+            <div><label className="label">Starts</label><input type="date" name="startDate" className="input" /></div>
+            <div><label className="label">Ends</label><input type="date" name="endDate" className="input" /></div>
+            <div className="sm:col-span-4"><button className="btn-gold btn-sm">Create campaign</button></div>
           </form>
         </details>
       </section>

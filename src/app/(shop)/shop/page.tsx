@@ -5,7 +5,14 @@ import ProductCard from "@/components/product-card";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: "Shop" };
+export async function generateMetadata({ searchParams }: { searchParams: Promise<{ category?: string }> }) {
+  const { category } = await searchParams;
+  if (category) {
+    const c = await prisma.category.findUnique({ where: { slug: category } });
+    if (c) return { title: c.seoTitle ?? c.name, description: c.seoDescription ?? c.description ?? undefined };
+  }
+  return { title: "Shop — Made-to-Order Bridal Couture" };
+}
 
 export default async function ShopPage({
   searchParams,

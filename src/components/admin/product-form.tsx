@@ -15,6 +15,8 @@ export type ProductFormData = {
   careInstructions?: string | null;
   isFeatured?: boolean;
   status?: string;
+  seoTitle?: string | null;
+  seoDescription?: string | null;
   pkPrice?: number | null;
   pkSalePrice?: number | null;
   countries?: string[];
@@ -87,6 +89,21 @@ export default function ProductForm({
             Size chart (HTML table)
           </summary>
           <textarea name="sizeChart" rows={8} defaultValue={p.sizeChart ?? SIZE_CHART} className="input !border-0 !border-t" />
+        </details>
+        <details className="border border-line">
+          <summary className="cursor-pointer px-4 py-3 text-[11px] font-semibold uppercase tracking-[0.14em]">
+            SEO (title &amp; meta description)
+          </summary>
+          <div className="space-y-3 p-4">
+            <div>
+              <label className="label" htmlFor="seoTitle">SEO title <span className="normal-case text-stone-400">(default: product name)</span></label>
+              <input id="seoTitle" name="seoTitle" defaultValue={p.seoTitle ?? ""} className="input" placeholder="Luxe Red Velvet Lehenga — Noor Bridal" />
+            </div>
+            <div>
+              <label className="label" htmlFor="seoDescription">Meta description <span className="normal-case text-stone-400">(≤ 155 characters)</span></label>
+              <textarea id="seoDescription" name="seoDescription" rows={2} maxLength={320} defaultValue={p.seoDescription ?? ""} className="input" placeholder="Handcrafted red velvet bridal lehenga with gold zardozi, made to your measurements in 30–45 days." />
+            </div>
+          </div>
         </details>
         <details className="border border-line">
           <summary className="cursor-pointer px-4 py-3 text-[11px] font-semibold uppercase tracking-[0.14em]">

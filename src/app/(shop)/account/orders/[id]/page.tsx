@@ -3,7 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { getSessionUser } from "@/lib/auth";
 import { formatMoney } from "@/lib/money";
-import { requestReturn } from "./actions";
+import { requestReturn, submitReview } from "./actions";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Order tracking" };
@@ -35,6 +35,9 @@ export default async function OrderTrackingPage({
   });
   if (!order || (order.customerId !== user.customerId && !user.isAdmin)) notFound();
 
+  const hasReviewed = user.customerId
+    ? !!(await prisma.review.findFirst({ where: { customerId: user.customerId, orderId: order.id } }))
+    : false;
   const address = JSON.parse(order.shippingAddress) as Record<string, string>;
   const currentStep = STEP_LABELS.indexOf(order.stageName);
   const cancelled = ["Cancelled", "Refunded"].includes(order.stageName);
@@ -206,6 +209,36 @@ export default async function OrderTrackingPage({
           </section>
         </aside>
       </div>
+
+      {/* Review — verified purchase, delivered orders only */}
+      {["Delivered", "Completed"].includes(order.stageName) && !hasReviewed && (
+        <details className="mt-8 border border-gold/50 bg-white">
+          <summary className="cursor-pointer px-5 py-4 text-[11px] font-semibold uppercase tracking-[0.16em]">
+            ★ Write a review
+          </summary>
+          <form action={submitReview} className="grid gap-3 border-t border-line p-5 sm:grid-cols-2">
+            <input type="hidden" name="orderId" value={order.id} />
+            <div>
+              <label className="label">Rating</label>
+              <select name="rating" defaultValue="5" className="input">
+                {[5, 4, 3, 2, 1].map((r) => (
+                  <option key={r} value={r}>{"★".repeat(r)}{"☆".repeat(5 - r)} ({r})</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="label">Title</label>
+              <input name="title" placeholder="Loved every detail" className="input" />
+            </div>
+            <div className="sm:col-span-2">
+              <label className="label">Your review</label>
+              <textarea name="body" rows={3} placeholder="Tell other brides about your experience…" className="input" />
+            </div>
+            <button className="btn-gold btn-sm sm:col-span-2">Submit review</button>
+            <p className="text-[11px] text-stone-500 sm:col-span-2">Reviews are published after the atelier approves them.</p>
+          </form>
+        </details>
+      )}
 
       {/* Return / exchange request — only for delivered or completed orders */}
       {["Delivered", "Completed"].includes(order.stageName) && (

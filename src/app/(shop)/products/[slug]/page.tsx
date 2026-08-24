@@ -13,8 +13,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const product = await prisma.product.findUnique({ where: { slug } });
   return {
-    title: product?.name ?? "Product",
-    description: product?.description?.slice(0, 155),
+    title: product?.seoTitle ?? product?.name ?? "Product",
+    description: (product?.seoDescription ?? product?.description)?.slice(0, 155),
   };
 }
 

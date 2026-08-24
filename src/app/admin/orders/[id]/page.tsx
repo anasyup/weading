@@ -226,7 +226,10 @@ export default async function AdminOrderDetail({ params }: { params: Promise<{ i
               </ul>
             )}
             {order.invoice && (
-              <p className="mb-3 text-xs text-stone-500">Invoice: <strong>{order.invoice.invoiceNumber}</strong></p>
+              <p className="mb-3 text-xs text-stone-500">
+                Invoice: <strong>{order.invoice.invoiceNumber}</strong>{" "}
+                <Link href={`/account/orders/${order.id}/invoice`} className="text-gold-deep underline">View / Print ↗</Link>
+              </p>
             )}
             <form action={recordPayment} className="space-y-3">
               <input type="hidden" name="orderId" value={order.id} />

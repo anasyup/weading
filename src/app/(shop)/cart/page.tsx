@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { prisma } from "@/lib/db";
 import { getSessionUser } from "@/lib/auth";
 import { getCartWithItems, getStorefrontContext } from "@/lib/cart";
 import { resolveUnitPrice, convertMarkup } from "@/lib/pricing";
 import { formatMoney } from "@/lib/money";
-import { updateCartItem, removeCartItem } from "../actions";
+import { updateCartItem, removeCartItem, toggleSaveForLater } from "../actions";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Cart" };
@@ -18,6 +19,11 @@ export default async function CartPage() {
   if (!user.customerId) redirect("/account");
 
   const [cart, ctx] = await Promise.all([getCartWithItems(user.customerId), getStorefrontContext()]);
+  const savedItems = await prisma.cartItem.findMany({
+    where: { cart: { customerId: user.customerId, status: "ACTIVE" }, savedForLater: true },
+    include: { product: { include: { media: true } } },
+    orderBy: { updatedAt: "desc" },
+  });
   const lines =
     cart?.items.map((item) => {
       const variantLabel = item.variant?.values
@@ -121,10 +127,14 @@ export default async function CartPage() {
                         <button name="quantity" value={item.quantity + 1} className="px-3 py-1.5 text-sm hover:text-gold-deep">+</button>
                         <input type="hidden" name="itemId" value={item.id} />
                       </form>
-                      <form action={removeCartItem}>
+                      <form action={removeCartItem} className="inline">
                         <input type="hidden" name="itemId" value={item.id} />
                         <input type="hidden" name="quantity" value="0" />
                         <button className="text-[11px] uppercase tracking-[0.14em] text-stone-400 underline hover:text-rose">Remove</button>
+                      </form>
+                      <form action={toggleSaveForLater} className="inline">
+                        <input type="hidden" name="itemId" value={item.id} />
+                        <button className="text-[11px] uppercase tracking-[0.14em] text-stone-400 underline hover:text-gold-deep">Save for later</button>
                       </form>
                     </div>
                   </div>
@@ -166,6 +176,42 @@ export default async function CartPage() {
             </div>
           </aside>
         </div>
+      )}
+
+      {/* Saved for later */}
+      {savedItems.length > 0 && (
+        <section className="mt-12">
+          <h2 className="mb-4 text-[11px] font-semibold uppercase tracking-[0.18em]">
+            Saved for later ({savedItems.length})
+          </h2>
+          <div className="divide-y divide-line border border-line bg-white">
+            {savedItems.map((item) => {
+              const img = item.product.media.find((m) => m.type === "IMAGE");
+              return (
+                <div key={item.id} className="flex items-center gap-4 p-4">
+                  <Link href={`/products/${item.product.slug}`} className="h-16 w-12 shrink-0 overflow-hidden border border-line bg-sand">
+                    {img && (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={img.url} alt={item.product.name} className="h-full w-full object-cover" />
+                    )}
+                  </Link>
+                  <Link href={`/products/${item.product.slug}`} className="flex-1 font-[family-name:var(--font-display)] text-lg hover:text-gold-deep">
+                    {item.product.name}
+                  </Link>
+                  <form action={toggleSaveForLater}>
+                    <input type="hidden" name="itemId" value={item.id} />
+                    <button className="btn-ghost btn-sm">Move to cart</button>
+                  </form>
+                  <form action={removeCartItem}>
+                    <input type="hidden" name="itemId" value={item.id} />
+                    <input type="hidden" name="quantity" value="0" />
+                    <button className="text-[11px] uppercase tracking-[0.14em] text-stone-400 underline hover:text-rose">Remove</button>
+                  </form>
+                </div>
+              );
+            })}
+          </div>
+        </section>
       )}
     </div>
   );

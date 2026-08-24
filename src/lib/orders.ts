@@ -6,6 +6,7 @@ import { prisma } from "./db";
 import { resolveUnitPrice, convertMarkup, type CustomizationSelection } from "./pricing";
 import { validateCoupon } from "./coupons";
 import { sendEmail } from "./email";
+import { recomputeCustomerSegment } from "./segments";
 
 export type CartTotals = {
   lines: {
@@ -428,6 +429,9 @@ export async function markOrderPaid(
       .create({ data: { customerId: order.customerId, eventType: "PURCHASE", productId: item.productId } })
       .catch(() => {});
   }
+  // Segment auto-assignment (New → Repeat/High Value/VIP)
+  await recomputeCustomerSegment(order.customerId).catch(() => {});
+
   await sendEmail({
     to: order.customer.user.email,
     subject: `Order ${order.orderNumber} confirmed — Noor Bridal`,

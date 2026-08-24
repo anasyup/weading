@@ -57,3 +57,8 @@ body {
     @apply text-[10px] font-semibold uppercase tracking-[0.28em] text-gold-deep;
   }
 }
+
+@media print {
+  .no-print, header, footer, aside { display: none !important; }
+  body { background: white !important; }
+}

@@ -206,11 +206,13 @@ model Country {
 // ---------------------------------------------------------------------------
 
 model Category {
-  id          String     @id @default(cuid())
-  parentId    String?
-  name        String
-  slug        String     @unique
-  description String?
+  id              String     @id @default(cuid())
+  parentId        String?
+  name            String
+  slug            String     @unique
+  description     String?
+  seoTitle        String?
+  seoDescription  String?
   image       String?
   sortOrder   Int        @default(0)
   status      String     @default("ACTIVE")
@@ -237,6 +239,8 @@ model Product {
   salePrice        Int?
   sizeChart        String?
   careInstructions String?
+  seoTitle         String?
+  seoDescription   String?
   isFeatured       Boolean   @default(false)
   status           String    @default("ACTIVE") // ACTIVE | DRAFT | ARCHIVED
   createdAt        DateTime  @default(now())
@@ -817,6 +821,17 @@ model CustomerEvent {
 
   @@index([eventType, createdAt])
   @@index([customerId])
+}
+
+model MarketingCampaign {
+  id        String    @id @default(cuid())
+  name      String
+  channel   String    @default("EMAIL") // EMAIL | INSTAGRAM | FACEBOOK | WHATSAPP | OTHER
+  startDate DateTime  @default(now())
+  endDate   DateTime?
+  status    String    @default("ACTIVE") // ACTIVE | PAUSED | COMPLETED
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
 model NewsletterSubscriber {
