@@ -24,6 +24,16 @@ function sectionFor(name: string, description: string) {
   return ACCESSORY_SECTIONS.find((section) => section.match.test(text))?.title ?? "Bridal Finishing Pieces";
 }
 
+// Shown while the atelier's live accessory inventory is being added in Admin.
+// These curated cards keep the new collection page complete from day one.
+const CURATED_ACCESSORIES = [
+  { name: "Pearl Drop Earrings", detail: "Freshwater pearl & gold vermeil", price: "From $95", image: "/uploads/lux-cat-accessories.jpg", position: "50% 65%" },
+  { name: "Pearl-Edge Veil", detail: "Soft tulle with hand-sewn pearls", price: "From $180", image: "/uploads/lux-cat-accessories.jpg", position: "28% 22%" },
+  { name: "Cathedral Veil", detail: "Fine Italian tulle", price: "From $260", image: "/uploads/lux-cat-accessories.jpg", position: "68% 18%" },
+  { name: "Silk Bridal Gloves", detail: "Ivory stretch silk", price: "From $75", image: "/uploads/lux-cat-accessories.jpg", position: "76% 72%" },
+  { name: "Pearl Hair Pins", detail: "Set of six, hand-finished", price: "From $65", image: "/uploads/lux-cat-accessories.jpg", position: "40% 52%" },
+] as const;
+
 export default async function AccessoriesPage() {
   const country = await getCountry();
   const accessories = await prisma.product.findMany({
@@ -70,12 +80,33 @@ export default async function AccessoriesPage() {
           ))}
         </div>
       ) : (
-        <section className="py-20 text-center">
-          <p className="font-[family-name:var(--font-display)] text-2xl">The accessories collection is arriving soon.</p>
-          <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-stone-600">
-            Our atelier is preparing veils, sleeves and finishing pieces to complete your made-to-order look.
-          </p>
-          <Link href="/shop" className="btn-ghost mt-7">Explore bridal couture</Link>
+        <section className="py-10 sm:py-12">
+          <div className="mb-5 flex items-end justify-between gap-4">
+            <h2 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-ink">The Bridal Edit</h2>
+            <Link href="/support" className="text-[10px] font-semibold uppercase tracking-[0.16em] text-stone-500 transition hover:text-gold-deep">
+              Request an accessory <span aria-hidden="true">→</span>
+            </Link>
+          </div>
+          <div className="grid grid-cols-2 gap-x-3 gap-y-7 sm:grid-cols-3 lg:grid-cols-5">
+            {CURATED_ACCESSORIES.map((item) => (
+              <Link key={item.name} href="/support" className="group block">
+                <div className="aspect-[3/4] overflow-hidden bg-sand">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.04]"
+                    style={{ objectPosition: item.position }}
+                  />
+                </div>
+                <div className="pt-3">
+                  <h3 className="font-[family-name:var(--font-display)] text-lg leading-snug transition group-hover:text-gold-deep">{item.name}</h3>
+                  <p className="mt-1 text-xs text-stone-500">{item.detail}</p>
+                  <p className="mt-2 text-sm text-ink">{item.price}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
         </section>
       )}
 
