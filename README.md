@@ -3,7 +3,7 @@
 Implementation of [`MASTER_SPEC.md`](../MASTER_SPEC.md) — a made-to-order bridal e-commerce
 platform for a solo founder with an enterprise-ready foundation.
 
-**Stack:** Next.js (App Router) · React · TypeScript · Tailwind CSS · Prisma · SQLite (dev) / PostgreSQL (production)
+**Stack:** Next.js (App Router) · React · TypeScript · Tailwind CSS · Prisma · PostgreSQL (Neon-verified)
 
 ## Production-ready
 
@@ -17,14 +17,15 @@ platform for a solo founder with an enterprise-ready foundation.
 ## Run
 
 ```bash
-npm install          # also runs `prisma generate`
-npm run db:push      # create/sync the SQLite database
-npm run db:seed      # demo catalog, orders, users, CMS content
-npm run dev          # http://localhost:3000
+npm install            # also runs `prisma generate`
+# Set DATABASE_URL in .env (any PostgreSQL — Neon free tier works great)
+npm run db:push        # create/sync tables
+npm run db:seed        # demo catalog, orders, users, CMS content (dev data)
+npm run dev            # http://localhost:3000
 ```
 
-`node_modules` is not persisted between sessions in this workspace — re-run `npm install`
-before dev work in a new session. `prisma/dev.db` **is** persisted.
+Production first-run on Vercel: the one-time `/api/setup` endpoint (x-setup-key guarded)
+creates tables + production seed + Super Admin — see DEPLOYMENT.md.
 
 ## Demo accounts
 
