@@ -66,12 +66,12 @@ export default function SiteHeader({
     >
       {/* ============================ main bar ============================ */}
       <div
-        className={`mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 transition-all duration-500 ${
+        className={`mx-auto grid max-w-7xl grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-4 px-6 transition-all duration-500 ${
           scrolled ? "h-16" : "h-20"
         }`}
       >
-        {/* Brand (left) */}
-        <Link href="/" className="flex min-w-0 items-center gap-2.5">
+        {/* Brand sits in its own column, so it never crowds the category links. */}
+        <Link href="/" className="flex min-w-0 items-center gap-2.5 lg:pr-8">
           <span className="whitespace-nowrap font-[family-name:var(--font-display)] text-[22px] font-light leading-none tracking-[0.14em] transition-opacity hover:opacity-80">
             {brand.toUpperCase()}
           </span>
@@ -85,7 +85,7 @@ export default function SiteHeader({
         </Link>
 
         {/* Center nav (desktop) */}
-        <nav className="hidden items-center gap-10 lg:flex">
+        <nav className="hidden items-center justify-self-center gap-10 lg:flex">
           {NAV.map((n) => (
             <Link
               key={n.label}
@@ -98,7 +98,7 @@ export default function SiteHeader({
         </nav>
 
         {/* Utility (right) — aligned single row, consistent heights */}
-        <div className="flex items-center gap-4 md:gap-5">
+        <div className="flex items-center justify-self-end gap-4 md:gap-5">
           {/* Search */}
           <div className="relative">
             <button
