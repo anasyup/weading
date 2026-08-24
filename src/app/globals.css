@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  --color-ink: #211d1a;
+  --color-ink: #1c1a17;
   --color-cream: #faf8f4;
   --color-sand: #f3ede3;
   --color-parchment: #ece4d7;
@@ -10,13 +10,81 @@
   --color-gold-deep: #8d6a40;
   --color-rose: #b9737b;
   --color-moss: #5d6b56;
-  --font-display: Georgia, "Times New Roman", serif;
+  --font-display: var(--font-cormorant), Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 }
 
 body {
   background: var(--color-cream);
   color: var(--color-ink);
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+  font-weight: 300;
+  letter-spacing: 0.01em;
+}
+
+/* ------------------------------------------------------------------ */
+/* Scroll-reveal animation (used with <Reveal/>)                        */
+/* ------------------------------------------------------------------ */
+.reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition:
+    opacity 0.9s cubic-bezier(0.2, 0.6, 0.2, 1),
+    transform 0.9s cubic-bezier(0.2, 0.6, 0.2, 1);
+  will-change: opacity, transform;
+}
+.reveal-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ------------------------------------------------------------------ */
+/* Luxury link underline (nav + inline links)                           */
+/* ------------------------------------------------------------------ */
+.nav-link {
+  position: relative;
+}
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  height: 1px;
+  width: 100%;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.45s cubic-bezier(0.2, 0.6, 0.2, 1);
+}
+.nav-link:hover::after,
+.nav-link[data-active="true"]::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* Slow cinematic image zoom on hover */
+.media-zoom {
+  transition: transform 1.4s cubic-bezier(0.2, 0.6, 0.2, 1);
+}
+.group:hover .media-zoom {
+  transform: scale(1.06);
+}
+
+@keyframes lux-fade-up {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: none; }
+}
+.hero-entrance > * {
+  animation: lux-fade-up 1.1s cubic-bezier(0.2, 0.6, 0.2, 1) both;
+}
+.hero-entrance > *:nth-child(2) { animation-delay: 0.25s; }
+.hero-entrance > *:nth-child(3) { animation-delay: 0.5s; }
+.hero-entrance > *:nth-child(4) { animation-delay: 0.75s; }
+
+@media print {
+  .no-print, header, footer, aside { display: none !important; }
+  body { background: white !important; }
 }
 
 @layer components {
@@ -29,36 +97,17 @@ body {
   .btn-ghost {
     @apply inline-flex items-center justify-center gap-2 border border-line bg-white px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-ink transition hover:border-gold disabled:opacity-40;
   }
-  .btn-sm {
-    @apply px-4 py-2;
-  }
+  .btn-sm { @apply px-4 py-2; }
   .input {
-    @apply w-full border border-line bg-white px-3 py-2.5 text-sm outline-none transition focus:border-gold;
+    @apply w-full border border-line bg-white px-3 py-2.5 text-sm font-normal outline-none transition focus:border-gold;
   }
   .label {
     @apply mb-1.5 block text-[10px] font-semibold uppercase tracking-[0.14em] text-stone-500;
   }
-  .card {
-    @apply border border-line bg-white;
-  }
-  .th {
-    @apply px-4 py-3 text-left text-[10px] font-semibold uppercase tracking-[0.12em] text-stone-500;
-  }
-  .td {
-    @apply px-4 py-3 align-middle text-sm;
-  }
-  .badge {
-    @apply inline-flex items-center gap-1 border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em];
-  }
-  .section-title {
-    @apply font-[family-name:var(--font-display)] text-2xl tracking-tight sm:text-3xl;
-  }
-  .eyebrow {
-    @apply text-[10px] font-semibold uppercase tracking-[0.28em] text-gold-deep;
-  }
-}
-
-@media print {
-  .no-print, header, footer, aside { display: none !important; }
-  body { background: white !important; }
+  .card { @apply border border-line bg-white; }
+  .th { @apply px-4 py-3 text-left text-[10px] font-semibold uppercase tracking-[0.12em] text-stone-500; }
+  .td { @apply px-4 py-3 align-middle text-sm font-normal; }
+  .badge { @apply inline-flex items-center gap-1 border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em]; }
+  .section-title { @apply font-[family-name:var(--font-display)] text-2xl tracking-tight sm:text-3xl; }
+  .eyebrow { @apply text-[10px] font-semibold uppercase tracking-[0.28em] text-gold-deep; }
 }

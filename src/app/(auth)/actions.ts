@@ -89,7 +89,7 @@ export async function registerAction(_prev: AuthState, formData: FormData): Prom
   const link = `/verify-email/${token}`;
   await sendEmail({
     to: email,
-    subject: "Verify your email — Noor Bridal",
+    subject: "Verify your email — Bridal Dresses",
     body: `Welcome ${firstName}! Verify your email: ${process.env.NEXT_PUBLIC_APP_URL ?? ""}${link}`,
     purpose: "VERIFY_EMAIL",
   });
@@ -145,7 +145,7 @@ export async function resendVerificationAction(_prev: AuthState, formData: FormD
   }
   const token = await createActionToken(user.id, "EMAIL_VERIFY");
   const link = `/verify-email/${token}`;
-  await sendEmail({ to: email, subject: "Verify your email — Noor Bridal", body: `Verify your email: ${process.env.NEXT_PUBLIC_APP_URL ?? ""}${link}`, purpose: "VERIFY_EMAIL" });
+  await sendEmail({ to: email, subject: "Verify your email — Bridal Dresses", body: `Verify your email: ${process.env.NEXT_PUBLIC_APP_URL ?? ""}${link}`, purpose: "VERIFY_EMAIL" });
   return { ok: true, message: "Verification link (dev preview):", devLink: link };
 }
 
@@ -162,7 +162,7 @@ export async function requestResetAction(_prev: AuthState, formData: FormData): 
 
   const token = await createActionToken(user.id, "PASSWORD_RESET");
   const link = `/reset-password/${token}`;
-  await sendEmail({ to: email, subject: "Reset your password — Noor Bridal", body: `Reset your password: ${process.env.NEXT_PUBLIC_APP_URL ?? ""}${link}`, purpose: "RESET_PASSWORD" });
+  await sendEmail({ to: email, subject: "Reset your password — Bridal Dresses", body: `Reset your password: ${process.env.NEXT_PUBLIC_APP_URL ?? ""}${link}`, purpose: "RESET_PASSWORD" });
   return { ok: true, message: "If an account exists for this email, a reset link has been sent.", devLink: link };
 }
 

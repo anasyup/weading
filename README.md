@@ -64,4 +64,5 @@ src/lib                  auth, orders (service), coupons, cart, pricing, audit, 
 - ✅ Stage 4 — admin dashboard/orders/products/inventory/customers/settings/audit + manual orders (Instagram/WhatsApp sales)
 - ✅ Stage 5 — coupons admin, reviews moderation, CMS (banners/pages/FAQs/blog), support tickets, newsletter admin
 - ✅ Stage 6 (dev-level) — QA suite (npm run qa, 28 checks), security headers, backup job (npm run db:backup)
+- ✅ Gap-closure pass — all 7 documented gaps closed (save-for-later, cart recovery emails+cron, review form, printable invoice, campaigns, SEO fields, segment auto-assign) + CSV export, PWA, categories CRUD
 - ✅ Production readiness — PostgreSQL verified, Stripe adapter + webhook, email adapter, uploads, SEO, Docker + deployment guide. Remaining before real launch: domain, Stripe keys, Resend key, legal pages review (see DEPLOYMENT.md checklist)

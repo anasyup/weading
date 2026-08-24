@@ -28,7 +28,7 @@ export async function replyTicket(formData: FormData) {
   if (ticket) {
     await sendEmail({
       to: ticket.customer.user.email,
-      subject: `Re: ${ticket.subject} — Noor Bridal`,
+      subject: `Re: ${ticket.subject} — Bridal Dresses`,
       body: message,
       purpose: "SUPPORT_REPLY",
     }).catch(() => {});

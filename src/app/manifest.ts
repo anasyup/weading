@@ -3,8 +3,8 @@ import type { MetadataRoute } from "next";
 // PWA manifest — makes the storefront installable on phones ("Add to Home Screen")
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Noor Bridal — Made-to-Order Bridal Couture",
-    short_name: "Noor Bridal",
+    name: "Bridal Dresses — Luxury Wedding Dresses",
+    short_name: "Bridal Dresses",
     description:
       "Handcrafted bridal dresses, gowns and lehengas, made to your measurements. USA · Canada · Pakistan.",
     start_url: "/",

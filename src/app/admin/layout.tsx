@@ -16,7 +16,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       {/* Sidebar */}
       <aside className="hidden w-60 shrink-0 flex-col border-r border-line bg-ink text-cream lg:flex">
         <div className="border-b border-cream/10 px-6 py-6">
-          <p className="font-[family-name:var(--font-display)] text-lg tracking-[0.08em]">NOOR BRIDAL</p>
+          <p className="font-[family-name:var(--font-display)] text-lg tracking-[0.08em]">BRIDAL DRESSES</p>
           <p className="mt-1 text-[9px] font-semibold uppercase tracking-[0.3em] text-gold">Admin Panel</p>
         </div>
         <AdminNav />

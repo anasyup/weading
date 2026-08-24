@@ -6,7 +6,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       <header className="border-b border-line">
         <div className="mx-auto max-w-7xl px-4 py-5">
           <Link href="/" className="font-[family-name:var(--font-display)] text-xl tracking-[0.08em]">
-            NOOR BRIDAL
+            BRIDAL DRESSES
           </Link>
         </div>
       </header>

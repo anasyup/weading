@@ -35,7 +35,7 @@ export default async function VerifyEmailPage({
         </h1>
         <p className="mt-3 text-sm leading-relaxed text-stone-600">
           {verified
-            ? "Your email is confirmed. Welcome to Noor Bridal — sign in to start your made-to-order journey."
+            ? "Your email is confirmed. Welcome to Bridal Dresses — sign in to start your made-to-order journey."
             : "This verification link is invalid, already used, or expired. Register again or resend the link from the sign-in page."}
         </p>
         <Link href="/login" className="btn-primary mt-8">Continue to sign in</Link>

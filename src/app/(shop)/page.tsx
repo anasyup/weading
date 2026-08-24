@@ -1,155 +1,288 @@
 import Link from "next/link";
 import { prisma } from "@/lib/db";
-import { getCountry } from "@/lib/country";
-import ProductCard from "@/components/product-card";
+import Reveal from "@/components/reveal";
+import ParallaxImage from "@/components/parallax-image";
+import HoverSwapCard from "@/components/hover-swap-card";
 
 export const dynamic = "force-dynamic";
 
-const STEPS = [
-  { n: "01", title: "Choose your piece", body: "Browse bridal dresses, gowns and lehengas crafted in our atelier." },
-  { n: "02", title: "Customize it", body: "Select fabric, embroidery, neckline and sleeves — made your way." },
-  { n: "03", title: "Send measurements", body: "A simple measurement form with every order. Private, one-time, exact." },
-  { n: "04", title: "We handcraft it", body: "Your garment is cut, stitched and finished in 30–45 days." },
-  { n: "05", title: "Delivered to you", body: "Tracked delivery to the USA, Canada and Pakistan." },
+const MOST_LOVED = [
+  { name: "The A-Line", sub: "Fluid Crepe", img: "/uploads/lux-p-aline.jpg" },
+  { name: "Mikado Mermaid", sub: "Sculpted Silk", img: "/uploads/lux-p-mermaid.jpg" },
+  { name: "Lace Corset", sub: "Corded Lace", img: "/uploads/lux-p-corset.jpg" },
+  { name: "Silk Slip", sub: "Bias-Cut Satin", img: "/uploads/lux-p-slip.jpg" },
+];
+
+const STORES = [
+  {
+    city: "New York",
+    label: "US Flagship — Madison Avenue",
+    detail: "Private salon fittings by appointment · Mon–Sat",
+    img: "/uploads/lux-cat-collections.jpg",
+  },
+  {
+    city: "Warsaw",
+    label: "European Atelier — Old Town",
+    detail: "The maison's founding atelier · Tue–Sat",
+    img: "/uploads/lux-prima.jpg",
+  },
 ];
 
 export default async function HomePage() {
-  const [banners, featured, latest, categories] = await Promise.all([
-    prisma.cmsBanner.findMany({ where: { status: "ACTIVE" }, orderBy: { sortOrder: "asc" } }),
-    prisma.product.findMany({
-      where: { status: "ACTIVE", isFeatured: true },
-      include: { prices: true, media: true },
-      take: 4,
-      orderBy: { createdAt: "desc" },
-    }),
-    prisma.product.findMany({
-      where: { status: "ACTIVE" },
-      include: { prices: true, media: true },
-      take: 8,
-      orderBy: { createdAt: "asc" },
-    }),
+  const [featuredCount, categories] = await Promise.all([
+    prisma.product.count({ where: { status: "ACTIVE" } }),
     prisma.category.findMany({ where: { status: "ACTIVE" }, orderBy: { sortOrder: "asc" }, take: 6 }),
   ]);
-  const country = await getCountry();
-  const hero = banners[0];
 
   return (
-    <div>
-      {/* Hero */}
+    <div className="bg-cream">
+      {/* ================================================================ */}
+      {/* 1 — HERO (full-bleed, parallax)                                   */}
+      {/* ================================================================ */}
+      <section className="relative h-[92vh] min-h-[560px] w-full overflow-hidden">
+        <ParallaxImage src="/uploads/lux-hero.jpg" alt="Bridal Dresses — US debut" strength={0.22} />
+        <div className="absolute inset-0 bg-gradient-to-t from-ink/45 via-ink/10 to-ink/20" />
+
+        <div className="absolute inset-0 flex items-center justify-center px-6">
+          <div className="hero-entrance max-w-3xl text-center text-cream">
+            <p className="text-[10px] font-medium uppercase tracking-[0.5em] text-cream/80">
+              The Maison Arrives in America
+            </p>
+            <h1 className="mt-6 font-[family-name:var(--font-display)] text-5xl font-light leading-[1.05] tracking-wide sm:text-7xl lg:text-8xl">
+              Bridal Dresses
+            </h1>
+            <p className="mx-auto mt-6 max-w-xl text-sm font-light leading-relaxed tracking-wide text-cream/85">
+              High-fashion wedding dresses, cut to a single silhouette and sewn to a single bride.
+              Made-to-measure in our atelier — {featuredCount} silhouettes, one of one, every time.
+            </p>
+            <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+              <Link href="/shop" className="btn-gold px-10 py-4">
+                Explore Collection
+              </Link>
+              <Link
+                href="/support"
+                className="inline-flex items-center border border-cream/50 px-10 py-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-cream transition-all duration-300 hover:border-cream hover:bg-cream/10"
+              >
+                Book NYC Appointment
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* scroll cue */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-center">
+          <p className="text-[9px] uppercase tracking-[0.4em] text-cream/60">Scroll</p>
+          <div className="mx-auto mt-2 h-10 w-px overflow-hidden bg-cream/20">
+            <div className="h-1/2 w-full animate-bounce bg-cream/80" />
+          </div>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* 2 — FEATURED COLLECTION (Prima Forma)                             */}
+      {/* ================================================================ */}
       <section className="relative">
-        <div className="relative h-[68vh] min-h-[440px] w-full overflow-hidden">
-          {hero && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={hero.imageUrl} alt={hero.title} className="h-full w-full object-cover" />
-          )}
-          <div className="absolute inset-0 bg-gradient-to-r from-ink/70 via-ink/30 to-transparent" />
-          <div className="absolute inset-0 flex items-center">
-            <div className="mx-auto w-full max-w-7xl px-4">
-              <div className="max-w-xl text-cream">
-                <p className="eyebrow !text-gold">{hero?.subtitle ?? "Made-to-order bridal couture"}</p>
-                <h1 className="mt-4 font-[family-name:var(--font-display)] text-4xl leading-[1.1] sm:text-5xl lg:text-6xl">
-                  {hero?.title ?? "Your dress, made for you."}
-                </h1>
-                <p className="mt-5 max-w-md text-sm leading-relaxed text-cream/85">
-                  Handcrafted bridal dresses, gowns and lehengas — customized, measured and delivered to
-                  the USA, Canada and Pakistan in 30–45 days.
+        <div className="relative h-[80vh] min-h-[480px] w-full overflow-hidden">
+          <ParallaxImage src="/uploads/lux-prima.jpg" alt="Prima Forma collection" strength={0.18} />
+          <div className="absolute inset-0 bg-ink/25" />
+          <div className="absolute inset-0 flex items-end">
+            <div className="mx-auto w-full max-w-7xl px-6 pb-16">
+              <Reveal>
+                <p className="text-[10px] font-medium uppercase tracking-[0.5em] text-cream/75">
+                  Featured Collection
                 </p>
-                <div className="mt-8 flex flex-wrap gap-3">
-                  <Link href="/shop" className="btn-gold">
-                    {hero?.ctaLabel ?? "Shop the Collection"}
-                  </Link>
-                  <Link
-                    href="/shop?category=lehengas"
-                    className="inline-flex items-center border border-cream/40 px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-cream transition hover:border-cream"
-                  >
-                    Explore Lehengas
-                  </Link>
-                </div>
-              </div>
+                <h2 className="mt-4 font-[family-name:var(--font-display)] text-5xl font-light tracking-wide text-cream sm:text-6xl">
+                  Prima Forma
+                </h2>
+                <p className="mt-4 max-w-lg text-sm font-light leading-relaxed text-cream/85">
+                  An ode to the silhouette itself. Uncomplicated lines, minimal embellishment, and
+                  construction that takes years to learn and hours to place — nothing added, nothing
+                  missing.
+                </p>
+                <Link
+                  href="/shop"
+                  className="mt-8 inline-flex items-center gap-3 border border-cream/60 px-8 py-3.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-cream transition-all duration-300 hover:bg-cream hover:text-ink"
+                >
+                  Discover Collection →
+                </Link>
+              </Reveal>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Value strip */}
-      <section className="border-b border-line bg-white">
-        <div className="mx-auto grid max-w-7xl grid-cols-2 divide-line px-4 text-center sm:grid-cols-4 sm:divide-x">
+      {/* ================================================================ */}
+      {/* 3 — QUICK CATEGORIES (3-column grid)                              */}
+      {/* ================================================================ */}
+      <section className="mx-auto max-w-7xl px-6 py-24 lg:py-32">
+        <Reveal className="mb-14 text-center">
+          <p className="eyebrow">The Edit</p>
+          <h2 className="mt-3 font-[family-name:var(--font-display)] text-4xl font-light tracking-wide sm:text-5xl">
+            Begin with one question
+          </h2>
+        </Reveal>
+
+        <div className="grid gap-6 md:grid-cols-3">
           {[
-            ["Made to Order", "Handcrafted in 30–45 days"],
-            ["Custom Fit", "Your measurements, every order"],
-            ["Premium Fabrics", "Velvet · Silk · Organza"],
-            ["3 Countries", "USA · Canada · Pakistan"],
-          ].map(([title, sub]) => (
-            <div key={title} className="px-4 py-6">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.18em]">{title}</p>
-              <p className="mt-1 text-[11px] text-stone-500">{sub}</p>
-            </div>
+            { title: "Wedding Dresses", copy: "Signature silhouettes, made to measure", img: "/uploads/lux-cat-dresses.jpg", href: "/shop" },
+            { title: "All Collections", copy: "Explore every chapter of the maison", img: "/uploads/lux-cat-collections.jpg", href: "/shop" },
+            { title: "Accessories", copy: "Veils, silk ribbons & fine jewelry", img: "/uploads/lux-cat-accessories.jpg", href: "/shop?category=accessories" },
+          ].map((c, i) => (
+            <Reveal key={c.title} delay={i * 120}>
+              <Link href={c.href} className="group relative block aspect-[4/5] overflow-hidden bg-sand">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={c.img} alt={c.title} loading="lazy" className="media-zoom h-full w-full object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-ink/55 via-transparent to-transparent opacity-80 transition-opacity duration-500 group-hover:opacity-95" />
+                <div className="absolute inset-x-0 bottom-0 p-7 text-cream">
+                  <h3 className="font-[family-name:var(--font-display)] text-2xl font-light tracking-wide">
+                    {c.title}
+                  </h3>
+                  <p className="mt-1 text-[10px] font-light uppercase tracking-[0.22em] text-cream/75">
+                    {c.copy}
+                  </p>
+                  <span className="nav-link mt-3 inline-block text-[10px] font-semibold uppercase tracking-[0.24em] text-cream">
+                    Explore →
+                  </span>
+                </div>
+              </Link>
+            </Reveal>
           ))}
         </div>
       </section>
 
-      {/* Featured */}
-      {featured.length > 0 && (
-        <section className="mx-auto max-w-7xl px-4 py-16">
-          <div className="mb-8 flex items-end justify-between">
-            <div>
-              <p className="eyebrow">Atelier favourites</p>
-              <h2 className="section-title mt-2">Featured Collection</h2>
+      {/* ================================================================ */}
+      {/* 4 — CRAFTSMANSHIP / BRAND STORY                                   */}
+      {/* ================================================================ */}
+      <section className="border-y border-line bg-sand/60">
+        <div className="mx-auto grid max-w-7xl gap-14 px-6 py-24 lg:grid-cols-2 lg:py-32">
+          <Reveal>
+            <div className="relative aspect-[4/5] overflow-hidden lg:aspect-auto lg:h-full lg:min-h-[560px]">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/uploads/lux-craft.jpg" alt="Hand-appliqué in the atelier" loading="lazy" className="h-full w-full object-cover" />
             </div>
-            <Link href="/shop" className="text-[11px] font-semibold uppercase tracking-[0.16em] text-gold-deep hover:underline">
-              View all →
-            </Link>
-          </div>
-          <div className="grid grid-cols-2 gap-6 lg:grid-cols-4">
-            {featured.map((p) => (
-              <ProductCard key={p.id} product={p} country={country} />
-            ))}
-          </div>
-        </section>
-      )}
+          </Reveal>
 
-      {/* How it works */}
-      <section className="border-y border-line bg-sand py-16">
-        <div className="mx-auto max-w-7xl px-4">
-          <p className="eyebrow">The made-to-order journey</p>
-          <h2 className="section-title mt-2">How it works</h2>
-          <div className="mt-10 grid gap-px border border-line bg-line sm:grid-cols-2 lg:grid-cols-5">
-            {STEPS.map((s) => (
-              <div key={s.n} className="bg-white p-6">
-                <p className="font-[family-name:var(--font-display)] text-2xl text-gold">{s.n}</p>
-                <p className="mt-3 text-[11px] font-semibold uppercase tracking-[0.14em]">{s.title}</p>
-                <p className="mt-2 text-xs leading-relaxed text-stone-600">{s.body}</p>
-              </div>
-            ))}
+          <div className="flex flex-col justify-center">
+            <Reveal>
+              <p className="eyebrow">The Atelier</p>
+              <h2 className="mt-3 font-[family-name:var(--font-display)] text-4xl font-light leading-tight tracking-wide sm:text-5xl">
+                Quiet hands,<br />
+                patient hours.
+              </h2>
+            </Reveal>
+            <Reveal delay={120}>
+              <p className="mt-7 max-w-lg text-[15px] font-light leading-loose text-stone-700">
+                Every gown begins as unpinned silk on a cutting table in our atelier. Lace is
+                hand-appliquéd motive by motive — not machine-placed — so each vine falls exactly
+                where the body turns. Our fitters tailor precision into every seam through a series
+                of calico fittings before a single metre of silk is cut.
+              </p>
+              <p className="mt-4 max-w-lg text-[15px] font-light leading-loose text-stone-700">
+                The result is a dress that feels like it was always yours — because it was made only
+                for you.
+              </p>
+            </Reveal>
+            <Reveal delay={220}>
+              <dl className="mt-10 grid grid-cols-3 gap-6 border-t border-line pt-8">
+                {[
+                  ["120+", "Hours of hand-appliqué per couture gown"],
+                  ["3", "Precision fittings before final silk is cut"],
+                  ["1 of 1", "Every dress cut for one bride, only"],
+                ].map(([n, label]) => (
+                  <div key={label}>
+                    <dt className="font-[family-name:var(--font-display)] text-4xl font-light text-gold-deep">{n}</dt>
+                    <dd className="mt-2 text-[10px] uppercase leading-relaxed tracking-[0.18em] text-stone-500">{label}</dd>
+                  </div>
+                ))}
+              </dl>
+              <Link href="/pages/about" className="btn-ghost btn-sm mt-10">
+                Our story
+              </Link>
+            </Reveal>
           </div>
         </div>
       </section>
 
-      {/* Catalog preview */}
-      <section className="mx-auto max-w-7xl px-4 py-16">
-        <div className="mb-8 flex items-end justify-between">
+      {/* ================================================================ */}
+      {/* 5 — MOST LOVED (bestsellers with hover detail)                    */}
+      {/* ================================================================ */}
+      <section className="mx-auto max-w-7xl px-6 py-24 lg:py-32">
+        <Reveal className="mb-12 flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="eyebrow">The boutique</p>
-            <h2 className="section-title mt-2">Shop by category</h2>
+            <p className="eyebrow">Bestsellers</p>
+            <h2 className="mt-3 font-[family-name:var(--font-display)] text-4xl font-light tracking-wide sm:text-5xl">
+              Most Loved
+            </h2>
+            <p className="mt-3 max-w-md text-sm font-light leading-relaxed text-stone-600">
+              The silhouettes brides return to, season after season. Hover to see the detail work.
+            </p>
           </div>
-        </div>
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-          {categories.map((c) => (
-            <Link
-              key={c.id}
-              href={`/shop?category=${c.slug}`}
-              className="group border border-line bg-white p-5 text-center transition hover:border-gold"
-            >
-              <p className="font-[family-name:var(--font-display)] text-lg group-hover:text-gold-deep">{c.name}</p>
-              <p className="mt-1 text-[10px] uppercase tracking-[0.14em] text-stone-400">Explore →</p>
-            </Link>
-          ))}
-        </div>
+          <Link href="/shop" className="nav-link text-[11px] font-semibold uppercase tracking-[0.22em] text-ink">
+            View all silhouettes →
+          </Link>
+        </Reveal>
 
-        <div className="mt-12 grid grid-cols-2 gap-6 lg:grid-cols-4">
-          {latest.slice(4).map((p) => (
-            <ProductCard key={p.id} product={p} country={country} />
+        <div className="grid grid-cols-2 gap-x-6 gap-y-12 lg:grid-cols-4">
+          {MOST_LOVED.map((p, i) => (
+            <Reveal key={p.name} delay={i * 100}>
+              <HoverSwapCard
+                mainSrc={p.img}
+                name={p.name}
+                sub={p.sub}
+                href="/shop"
+                index={`0${i + 1}`}
+              />
+            </Reveal>
           ))}
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* 6 — FLAGSHIP STORES & SALON LOCATOR                               */}
+      {/* ================================================================ */}
+      <section id="stores" className="border-t border-line bg-ink text-cream">
+        <div className="mx-auto max-w-7xl px-6 py-24 lg:py-32">
+          <Reveal className="mb-14 text-center">
+            <p className="text-[10px] font-medium uppercase tracking-[0.5em] text-gold">Salons</p>
+            <h2 className="mt-4 font-[family-name:var(--font-display)] text-4xl font-light tracking-wide sm:text-5xl">
+              Visit the maison
+            </h2>
+            <p className="mx-auto mt-4 max-w-md text-sm font-light leading-relaxed text-cream/70">
+              Private appointments in our flagship salons — your silhouette, considered over
+              champagne and calico.
+            </p>
+          </Reveal>
+
+          <div className="grid gap-6 md:grid-cols-2">
+            {STORES.map((s, i) => (
+              <Reveal key={s.city} delay={i * 140}>
+                <div className="group relative aspect-[16/10] overflow-hidden">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={s.img} alt={`${s.city} salon`} loading="lazy" className="media-zoom h-full w-full object-cover" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/20 to-transparent" />
+                  <div className="absolute inset-x-0 bottom-0 flex flex-wrap items-end justify-between gap-4 p-7">
+                    <div>
+                      <p className="text-[9px] font-medium uppercase tracking-[0.4em] text-gold">{s.label}</p>
+                      <h3 className="mt-2 font-[family-name:var(--font-display)] text-3xl font-light tracking-wide">{s.city}</h3>
+                      <p className="mt-1 text-[11px] font-light tracking-wide text-cream/70">{s.detail}</p>
+                    </div>
+                    <Link
+                      href="/support"
+                      className="inline-flex items-center border border-cream/50 px-6 py-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-cream transition-all duration-300 hover:bg-cream hover:text-ink"
+                    >
+                      Book
+                    </Link>
+                  </div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+
+          <Reveal delay={150} className="mt-12 text-center">
+            <Link href="/support" className="btn-gold px-10 py-4">
+              Book a Private Appointment
+            </Link>
+          </Reveal>
         </div>
       </section>
     </div>

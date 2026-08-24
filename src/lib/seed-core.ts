@@ -42,15 +42,20 @@ export async function runProductionSeed(prisma: PrismaClient, adminEmail: string
   const location = await prisma.location.findFirst();
 
   for (const [key, value, category] of [
-    ["store.name", "Noor Bridal", "GENERAL"],
-    ["support.email", "care@noorbridal.test", "GENERAL"],
+    ["store.name", "Bridal Dresses", "GENERAL"],
+    ["support.email", "care@bridaldresses.test", "GENERAL"],
     ["support.whatsapp", "+92 300 1234567", "GENERAL"],
     ["currency.pkr_per_usd", "280", "COUNTRY"],
     ["production.default_min_days", "30", "GENERAL"],
     ["production.default_max_days", "45", "GENERAL"],
     ["measurements.retention_days", "90", "SECURITY"],
   ] as const) {
-    await prisma.systemSetting.upsert({ where: { key }, update: {}, create: { key, value, category } });
+    // store.name follows the current brand so setup runs re-brand cleanly
+    await prisma.systemSetting.upsert({
+      where: { key },
+      update: key === "store.name" ? { value } : {},
+      create: { key, value, category },
+    });
   }
 
   // Shipping / tax / gateway
@@ -158,7 +163,7 @@ export async function runProductionSeed(prisma: PrismaClient, adminEmail: string
   }
 
   // Categories + products
-  const catDefs = [["Bridal Dresses", "bridal-dresses"], ["Bridal Gowns", "bridal-gowns"], ["Lehengas", "lehengas"], ["Wedding Wear", "wedding-wear"], ["Party Wear", "party-wear"]] as const;
+  const catDefs = [["Bridal Dresses", "bridal-dresses"], ["Bridal Gowns", "bridal-gowns"], ["Lehengas", "lehengas"], ["Wedding Wear", "wedding-wear"], ["Party Wear", "party-wear"], ["Accessories", "accessories"]] as const;
   const cats: Record<string, string> = {};
   for (let i = 0; i < catDefs.length; i++) {
     const c = await prisma.category.upsert({ where: { slug: catDefs[i][1] }, update: {}, create: { name: catDefs[i][0], slug: catDefs[i][1], sortOrder: i + 1 } });
@@ -226,7 +231,7 @@ export async function runProductionSeed(prisma: PrismaClient, adminEmail: string
     await prisma.cmsBanner.create({ data: { title: "Your dress, made for you.", subtitle: "Made-to-order bridal couture", imageUrl: "/uploads/hero.jpg", linkUrl: "/shop", ctaLabel: "Shop the Collection", sortOrder: 1 } });
   }
   const pages: [string, string, string][] = [
-    ["About", "about", "Noor Bridal is a made-to-order bridal atelier. Every piece is cut, stitched and finished by hand to your measurements — one order at a time.\n\nWe ship to the United States, Canada and Pakistan."],
+    ["About", "about", "Bridal Dresses is a high-fashion made-to-measure bridal atelier. Every piece is cut, stitched and finished by hand to your measurements — one order at a time.\n\nWe ship to the United States, Canada and Pakistan."],
     ["Terms of Service", "terms", "Draft placeholder — review with your legal advisor before launch."],
     ["Privacy Policy", "privacy", "Draft placeholder. Measurements are collected per order and purged 90 days after delivery; we never sell personal data."],
     ["Shipping Policy", "shipping", "Made-to-order pieces are handcrafted in 30–45 days, then shipped tracked to your country (US 5–10 days · CA 7–12 days · PK 2–5 days)."],

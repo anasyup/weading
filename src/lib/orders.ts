@@ -434,7 +434,7 @@ export async function markOrderPaid(
 
   await sendEmail({
     to: order.customer.user.email,
-    subject: `Order ${order.orderNumber} confirmed — Noor Bridal`,
+    subject: `Order ${order.orderNumber} confirmed — Bridal Dresses`,
     body: `Thank you! Your order ${order.orderNumber} is confirmed. Handcrafting begins now; estimated delivery ${est.toDateString()}. Track it in your account.`,
     purpose: "ORDER_CONFIRMATION",
   }).catch(() => {});

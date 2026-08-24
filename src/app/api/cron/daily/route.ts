@@ -41,7 +41,7 @@ export async function POST(req: Request) {
     const names = cart.items.map((i) => i.product.name);
     await sendEmail({
       to: cart.customer.user.email,
-      subject: "Your Noor Bridal picks are waiting ✦",
+      subject: "Your Bridal Dresses picks are waiting ✦",
       body: `Hi ${cart.customer.firstName}! ${names.length > 0 ? `Your ${names.join(", ")} ${names.length === 1 ? "is" : "are"} still in your cart. Complete your order: ${base}/cart` : `Complete your order: ${base}/cart`}`,
       purpose: "ABANDONED_CART",
     });

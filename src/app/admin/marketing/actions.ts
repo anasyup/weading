@@ -121,7 +121,7 @@ export async function sendRecoveryEmail(formData: FormData) {
   const base = process.env.NEXT_PUBLIC_APP_URL ?? "";
   await sendEmail({
     to: cart.customer.user.email,
-    subject: "Your Noor Bridal picks are waiting ✦",
+    subject: "Your Bridal Dresses picks are waiting ✦",
     body: `Hi ${cart.customer.firstName}! ${items.length > 0 ? `Your ${items.map((i) => i.product.name).join(", ")} ${items.length === 1 ? "is" : "are"} still in your cart. Made to order in 30–45 days — complete your order here: ${base}/cart` : "Complete your order here: " + base + "/cart"}`,
     purpose: "ABANDONED_CART",
   });

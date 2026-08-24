@@ -53,7 +53,7 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
         {/* Header */}
         <div className="flex items-start justify-between border-b-2 border-ink pb-6">
           <div>
-            <p className="font-[family-name:var(--font-display)] text-3xl tracking-[0.08em]">NOOR BRIDAL</p>
+            <p className="font-[family-name:var(--font-display)] text-3xl tracking-[0.08em]">BRIDAL DRESSES</p>
             <p className="mt-1 text-[10px] uppercase tracking-[0.3em] text-gold-deep">Made-to-order bridal couture</p>
             <p className="mt-3 text-xs text-stone-500">care@noorbridal.test · +92 300 1234567</p>
           </div>
@@ -143,7 +143,7 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
 
         {/* Footer */}
         <p className="mt-10 border-t border-line pt-4 text-center text-[10px] leading-relaxed text-stone-400">
-          Thank you for choosing Noor Bridal. Custom-measurement garments are handcrafted to your provided
+          Thank you for choosing Bridal Dresses. Custom-measurement garments are handcrafted to your provided
           measurements — see our Returns policy. This invoice was generated electronically.
         </p>
       </div>
