@@ -7,5 +7,5 @@ import { usePathname } from "next/navigation";
 export default function ShopContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isHome = pathname === "/";
-  return <main className={isHome ? "flex-1" : "flex-1 pt-24"}>{children}</main>;
+  return <main className={isHome ? "flex-1" : "flex-1 pt-24 lg:pt-20"}>{children}</main>;
 }

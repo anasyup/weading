@@ -39,7 +39,7 @@ export default async function HomePage() {
       {/* ================================================================ */}
       {/* 1 — HERO (full-bleed, parallax)                                   */}
       {/* ================================================================ */}
-      <section className="relative h-[92vh] min-h-[560px] w-full overflow-hidden">
+      <section className="relative h-screen min-h-[600px] w-full overflow-hidden [@supports(height:100svh)]:h-[100svh] [@supports(height:100svh)]:min-h-[600px]">
         <ParallaxImage src="/uploads/lux-hero.jpg" alt="Bridal Dresses — US debut" strength={0.22} />
         <div className="absolute inset-0 bg-gradient-to-t from-ink/45 via-ink/10 to-ink/20" />
 
