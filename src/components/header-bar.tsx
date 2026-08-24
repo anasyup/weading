@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 
 const NAV = [
   { label: "Wedding Dresses", href: "/shop" },
-  { label: "Accessories", href: "/shop?category=accessories" },
+  { label: "Accessories", href: "/accessories" },
   { label: "Collections", href: "/shop" },
   { label: "Store Finder", href: "/#stores" },
 ];
