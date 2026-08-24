@@ -1,15 +1,18 @@
 "use client";
 
-// "Most Loved" card — hover crossfades from the full silhouette to a
-// tighter detail crop of the same image (alt-angle feel) + gentle zoom.
+// "Most Loved" card — hover crossfades from the full silhouette to a true
+// detail close-up (dedicated image), falling back to a zoomed crop if no
+// detail image is supplied.
 export default function HoverSwapCard({
   mainSrc,
+  detailSrc,
   name,
   sub,
   href,
   index,
 }: {
   mainSrc: string;
+  detailSrc?: string;
   name: string;
   sub: string;
   href: string;
@@ -26,16 +29,27 @@ export default function HoverSwapCard({
           loading="lazy"
           className="media-zoom absolute inset-0 h-full w-full object-cover transition-opacity duration-700 group-hover:opacity-0"
         />
-        {/* Detail crop (same frame, zoomed to the neckline/bodice) */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={mainSrc}
-          alt=""
-          aria-hidden
-          loading="lazy"
-          className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-700 group-hover:opacity-100"
-          style={{ objectPosition: "50% 18%", transform: "scale(1.35)", transformOrigin: "50% 18%" }}
-        />
+        {/* Detail close-up */}
+        {detailSrc ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={detailSrc}
+            alt={`${name} detail`}
+            aria-hidden
+            loading="lazy"
+            className="absolute inset-0 h-full w-full scale-105 object-cover opacity-0 transition-all duration-700 group-hover:scale-100 group-hover:opacity-100"
+          />
+        ) : (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={mainSrc}
+            alt=""
+            aria-hidden
+            loading="lazy"
+            className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-700 group-hover:opacity-100"
+            style={{ objectPosition: "50% 18%", transform: "scale(1.35)", transformOrigin: "50% 18%" }}
+          />
+        )}
         <span className="absolute left-4 top-4 text-[10px] font-medium tracking-[0.3em] text-white/90 mix-blend-difference">
           {index}
         </span>

@@ -7,10 +7,10 @@ import HoverSwapCard from "@/components/hover-swap-card";
 export const dynamic = "force-dynamic";
 
 const MOST_LOVED = [
-  { name: "The A-Line", sub: "Fluid Crepe", img: "/uploads/lux-p-aline.jpg" },
-  { name: "Mikado Mermaid", sub: "Sculpted Silk", img: "/uploads/lux-p-mermaid.jpg" },
-  { name: "Lace Corset", sub: "Corded Lace", img: "/uploads/lux-p-corset.jpg" },
-  { name: "Silk Slip", sub: "Bias-Cut Satin", img: "/uploads/lux-p-slip.jpg" },
+  { name: "The A-Line", sub: "Fluid Crepe", img: "/uploads/lux-p-aline.jpg", detail: "/uploads/lux-d-aline.jpg" },
+  { name: "Mikado Mermaid", sub: "Sculpted Silk", img: "/uploads/lux-p-mermaid.jpg", detail: "/uploads/lux-d-mermaid.jpg" },
+  { name: "Lace Corset", sub: "Corded Lace", img: "/uploads/lux-p-corset.jpg", detail: "/uploads/lux-d-corset.jpg" },
+  { name: "Silk Slip", sub: "Bias-Cut Satin", img: "/uploads/lux-p-slip.jpg", detail: "/uploads/lux-d-slip.jpg" },
 ];
 
 const STORES = [
@@ -18,13 +18,13 @@ const STORES = [
     city: "New York",
     label: "US Flagship — Madison Avenue",
     detail: "Private salon fittings by appointment · Mon–Sat",
-    img: "/uploads/lux-cat-collections.jpg",
+    img: "/uploads/lux-salon-nyc.jpg",
   },
   {
     city: "Warsaw",
     label: "European Atelier — Old Town",
     detail: "The maison's founding atelier · Tue–Sat",
-    img: "/uploads/lux-prima.jpg",
+    img: "/uploads/lux-salon-warsaw.jpg",
   },
 ];
 
@@ -227,6 +227,7 @@ export default async function HomePage() {
             <Reveal key={p.name} delay={i * 100}>
               <HoverSwapCard
                 mainSrc={p.img}
+                detailSrc={p.detail}
                 name={p.name}
                 sub={p.sub}
                 href="/shop"
