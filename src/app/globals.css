@@ -92,7 +92,7 @@ body {
 .marquee-track {
   display: flex;
   width: max-content;
-  animation: marquee-x 55s linear infinite;
+  animation: marquee-x 120s linear infinite;
 }
 
 /* Soft luminous shapes gently floating behind editorial content */
