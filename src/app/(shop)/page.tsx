@@ -100,7 +100,7 @@ export default async function HomePage() {
                   missing.
                 </p>
                 <Link
-                  href="/shop"
+                  href="/collections"
                   className="mt-8 inline-flex items-center gap-3 border border-cream/60 px-8 py-3.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-cream transition-all duration-300 hover:bg-cream hover:text-ink"
                 >
                   Discover Collection →
@@ -125,8 +125,8 @@ export default async function HomePage() {
         <div className="grid gap-6 md:grid-cols-3">
           {[
             { title: "Wedding Dresses", copy: "Signature silhouettes, made to measure", img: "/uploads/lux-cat-dresses.jpg", href: "/shop" },
-            { title: "All Collections", copy: "Explore every chapter of the maison", img: "/uploads/lux-cat-collections.jpg", href: "/shop" },
-            { title: "Accessories", copy: "Veils, silk ribbons & fine jewelry", img: "/uploads/lux-cat-accessories.jpg", href: "/shop?category=accessories" },
+            { title: "All Collections", copy: "Explore every chapter of the maison", img: "/uploads/lux-cat-collections.jpg", href: "/collections" },
+            { title: "Accessories", copy: "Veils, silk ribbons & fine jewelry", img: "/uploads/lux-cat-accessories.jpg", href: "/accessories" },
           ].map((c, i) => (
             <Reveal key={c.title} delay={i * 120}>
               <Link href={c.href} className="group relative block aspect-[4/5] overflow-hidden bg-sand">

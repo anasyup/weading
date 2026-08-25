@@ -41,8 +41,8 @@ const COLUMNS: { title: string; links: [string, string][] }[] = [
     title: "For Brides",
     links: [
       ["Wedding Dresses", "/shop"],
-      ["Collections", "/shop"],
-      ["Accessories", "/shop?category=accessories"],
+      ["Collections", "/collections"],
+      ["Accessories", "/accessories"],
       ["Appointment Request", "/support"],
     ],
   },
