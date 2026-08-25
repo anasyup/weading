@@ -71,7 +71,7 @@ export default function SiteFooter() {
   return (
     <footer>
       {/* Manifesto — centered, white */}
-      <div className="border-t border-line bg-white">
+      <div className="footer-manifesto border-t border-line bg-white">
         <div className="mx-auto max-w-3xl px-6 py-20 text-center lg:py-24">
           <h2 className="text-[12px] font-semibold uppercase tracking-[0.34em] text-ink">
             The dress of your celebration
@@ -88,8 +88,8 @@ export default function SiteFooter() {
       </div>
 
       {/* Dark footer — navy ink, big brand + columns */}
-      <div className="bg-ink text-cream">
-        <div className="mx-auto grid max-w-[1600px] gap-12 px-6 py-16 sm:grid-cols-2 lg:grid-cols-[minmax(0,1.1fr)_repeat(3,minmax(0,1fr))] lg:py-20">
+      <div className="footer-dark bg-ink text-cream">
+        <div className="footer-cols mx-auto grid max-w-[1600px] gap-12 px-6 py-16 sm:grid-cols-2 lg:grid-cols-[minmax(0,1.1fr)_repeat(3,minmax(0,1fr))] lg:py-20">
           {/* Brand */}
           <div>
             <p className="font-[family-name:var(--font-display)] text-2xl font-light tracking-[0.22em] sm:text-3xl">

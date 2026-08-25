@@ -6,6 +6,7 @@ import ParallaxImage from "@/components/parallax-image";
 import GoldDust, { CursorGlow } from "@/components/gold-dust";
 import ProductCard from "@/components/product-card";
 import OccasionSwitcher from "@/components/occasion-switcher";
+import SnapRoot from "@/components/snap-root";
 
 export const dynamic = "force-dynamic";
 
@@ -50,10 +51,11 @@ export default async function HomePage() {
 
   return (
     <div className="bg-cream">
+      <SnapRoot />
       {/* ================================================================ */}
       {/* 1 — HERO (parallax + gold dust + cursor glow + single CTA)      */}
       {/* ================================================================ */}
-      <section className="relative h-screen min-h-[600px] w-full overflow-hidden [@supports(height:100svh)]:h-[100svh] [@supports(height:100svh)]:min-h-[600px]">
+      <section className="snap-section relative h-screen min-h-[600px] w-full overflow-hidden [@supports(height:100svh)]:h-[100svh] [@supports(height:100svh)]:min-h-[600px]">
         <ParallaxImage
           src="/uploads/pk-hero.jpg"
           alt="Pakistani bride in red couture with gold embroidery"
@@ -103,8 +105,8 @@ export default async function HomePage() {
       {/* ================================================================ */}
       {/* 2 — OCCASION SELECTOR (labels left, crossfading image right)    */}
       {/* ================================================================ */}
-      <section className="mx-auto max-w-7xl px-6 py-24 lg:py-32">
-        <Reveal className="mb-14 text-center lg:mb-16">
+      <section className="snap-section snap-pad mx-auto max-w-7xl px-6 py-24 lg:py-0">
+        <Reveal className="mb-14 text-center lg:mb-12">
           <p className="eyebrow">Shop by Occasion</p>
           <h2 className="mt-3 font-[family-name:var(--font-display)] text-4xl font-light tracking-wide sm:text-5xl">
             Every moment of the wedding
@@ -118,10 +120,10 @@ export default async function HomePage() {
       {/* ================================================================ */}
       {/* 3 — CRAFTSMANSHIP (image left, text right)                      */}
       {/* ================================================================ */}
-      <section id="craft" className="relative overflow-hidden border-y border-line bg-sand/60">
+      <section id="craft" className="snap-section snap-pad relative overflow-hidden border-y border-line bg-sand/60">
         <div className="glow-orb left-[-6rem] top-16 h-72 w-72 bg-gold/25" aria-hidden="true" />
         <div className="glow-orb bottom-10 right-[-8rem] h-96 w-96 bg-gold/15" style={{ animationDelay: "2s" }} aria-hidden="true" />
-        <div className="relative mx-auto grid max-w-7xl gap-14 px-6 py-24 lg:grid-cols-2 lg:py-32">
+        <div className="relative mx-auto grid max-w-7xl gap-14 px-6 py-24 lg:grid-cols-2 lg:py-0">
           <Reveal className="relative">
             <div className="relative aspect-[4/5] overflow-hidden lg:aspect-auto lg:h-full lg:min-h-[560px]">
               <ParallaxImage src="/uploads/pk-craft-zardozi.jpg" alt="Zardozi hand embroidery on red silk" strength={0.12} />
@@ -179,8 +181,8 @@ export default async function HomePage() {
       {/* ================================================================ */}
       {/* 4 — MOST LOVED (centered text + 3 staggered tall images)        */}
       {/* ================================================================ */}
-      <section className="mx-auto max-w-7xl px-6 py-24 lg:py-32">
-        <Reveal className="mx-auto mb-16 max-w-2xl text-center">
+      <section className="snap-section snap-pad mx-auto max-w-7xl px-6 py-24 lg:py-0">
+        <Reveal className="mx-auto mb-16 max-w-2xl text-center lg:mb-10">
           <p className="eyebrow justify-center">Most Loved</p>
           <h2 className="mt-3 font-[family-name:var(--font-display)] text-4xl font-light tracking-wide sm:text-5xl">
             Silhouettes brides return to
@@ -200,7 +202,7 @@ export default async function HomePage() {
           {MOST_LOVED.map((m, i) => (
             <Reveal key={m.title} delay={i * 140} className={i === 1 ? "sm:translate-y-10 lg:translate-y-14" : ""}>
               <Link href={m.href} className="group block">
-                <div className="relative aspect-[3/4] overflow-hidden bg-sand">
+                <div className="relative aspect-[3/4] overflow-hidden bg-sand lg:aspect-auto lg:h-[46vh]">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={m.img}
@@ -223,9 +225,9 @@ export default async function HomePage() {
       {/* 5 — FEATURED PIECES (live, shoppable)                           */}
       {/* ================================================================ */}
       {products.length > 0 && (
-        <section className="border-y border-line bg-white/60">
-          <div className="mx-auto max-w-7xl px-6 py-24 lg:py-28">
-            <Reveal className="mx-auto mb-14 max-w-2xl text-center">
+        <section className="snap-section snap-pad border-y border-line bg-white/60">
+          <div className="mx-auto max-w-7xl px-6 py-24 lg:py-0">
+            <Reveal className="mx-auto mb-14 max-w-2xl text-center lg:mb-10">
               <p className="eyebrow justify-center">From the current book</p>
               <h2 className="mt-3 font-[family-name:var(--font-display)] text-4xl font-light tracking-wide sm:text-5xl">
                 Featured pieces
@@ -259,7 +261,7 @@ export default async function HomePage() {
       {/* 6 — REVIEWS (live, approved)                                    */}
       {/* ================================================================ */}
       {reviews.length > 0 && (
-        <section className="mx-auto max-w-7xl px-6 py-24 lg:py-28">
+        <section className="snap-section snap-pad mx-auto max-w-7xl px-6 py-24 lg:py-0">
           <Reveal className="mb-12 text-center">
             <p className="eyebrow justify-center">Brides across America</p>
             <h2 className="mt-3 font-[family-name:var(--font-display)] text-4xl font-light tracking-wide sm:text-5xl">
@@ -299,7 +301,7 @@ export default async function HomePage() {
       {/* ================================================================ */}
       {/* 7 — BEYOND THE BRIDE (dark band, 3 dimmed image cards)          */}
       {/* ================================================================ */}
-      <section className="bg-ink py-24 text-cream lg:py-32">
+      <section className="snap-section snap-pad bg-ink py-24 text-cream lg:py-0">
         <div className="mx-auto max-w-7xl px-6">
           <Reveal className="mb-14 text-center">
             <p className="text-[10px] font-medium uppercase tracking-[0.5em] text-gold">Beyond the bride</p>
@@ -311,7 +313,7 @@ export default async function HomePage() {
           <div className="grid gap-6 md:grid-cols-3">
             {BEYOND_BRIDE.map((c, i) => (
               <Reveal key={c.title} delay={i * 130}>
-                <Link href={c.href} className="group relative block aspect-[3/4] overflow-hidden">
+                <Link href={c.href} className="group relative block aspect-[3/4] overflow-hidden lg:aspect-auto lg:h-[54vh]">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={c.img}
@@ -338,7 +340,7 @@ export default async function HomePage() {
       {/* ================================================================ */}
       {/* 8 — FOR EVERY CELEBRATION (text left, image right)              */}
       {/* ================================================================ */}
-      <section className="mx-auto max-w-7xl px-6 py-24 lg:py-32">
+      <section className="snap-section snap-pad mx-auto max-w-7xl px-6 py-24 lg:py-0">
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
           <Reveal>
             <p className="eyebrow">From dholki to walima</p>
@@ -369,10 +371,10 @@ export default async function HomePage() {
       {/* ================================================================ */}
       {/* 9 — MADE TO ORDER (30–45 days)                                  */}
       {/* ================================================================ */}
-      <section className="relative overflow-hidden border-t border-line bg-ink text-cream">
+      <section className="snap-section snap-pad relative overflow-hidden border-t border-line bg-ink text-cream">
         <GoldDust density={0.5} />
         <div className="glow-orb left-1/3 top-0 h-80 w-80 bg-gold/20" aria-hidden="true" />
-        <div className="relative z-10 mx-auto max-w-7xl px-6 py-24 lg:py-32">
+        <div className="relative z-10 mx-auto max-w-7xl px-6 py-24 lg:py-0">
           <Reveal className="mb-16 text-center">
             <p className="text-[10px] font-medium uppercase tracking-[0.5em] text-gold">Made to Order</p>
             <h2 className="mx-auto mt-4 max-w-2xl font-[family-name:var(--font-display)] text-4xl font-light tracking-wide sm:text-5xl">
@@ -424,8 +426,8 @@ export default async function HomePage() {
       {/* ================================================================ */}
       {/* 10 — BEGIN YOUR BRIDAL STORY (full-width CTA banner)            */}
       {/* ================================================================ */}
-      <section className="relative">
-        <div className="relative h-[62vh] min-h-[420px] w-full overflow-hidden">
+      <section className="snap-section relative">
+        <div className="relative h-[62vh] min-h-[420px] w-full overflow-hidden lg:h-screen">
           <ParallaxImage src="/uploads/pk-baraat.jpg" alt="Baraat bride in red lehenga" strength={0.18} />
           <div className="absolute inset-0 bg-ink/40" />
           <div className="absolute inset-0 z-10 flex items-center justify-center px-6">

@@ -57,7 +57,7 @@ export default function OccasionSwitcher() {
 
       {/* Crossfading imagery */}
       <div>
-        <div className="relative aspect-[4/5] w-full overflow-hidden bg-sand sm:aspect-[5/4] lg:aspect-auto lg:h-[72vh] lg:min-h-[480px]">
+        <div className="relative aspect-[4/5] w-full overflow-hidden bg-sand sm:aspect-[5/4] lg:aspect-auto lg:h-[62vh] lg:min-h-[440px]">
           {ITEMS.map((item, i) => {
             const isActive = i === active;
             return (
