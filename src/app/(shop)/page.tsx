@@ -103,7 +103,33 @@ export default async function HomePage() {
       </section>
 
       {/* ================================================================ */}
-      {/* 2 — OCCASION SELECTOR (labels left, crossfading image right)    */}
+      {/* 2 — BEGIN YOUR BRIDAL STORY (full-width CTA banner)             */}
+      {/* ================================================================ */}
+      <section className="snap-section relative">
+        <div className="relative h-[62vh] min-h-[420px] w-full overflow-hidden lg:h-screen">
+          <ParallaxImage src="/uploads/pk-baraat.jpg" alt="Baraat bride in red lehenga" strength={0.18} />
+          <div className="absolute inset-0 bg-ink/40" />
+          <div className="absolute inset-0 z-10 flex items-center justify-center px-6">
+            <Reveal className="max-w-2xl text-center text-cream">
+              <h2 className="font-[family-name:var(--font-display)] text-4xl font-light tracking-wide sm:text-6xl">
+                Begin your bridal story
+              </h2>
+              <p className="mx-auto mt-5 max-w-lg text-sm font-light leading-relaxed tracking-wide text-cream/85">
+                Every celebration deserves a dress that was made for it — and only for it.
+              </p>
+              <Link
+                href="/shop"
+                className="nav-link mt-9 inline-block border-b border-cream/80 pb-1.5 text-[11px] font-semibold uppercase tracking-[0.34em] text-cream transition-colors hover:border-gold"
+              >
+                Shop bridal
+              </Link>
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* 3 — OCCASION SELECTOR (labels left, crossfading image right)    */}
       {/* ================================================================ */}
       <section className="snap-section snap-pad mx-auto max-w-7xl px-6 py-24 lg:py-0">
         <Reveal className="mb-14 text-center lg:mb-12">
@@ -420,32 +446,6 @@ export default async function HomePage() {
               Start with the collection
             </Link>
           </Reveal>
-        </div>
-      </section>
-
-      {/* ================================================================ */}
-      {/* 10 — BEGIN YOUR BRIDAL STORY (full-width CTA banner)            */}
-      {/* ================================================================ */}
-      <section className="snap-section relative">
-        <div className="relative h-[62vh] min-h-[420px] w-full overflow-hidden lg:h-screen">
-          <ParallaxImage src="/uploads/pk-baraat.jpg" alt="Baraat bride in red lehenga" strength={0.18} />
-          <div className="absolute inset-0 bg-ink/40" />
-          <div className="absolute inset-0 z-10 flex items-center justify-center px-6">
-            <Reveal className="max-w-2xl text-center text-cream">
-              <h2 className="font-[family-name:var(--font-display)] text-4xl font-light tracking-wide sm:text-6xl">
-                Begin your bridal story
-              </h2>
-              <p className="mx-auto mt-5 max-w-lg text-sm font-light leading-relaxed tracking-wide text-cream/85">
-                Every celebration deserves a dress that was made for it — and only for it.
-              </p>
-              <Link
-                href="/shop"
-                className="nav-link mt-9 inline-block border-b border-cream/80 pb-1.5 text-[11px] font-semibold uppercase tracking-[0.34em] text-cream transition-colors hover:border-gold"
-              >
-                Shop bridal
-              </Link>
-            </Reveal>
-          </div>
         </div>
       </section>
     </div>
