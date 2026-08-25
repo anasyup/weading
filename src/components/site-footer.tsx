@@ -38,7 +38,7 @@ const SOCIALS = [
 
 const COLUMNS: { title: string; links: [string, string][] }[] = [
   {
-    title: "Bridal",
+    title: "For Brides",
     links: [
       ["Shop All", "/shop"],
       ["Collections", "/collections"],
@@ -53,12 +53,10 @@ const COLUMNS: { title: string; links: [string, string][] }[] = [
       ["Mehndi", "/occasions/mehndi"],
       ["Baraat", "/occasions/baraat"],
       ["Walima", "/occasions/walima"],
-      ["Party & Reception", "/occasions/party"],
-      ["Wedding Guest", "/occasions/wedding-guest"],
     ],
   },
   {
-    title: "Company",
+    title: "Explore",
     links: [
       ["About Us", "/pages/about"],
       ["FAQ", "/faq"],
@@ -71,73 +69,81 @@ const COLUMNS: { title: string; links: [string, string][] }[] = [
 
 export default function SiteFooter() {
   return (
-    <footer className="border-t border-line bg-cream">
-      {/* Newsletter band */}
-      <div className="border-b border-line">
-        <div className="mx-auto grid max-w-7xl items-center gap-6 px-6 py-12 md:grid-cols-2">
-          <div>
-            <p className="eyebrow">The List</p>
-            <h2 className="mt-2 font-[family-name:var(--font-display)] text-3xl font-light tracking-wide">
-              New collections &amp; atelier stories
-            </h2>
-          </div>
-          <div className="md:w-96 md:justify-self-end">
+    <footer>
+      {/* Manifesto — centered, white */}
+      <div className="border-t border-line bg-white">
+        <div className="mx-auto max-w-3xl px-6 py-20 text-center lg:py-24">
+          <h2 className="text-[12px] font-semibold uppercase tracking-[0.34em] text-ink">
+            The dress of your celebration
+          </h2>
+          <p className="mx-auto mt-6 max-w-2xl text-sm font-light leading-relaxed text-stone-600">
+            Some dresses are worn once and remembered forever. Ours are hand-embroidered in
+            Pakistan — zardozi, dabka, resham — cut to your measurements and made only after you
+            order, then shipped across the USA.
+          </p>
+          <div className="mx-auto mt-9 max-w-md">
             <NewsletterForm />
           </div>
         </div>
       </div>
 
-      {/* Link columns */}
-      <div className="mx-auto grid max-w-7xl gap-12 px-6 py-16 sm:grid-cols-2 lg:grid-cols-4">
-        <div>
-          <p className="font-[family-name:var(--font-display)] text-2xl font-light tracking-[0.14em]">
-            BRIDAL DRESSES
-          </p>
-          <p className="mt-4 max-w-xs text-xs font-light leading-relaxed text-stone-500">
-            Handcrafted Pakistani bridal couture — zardozi, dabka and resham, made to order and
-            shipped across the USA.
-          </p>
-          <div className="mt-6 flex gap-4 text-stone-500">
-            {SOCIALS.map((s) => (
-              <a
-                key={s.name}
-                href={s.href}
-                target="_blank"
-                rel="noreferrer"
-                aria-label={s.name}
-                className="transition-all duration-300 hover:-translate-y-0.5 hover:text-ink"
-              >
-                {s.icon}
-              </a>
-            ))}
+      {/* Dark footer — navy ink, big brand + columns */}
+      <div className="bg-ink text-cream">
+        <div className="mx-auto grid max-w-[1600px] gap-12 px-6 py-16 sm:grid-cols-2 lg:grid-cols-[minmax(0,1.1fr)_repeat(3,minmax(0,1fr))] lg:py-20">
+          {/* Brand */}
+          <div>
+            <p className="font-[family-name:var(--font-display)] text-2xl font-light tracking-[0.22em] sm:text-3xl">
+              BRIDAL DRESSES
+            </p>
+            <p className="mt-5 max-w-xs text-xs font-light leading-relaxed text-cream/60">
+              Handcrafted Pakistani bridal couture — zardozi, dabka and resham, made to order and
+              shipped across the USA.
+            </p>
+            <div className="mt-6 flex gap-4 text-cream/50">
+              {SOCIALS.map((s) => (
+                <a
+                  key={s.name}
+                  href={s.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={s.name}
+                  className="transition-all duration-300 hover:-translate-y-0.5 hover:text-cream"
+                >
+                  {s.icon}
+                </a>
+              ))}
+            </div>
           </div>
+
+          {COLUMNS.map((col) => (
+            <nav key={col.title}>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-cream/40">{col.title}</p>
+              <ul className="mt-5 space-y-3">
+                {col.links.map(([label, href]) => (
+                  <li key={label}>
+                    <Link
+                      href={href}
+                      className="nav-link text-xs font-light uppercase tracking-[0.18em] text-cream/70 transition-colors hover:text-cream"
+                    >
+                      {label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          ))}
         </div>
 
-        {COLUMNS.map((col) => (
-          <nav key={col.title}>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-stone-400">{col.title}</p>
-            <ul className="mt-5 space-y-3">
-              {col.links.map(([label, href]) => (
-                <li key={label}>
-                  <Link href={href} className="nav-link text-xs font-light tracking-wide text-stone-600 hover:text-ink">
-                    {label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        ))}
-      </div>
-
-      {/* Legal bar */}
-      <div className="border-t border-line">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-6 py-6 text-[10px] font-light uppercase tracking-[0.22em] text-stone-400 sm:flex-row">
-          <p>© {new Date().getFullYear()} Bridal Dresses. All rights reserved.</p>
-          <div className="flex gap-6">
-            <Link href="/pages/terms" className="hover:text-ink">Terms</Link>
-            <Link href="/pages/privacy" className="hover:text-ink">Privacy</Link>
-            <Link href="/pages/shipping" className="hover:text-ink">Shipping</Link>
-            <Link href="/pages/returns" className="hover:text-ink">Returns</Link>
+        {/* Legal bar */}
+        <div className="border-t border-cream/15">
+          <div className="mx-auto flex max-w-[1600px] flex-col items-center justify-between gap-3 px-6 py-6 text-[10px] font-light uppercase tracking-[0.22em] text-cream/40 sm:flex-row">
+            <p>© {new Date().getFullYear()} Bridal Dresses. All rights reserved.</p>
+            <div className="flex gap-6">
+              <Link href="/pages/terms" className="transition-colors hover:text-cream">Terms</Link>
+              <Link href="/pages/privacy" className="transition-colors hover:text-cream">Privacy</Link>
+              <Link href="/pages/shipping" className="transition-colors hover:text-cream">Shipping</Link>
+              <Link href="/pages/returns" className="transition-colors hover:text-cream">Returns</Link>
+            </div>
           </div>
         </div>
       </div>

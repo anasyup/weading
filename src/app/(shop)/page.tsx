@@ -5,43 +5,21 @@ import Reveal from "@/components/reveal";
 import ParallaxImage from "@/components/parallax-image";
 import GoldDust, { CursorGlow } from "@/components/gold-dust";
 import ProductCard from "@/components/product-card";
-import { OCCASIONS, PRIMARY_OCCASIONS } from "@/lib/occasions";
+import OccasionSwitcher from "@/components/occasion-switcher";
 
 export const dynamic = "force-dynamic";
 
-const OCCASION_CARDS = PRIMARY_OCCASIONS.map((slug) => OCCASIONS.find((o) => o.slug === slug)!);
+const MOST_LOVED = [
+  { title: "The Nikkah Ivory", img: "/uploads/pk-nikkah.jpg", href: "/occasions/nikkah" },
+  { title: "The Mehndi Green", img: "/uploads/pk-mehndi.jpg", href: "/occasions/mehndi" },
+  { title: "The Baraat Red", img: "/uploads/pk-hero.jpg", href: "/occasions/baraat", position: "50% 30%" },
+];
 
 const BEYOND_BRIDE = [
-  {
-    title: "Wedding Guest",
-    copy: "Elegant, never louder than the bride",
-    img: "/uploads/p-blush-organza.jpg",
-    href: "/occasions/wedding-guest",
-  },
-  {
-    title: "Bridesmaids",
-    copy: "Coordinated festive sets",
-    img: "/uploads/p-emerald-zardozi.jpg",
-    href: "/occasions/bridesmaids",
-  },
-  {
-    title: "Mother of the Bride & Groom",
-    copy: "Graceful heirloom formals",
-    img: "/uploads/p-ivory-gown.jpg",
-    href: "/occasions/mother-of-the-bride",
-  },
+  { title: "Wedding Guest", img: "/uploads/p-blush-organza.jpg", href: "/occasions/wedding-guest" },
+  { title: "Bridesmaids", img: "/uploads/p-emerald-zardozi.jpg", href: "/occasions/bridesmaids" },
+  { title: "Mother of the Bride", img: "/uploads/p-ivory-gown.jpg", href: "/occasions/mother-of-the-bride" },
 ];
-
-const OCCASION_CHIPS: [string, string][] = [
-  ["Dholki", "/occasions/others"],
-  ["Mehndi", "/occasions/mehndi"],
-  ["Nikkah", "/occasions/nikkah"],
-  ["Baraat", "/occasions/baraat"],
-  ["Walima", "/occasions/walima"],
-  ["Reception", "/occasions/party"],
-];
-
-const TECHNIQUES = ["Zardozi", "Dabka", "Resham", "Pearls", "Beads", "Sequins", "Threadwork"];
 
 export default async function HomePage() {
   const country = await getCountry();
@@ -73,7 +51,7 @@ export default async function HomePage() {
   return (
     <div className="bg-cream">
       {/* ================================================================ */}
-      {/* 1 — HERO (full-bleed parallax + gold dust + cursor glow)        */}
+      {/* 1 — HERO (parallax + gold dust + cursor glow + single CTA)      */}
       {/* ================================================================ */}
       <section className="relative h-screen min-h-[600px] w-full overflow-hidden [@supports(height:100svh)]:h-[100svh] [@supports(height:100svh)]:min-h-[600px]">
         <ParallaxImage
@@ -99,120 +77,50 @@ export default async function HomePage() {
               Zardozi, dabka and resham — hand-embroidered bridal wear, made to order in 30–45
               days and shipped to your door across the USA.
             </p>
-            <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-              <Link href="/shop" className="btn-gold px-10 py-4">
-                Shop Bridal
-              </Link>
+            <div className="mt-10">
               <Link
-                href="/occasions"
-                className="inline-flex items-center border border-cream/50 px-10 py-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-cream transition-all duration-300 hover:border-cream hover:bg-cream/10"
+                href="/shop"
+                className="nav-link inline-block border-b border-cream/80 pb-1.5 text-[11px] font-semibold uppercase tracking-[0.34em] text-cream transition-colors hover:border-gold"
+                data-active="true"
               >
-                Explore Occasions
+                Discover
               </Link>
             </div>
           </div>
         </div>
 
-        {/* scroll cue */}
-        <div className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2 text-center">
-          <p className="text-[9px] uppercase tracking-[0.4em] text-cream/60">Scroll</p>
-          <div className="mx-auto mt-2 h-10 w-px overflow-hidden bg-cream/20">
-            <div className="h-1/2 w-full animate-bounce bg-cream/80" />
-          </div>
+        {/* scroll cue — right edge, vertical */}
+        <div className="absolute bottom-10 right-8 z-10 hidden flex-col items-center gap-3 sm:flex">
+          <span className="h-16 w-px overflow-hidden bg-cream/25">
+            <span className="block h-1/2 w-full animate-bounce bg-cream/80" />
+          </span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-cream/70">
+            <path d="M12 4v16m0 0 6-6m-6 6-6-6" />
+          </svg>
         </div>
       </section>
 
       {/* ================================================================ */}
-      {/* 2 — SHOP BY OCCASION                                            */}
+      {/* 2 — OCCASION SELECTOR (labels left, crossfading image right)    */}
       {/* ================================================================ */}
       <section className="mx-auto max-w-7xl px-6 py-24 lg:py-32">
-        <Reveal className="mb-14 flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <p className="eyebrow">Shop by Occasion</p>
-            <h2 className="mt-3 font-[family-name:var(--font-display)] text-4xl font-light tracking-wide sm:text-5xl">
-              Every moment of the wedding
-            </h2>
-          </div>
-          <Link href="/occasions" className="nav-link text-[11px] font-semibold uppercase tracking-[0.22em] text-ink">
-            All occasions →
-          </Link>
+        <Reveal className="mb-14 text-center lg:mb-16">
+          <p className="eyebrow">Shop by Occasion</p>
+          <h2 className="mt-3 font-[family-name:var(--font-display)] text-4xl font-light tracking-wide sm:text-5xl">
+            Every moment of the wedding
+          </h2>
         </Reveal>
-
-        <div className="grid grid-cols-2 gap-5 lg:grid-cols-4">
-          {OCCASION_CARDS.map((o, i) => (
-            <Reveal key={o.slug} delay={i * 110}>
-              <Link href={`/occasions/${o.slug}`} className="group relative block aspect-[3/4] overflow-hidden bg-sand">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={o.img}
-                  alt={`${o.name} — Pakistani bridal couture`}
-                  loading={i < 2 ? "eager" : "lazy"}
-                  className="media-zoom h-full w-full object-cover"
-                  style={o.position ? { objectPosition: o.position } : undefined}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-ink/60 via-transparent to-transparent opacity-85 transition-opacity duration-500 group-hover:opacity-100" />
-                <div className="absolute inset-x-0 bottom-0 p-5 text-cream sm:p-6">
-                  <h3 className="font-[family-name:var(--font-display)] text-2xl font-light tracking-wide sm:text-[1.7rem]">
-                    {o.name}
-                  </h3>
-                  <p className="mt-1 text-[9px] font-light uppercase tracking-[0.22em] text-cream/75 sm:text-[10px]">
-                    {o.line}
-                  </p>
-                  <span className="nav-link mt-3 inline-block text-[10px] font-semibold uppercase tracking-[0.24em] text-cream">
-                    Explore →
-                  </span>
-                </div>
-              </Link>
-            </Reveal>
-          ))}
-        </div>
+        <Reveal delay={120}>
+          <OccasionSwitcher />
+        </Reveal>
       </section>
 
       {/* ================================================================ */}
-      {/* 3 — FEATURED (live from the boutique)                           */}
+      {/* 3 — CRAFTSMANSHIP (image left, text right)                      */}
       {/* ================================================================ */}
-      {products.length > 0 && (
-        <section className="border-y border-line bg-white/60">
-          <div className="mx-auto max-w-7xl px-6 py-24 lg:py-28">
-            <Reveal className="mb-12 flex flex-wrap items-end justify-between gap-4">
-              <div>
-                <p className="eyebrow">From the current book</p>
-                <h2 className="mt-3 font-[family-name:var(--font-display)] text-4xl font-light tracking-wide sm:text-5xl">
-                  Featured pieces
-                </h2>
-                <p className="mt-3 max-w-md text-sm font-light leading-relaxed text-stone-600">
-                  Handmade to your measurements after you order — never pulled from a rack.
-                </p>
-              </div>
-              <Link href="/shop" className="nav-link text-[11px] font-semibold uppercase tracking-[0.22em] text-ink">
-                View all bridal →
-              </Link>
-            </Reveal>
-
-            <div className="grid grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-4">
-              {products.map((p, i) => (
-                <Reveal key={p.id} delay={i * 90}>
-                  <ProductCard product={p} country={country} />
-                </Reveal>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* ================================================================ */}
-      {/* 4 — CRAFTSMANSHIP (parallax detail + techniques)                */}
-      {/* ================================================================ */}
-      <section id="craft" className="relative overflow-hidden border-b border-line bg-sand/60">
-        <div
-          className="glow-orb left-[-6rem] top-16 h-72 w-72 bg-gold/25"
-          aria-hidden="true"
-        />
-        <div
-          className="glow-orb bottom-10 right-[-8rem] h-96 w-96 bg-gold/15"
-          style={{ animationDelay: "2s" }}
-          aria-hidden="true"
-        />
+      <section id="craft" className="relative overflow-hidden border-y border-line bg-sand/60">
+        <div className="glow-orb left-[-6rem] top-16 h-72 w-72 bg-gold/25" aria-hidden="true" />
+        <div className="glow-orb bottom-10 right-[-8rem] h-96 w-96 bg-gold/15" style={{ animationDelay: "2s" }} aria-hidden="true" />
         <div className="relative mx-auto grid max-w-7xl gap-14 px-6 py-24 lg:grid-cols-2 lg:py-32">
           <Reveal className="relative">
             <div className="relative aspect-[4/5] overflow-hidden lg:aspect-auto lg:h-full lg:min-h-[560px]">
@@ -251,7 +159,7 @@ export default async function HomePage() {
             </Reveal>
             <Reveal delay={220}>
               <ul className="mt-9 flex flex-wrap gap-2.5">
-                {TECHNIQUES.map((t) => (
+                {["Zardozi", "Dabka", "Resham", "Pearls", "Beads", "Sequins", "Threadwork"].map((t) => (
                   <li
                     key={t}
                     className="border border-line bg-white px-4 py-2 text-[10px] font-medium uppercase tracking-[0.2em] text-stone-600 transition-colors duration-300 hover:border-gold/50 hover:text-gold-deep"
@@ -269,65 +177,42 @@ export default async function HomePage() {
       </section>
 
       {/* ================================================================ */}
-      {/* 5 — OCCASION STRIP (layered parallax band)                      */}
-      {/* ================================================================ */}
-      <section className="relative">
-        <div className="relative h-[68vh] min-h-[440px] w-full overflow-hidden">
-          <ParallaxImage src="/uploads/pk-ceremony.jpg" alt="Pakistani wedding celebration" strength={0.18} />
-          <div className="absolute inset-0 bg-ink/45" />
-          <div className="absolute inset-0 z-10 flex items-center justify-center px-6">
-            <Reveal className="text-center text-cream">
-              <p className="text-[10px] font-medium uppercase tracking-[0.5em] text-cream/75">
-                From dholki to walima
-              </p>
-              <h2 className="mx-auto mt-4 max-w-2xl font-[family-name:var(--font-display)] text-4xl font-light leading-tight tracking-wide sm:text-6xl">
-                One wardrobe for the whole wedding
-              </h2>
-              <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
-                {OCCASION_CHIPS.map(([label, href]) => (
-                  <Link
-                    key={label}
-                    href={href}
-                    className="border border-cream/45 px-6 py-2.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-cream transition-all duration-300 hover:bg-cream hover:text-ink"
-                  >
-                    {label}
-                  </Link>
-                ))}
-              </div>
-            </Reveal>
-          </div>
-        </div>
-      </section>
-
-      {/* ================================================================ */}
-      {/* 6 — BEYOND THE BRIDE (guests, bridesmaids, mothers)             */}
+      {/* 4 — MOST LOVED (centered text + 3 staggered tall images)        */}
       {/* ================================================================ */}
       <section className="mx-auto max-w-7xl px-6 py-24 lg:py-32">
-        <Reveal className="mb-14 text-center">
-          <p className="eyebrow">Beyond the bride</p>
+        <Reveal className="mx-auto mb-16 max-w-2xl text-center">
+          <p className="eyebrow justify-center">Most Loved</p>
           <h2 className="mt-3 font-[family-name:var(--font-display)] text-4xl font-light tracking-wide sm:text-5xl">
-            For everyone at the wedding
+            Silhouettes brides return to
           </h2>
+          <p className="mt-4 text-sm font-light leading-relaxed text-stone-600">
+            The pieces our brides choose again and again — each one handmade to order.
+          </p>
+          <Link
+            href="/shop"
+            className="nav-link mt-6 inline-block border-b border-ink/60 pb-1 text-[10px] font-semibold uppercase tracking-[0.3em] text-ink transition-colors hover:border-gold-deep hover:text-gold-deep"
+          >
+            Discover
+          </Link>
         </Reveal>
 
-        <div className="grid gap-6 md:grid-cols-3">
-          {BEYOND_BRIDE.map((c, i) => (
-            <Reveal key={c.title} delay={i * 120}>
-              <Link href={c.href} className="group relative block aspect-[4/5] overflow-hidden bg-sand">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={c.img} alt={c.title} loading="lazy" className="media-zoom h-full w-full object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-ink/55 via-transparent to-transparent opacity-80 transition-opacity duration-500 group-hover:opacity-95" />
-                <div className="absolute inset-x-0 bottom-0 p-7 text-cream">
-                  <h3 className="font-[family-name:var(--font-display)] text-2xl font-light tracking-wide">
-                    {c.title}
-                  </h3>
-                  <p className="mt-1 text-[10px] font-light uppercase tracking-[0.22em] text-cream/75">
-                    {c.copy}
-                  </p>
-                  <span className="nav-link mt-3 inline-block text-[10px] font-semibold uppercase tracking-[0.24em] text-cream">
-                    Explore →
-                  </span>
+        <div className="grid gap-6 sm:grid-cols-3">
+          {MOST_LOVED.map((m, i) => (
+            <Reveal key={m.title} delay={i * 140} className={i === 1 ? "sm:translate-y-10 lg:translate-y-14" : ""}>
+              <Link href={m.href} className="group block">
+                <div className="relative aspect-[3/4] overflow-hidden bg-sand">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={m.img}
+                    alt={m.title}
+                    loading="lazy"
+                    className="media-zoom h-full w-full object-cover"
+                    style={m.position ? { objectPosition: m.position } : undefined}
+                  />
                 </div>
+                <p className="mt-4 text-center text-[10px] font-medium uppercase tracking-[0.26em] text-stone-500 transition-colors duration-300 group-hover:text-gold-deep">
+                  {m.title}
+                </p>
               </Link>
             </Reveal>
           ))}
@@ -335,7 +220,154 @@ export default async function HomePage() {
       </section>
 
       {/* ================================================================ */}
-      {/* 7 — MADE TO ORDER (30–45 days)                                  */}
+      {/* 5 — FEATURED PIECES (live, shoppable)                           */}
+      {/* ================================================================ */}
+      {products.length > 0 && (
+        <section className="border-y border-line bg-white/60">
+          <div className="mx-auto max-w-7xl px-6 py-24 lg:py-28">
+            <Reveal className="mx-auto mb-14 max-w-2xl text-center">
+              <p className="eyebrow justify-center">From the current book</p>
+              <h2 className="mt-3 font-[family-name:var(--font-display)] text-4xl font-light tracking-wide sm:text-5xl">
+                Featured pieces
+              </h2>
+              <p className="mt-4 text-sm font-light leading-relaxed text-stone-600">
+                Handmade to your measurements after you order — never pulled from a rack.
+              </p>
+            </Reveal>
+
+            <div className="grid grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-4">
+              {products.map((p, i) => (
+                <Reveal key={p.id} delay={i * 90}>
+                  <ProductCard product={p} country={country} />
+                </Reveal>
+              ))}
+            </div>
+
+            <Reveal className="mt-14 text-center">
+              <Link
+                href="/shop"
+                className="nav-link inline-block border-b border-ink/60 pb-1 text-[10px] font-semibold uppercase tracking-[0.3em] text-ink transition-colors hover:border-gold-deep hover:text-gold-deep"
+              >
+                Discover all
+              </Link>
+            </Reveal>
+          </div>
+        </section>
+      )}
+
+      {/* ================================================================ */}
+      {/* 6 — REVIEWS (live, approved)                                    */}
+      {/* ================================================================ */}
+      {reviews.length > 0 && (
+        <section className="mx-auto max-w-7xl px-6 py-24 lg:py-28">
+          <Reveal className="mb-12 text-center">
+            <p className="eyebrow justify-center">Brides across America</p>
+            <h2 className="mt-3 font-[family-name:var(--font-display)] text-4xl font-light tracking-wide sm:text-5xl">
+              What our brides say
+            </h2>
+          </Reveal>
+
+          <div className="grid gap-6 md:grid-cols-3">
+            {reviews.map((r, i) => (
+              <Reveal key={r.id} delay={i * 110}>
+                <figure className="flex h-full flex-col border border-line bg-white p-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_44px_rgba(28,26,23,0.08)]">
+                  <p className="text-gold">
+                    {"★".repeat(r.rating)}
+                    <span className="text-line">{"★".repeat(5 - r.rating)}</span>
+                  </p>
+                  {r.title && (
+                    <figcaption className="mt-3 font-[family-name:var(--font-display)] text-xl font-light">
+                      {r.title}
+                    </figcaption>
+                  )}
+                  {r.body && (
+                    <blockquote className="mt-2 flex-1 text-sm font-light leading-relaxed text-stone-700">
+                      {r.body}
+                    </blockquote>
+                  )}
+                  <p className="mt-5 text-[10px] uppercase tracking-[0.16em] text-stone-400">
+                    {r.customer.firstName} {r.customer.lastName.charAt(0)}. · Verified purchase
+                    {r.product ? <> · {r.product.name}</> : null}
+                  </p>
+                </figure>
+              </Reveal>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* ================================================================ */}
+      {/* 7 — BEYOND THE BRIDE (dark band, 3 dimmed image cards)          */}
+      {/* ================================================================ */}
+      <section className="bg-ink py-24 text-cream lg:py-32">
+        <div className="mx-auto max-w-7xl px-6">
+          <Reveal className="mb-14 text-center">
+            <p className="text-[10px] font-medium uppercase tracking-[0.5em] text-gold">Beyond the bride</p>
+            <h2 className="mt-3 font-[family-name:var(--font-display)] text-4xl font-light tracking-wide sm:text-5xl">
+              For everyone at the wedding
+            </h2>
+          </Reveal>
+
+          <div className="grid gap-6 md:grid-cols-3">
+            {BEYOND_BRIDE.map((c, i) => (
+              <Reveal key={c.title} delay={i * 130}>
+                <Link href={c.href} className="group relative block aspect-[3/4] overflow-hidden">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={c.img}
+                    alt={c.title}
+                    loading="lazy"
+                    className="media-zoom h-full w-full object-cover opacity-70 transition-opacity duration-700 group-hover:opacity-90"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-ink/10 to-transparent" />
+                  <div className="absolute inset-x-0 bottom-0 p-7">
+                    <h3 className="font-[family-name:var(--font-display)] text-2xl font-light uppercase tracking-[0.18em]">
+                      {c.title}
+                    </h3>
+                    <span className="nav-link mt-3 inline-block border-b border-cream/60 pb-1 text-[10px] font-semibold uppercase tracking-[0.3em] text-cream transition-colors group-hover:border-gold">
+                      Discover
+                    </span>
+                  </div>
+                </Link>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* 8 — FOR EVERY CELEBRATION (text left, image right)              */}
+      {/* ================================================================ */}
+      <section className="mx-auto max-w-7xl px-6 py-24 lg:py-32">
+        <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
+          <Reveal>
+            <p className="eyebrow">From dholki to walima</p>
+            <h2 className="mt-3 font-[family-name:var(--font-display)] text-4xl font-light leading-tight tracking-wide sm:text-5xl">
+              One wedding, many celebrations.
+            </h2>
+            <p className="mt-6 max-w-md text-[15px] font-light leading-loose text-stone-700">
+              From the dholki night to the walima reception — every moment of a South Asian wedding
+              asks for its own dress. Discover pieces for each celebration, handcrafted with the
+              same devotion.
+            </p>
+            <Link
+              href="/occasions"
+              className="nav-link mt-8 inline-block border-b border-ink/60 pb-1 text-[10px] font-semibold uppercase tracking-[0.3em] text-ink transition-colors hover:border-gold-deep hover:text-gold-deep"
+            >
+              Discover occasions
+            </Link>
+          </Reveal>
+
+          <Reveal delay={140}>
+            <div className="relative aspect-[4/3] overflow-hidden bg-sand lg:aspect-[5/4]">
+              <ParallaxImage src="/uploads/pk-ceremony.jpg" alt="Pakistani wedding celebration" strength={0.12} />
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* 9 — MADE TO ORDER (30–45 days)                                  */}
       {/* ================================================================ */}
       <section className="relative overflow-hidden border-t border-line bg-ink text-cream">
         <GoldDust density={0.5} />
@@ -372,14 +404,17 @@ export default async function HomePage() {
                   <h3 className="mt-4 font-[family-name:var(--font-display)] text-2xl font-light tracking-wide">
                     {s.title}
                   </h3>
-                  <p className="mt-3 max-w-xs text-sm font-light leading-relaxed text-cream/70">{s.copy}</p>
+                  <p className="mt-3 max-w-xs text-sm font-light leading-loose text-cream/70">{s.copy}</p>
                 </div>
               </Reveal>
             ))}
           </div>
 
           <Reveal delay={160} className="mt-16 text-center">
-            <Link href="/shop" className="btn-gold px-10 py-4">
+            <Link
+              href="/shop"
+              className="nav-link inline-block border-b border-cream/70 pb-1.5 text-[11px] font-semibold uppercase tracking-[0.34em] text-cream transition-colors hover:border-gold"
+            >
               Start with the collection
             </Link>
           </Reveal>
@@ -387,45 +422,30 @@ export default async function HomePage() {
       </section>
 
       {/* ================================================================ */}
-      {/* 8 — REVIEWS (live, approved)                                    */}
+      {/* 10 — BEGIN YOUR BRIDAL STORY (full-width CTA banner)            */}
       {/* ================================================================ */}
-      {reviews.length > 0 && (
-        <section className="mx-auto max-w-7xl px-6 py-24 lg:py-28">
-          <Reveal className="mb-12 text-center">
-            <p className="eyebrow">Brides across America</p>
-            <h2 className="mt-3 font-[family-name:var(--font-display)] text-4xl font-light tracking-wide sm:text-5xl">
-              What our brides say
-            </h2>
-          </Reveal>
-
-          <div className="grid gap-6 md:grid-cols-3">
-            {reviews.map((r, i) => (
-              <Reveal key={r.id} delay={i * 110}>
-                <figure className="flex h-full flex-col border border-line bg-white p-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_44px_rgba(28,26,23,0.08)]">
-                  <p className="text-gold">
-                    {"★".repeat(r.rating)}
-                    <span className="text-line">{"★".repeat(5 - r.rating)}</span>
-                  </p>
-                  {r.title && (
-                    <figcaption className="mt-3 font-[family-name:var(--font-display)] text-xl font-light">
-                      {r.title}
-                    </figcaption>
-                  )}
-                  {r.body && (
-                    <blockquote className="mt-2 flex-1 text-sm font-light leading-relaxed text-stone-700">
-                      {r.body}
-                    </blockquote>
-                  )}
-                  <p className="mt-5 text-[10px] uppercase tracking-[0.16em] text-stone-400">
-                    {r.customer.firstName} {r.customer.lastName.charAt(0)}. · Verified purchase
-                    {r.product ? <> · {r.product.name}</> : null}
-                  </p>
-                </figure>
-              </Reveal>
-            ))}
+      <section className="relative">
+        <div className="relative h-[62vh] min-h-[420px] w-full overflow-hidden">
+          <ParallaxImage src="/uploads/pk-baraat.jpg" alt="Baraat bride in red lehenga" strength={0.18} />
+          <div className="absolute inset-0 bg-ink/40" />
+          <div className="absolute inset-0 z-10 flex items-center justify-center px-6">
+            <Reveal className="max-w-2xl text-center text-cream">
+              <h2 className="font-[family-name:var(--font-display)] text-4xl font-light tracking-wide sm:text-6xl">
+                Begin your bridal story
+              </h2>
+              <p className="mx-auto mt-5 max-w-lg text-sm font-light leading-relaxed tracking-wide text-cream/85">
+                Every celebration deserves a dress that was made for it — and only for it.
+              </p>
+              <Link
+                href="/shop"
+                className="nav-link mt-9 inline-block border-b border-cream/80 pb-1.5 text-[11px] font-semibold uppercase tracking-[0.34em] text-cream transition-colors hover:border-gold"
+              >
+                Shop bridal
+              </Link>
+            </Reveal>
           </div>
-        </section>
-      )}
+        </div>
+      </section>
     </div>
   );
 }
