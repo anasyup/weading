@@ -19,11 +19,11 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: "Bridal Dresses | Luxury Wedding Dresses — US Debut",
+    default: "Bridal Dresses | Handcrafted Pakistani Bridal Couture — USA",
     template: "%s | Bridal Dresses",
   },
   description:
-    "High-fashion, made-to-measure wedding dresses. Hand-crafted silhouettes, custom embroidery and luxury tailoring. Now debuting in the United States.",
+    "Handcrafted Pakistani bridal couture for the USA — zardozi, dabka and resham hand embroidery, made to order in 30–45 days. Nikkah, Mehndi, Baraat, Walima and occasion wear shipped across America.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

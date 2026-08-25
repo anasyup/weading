@@ -34,7 +34,7 @@ export default async function AdminSettingsPage() {
         <form action={saveGeneral} className="mt-5 grid gap-4 sm:grid-cols-2">
           <div>
             <label className="label" htmlFor="storeName">Store name</label>
-            <input id="storeName" name="storeName" defaultValue={settings["store.name"] ?? "Noor Bridal"} className="input" />
+            <input id="storeName" name="storeName" defaultValue={settings["store.name"] ?? "Bridal Dresses"} className="input" />
           </div>
           <div>
             <label className="label" htmlFor="supportEmail">Support email</label>

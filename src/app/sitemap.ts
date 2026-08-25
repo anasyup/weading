@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { prisma } from "@/lib/db";
+import { OCCASIONS } from "@/lib/occasions";
 
 export const dynamic = "force-dynamic";
 
@@ -18,6 +19,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/shop`, changeFrequency: "daily", priority: 0.9 },
     { url: `${base}/collections`, changeFrequency: "weekly", priority: 0.8 },
     { url: `${base}/accessories`, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${base}/occasions`, changeFrequency: "weekly", priority: 0.85 },
+    ...OCCASIONS.map((o) => ({
+      url: `${base}/occasions/${o.slug}`,
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
+    })),
     { url: `${base}/faq`, changeFrequency: "monthly", priority: 0.5 },
     { url: `${base}/blog`, changeFrequency: "weekly", priority: 0.6 },
     { url: `${base}/support`, changeFrequency: "monthly", priority: 0.5 },

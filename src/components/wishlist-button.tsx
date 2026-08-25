@@ -45,7 +45,10 @@ export default function WishlistButton({
         inWishlist ? "border-rose/50 bg-rose/10 text-rose" : "border-line bg-white text-stone-500 hover:border-rose/40 hover:text-rose"
       }`}
     >
-      {inWishlist ? "♥ Saved" : "♡ Wishlist"}
+      <span className={inWishlist ? "heart-pulse inline-block" : "inline-block"} aria-hidden="true">
+        {inWishlist ? "♥" : "♡"}
+      </span>
+      {inWishlist ? "Saved" : "Wishlist"}
     </button>
   );
 }

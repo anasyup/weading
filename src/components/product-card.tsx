@@ -26,29 +26,24 @@ export default function ProductCard({
 
   return (
     <Link href={`/products/${product.slug}`} className="group block">
-      <div className="relative aspect-[3/4] overflow-hidden border border-line bg-sand">
+      <div className="relative aspect-[3/4] overflow-hidden bg-sand">
         {image ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={image.url}
             alt={image.altText ?? product.name}
             loading="lazy"
-            className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
+            className="media-zoom h-full w-full object-cover"
           />
         ) : (
           <div className="flex h-full items-center justify-center text-xs text-stone-400">No image</div>
         )}
         {isSale && (
-          <span className="badge absolute left-3 top-3 border-rose/40 bg-white text-rose">Sale</span>
-        )}
-        {product.productType === "MADE_TO_ORDER" && (
-          <span className="badge absolute bottom-3 left-3 border-line bg-white/90 text-stone-600">
-            Made to order · 30–45 days
-          </span>
+          <span className="badge absolute left-3 top-3 border-rose/40 bg-white/95 text-rose">Sale</span>
         )}
       </div>
-      <div className="pt-3">
-        <h3 className="font-[family-name:var(--font-display)] text-lg leading-snug group-hover:text-gold-deep">
+      <div className="pt-3.5">
+        <h3 className="font-[family-name:var(--font-display)] text-lg leading-snug transition-colors duration-300 group-hover:text-gold-deep">
           {product.name}
         </h3>
         <p className="mt-1 text-sm text-stone-600">
@@ -57,6 +52,11 @@ export default function ProductCard({
           )}
           <span className={isSale ? "text-rose" : ""}>{formatMoney(effective, country.currency)}</span>
         </p>
+        {product.productType === "MADE_TO_ORDER" && (
+          <p className="mt-1.5 text-[9px] font-medium uppercase tracking-[0.18em] text-stone-400">
+            Made to order · {product.productionDaysMin}–{product.productionDaysMax} days
+          </p>
+        )}
       </div>
     </Link>
   );

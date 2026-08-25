@@ -32,7 +32,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       {/* Content */}
       <div className="min-w-0 flex-1">
         <header className="flex items-center justify-between border-b border-line bg-white px-6 py-3 lg:hidden">
-          <p className="font-[family-name:var(--font-display)] text-lg">Noor Bridal — Admin</p>
+          <p className="font-[family-name:var(--font-display)] text-lg">Bridal Dresses — Admin</p>
           <form action={logoutAction}>
             <button className="text-[11px] uppercase tracking-[0.14em] text-stone-500">Sign out</button>
           </form>

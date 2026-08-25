@@ -38,29 +38,32 @@ const SOCIALS = [
 
 const COLUMNS: { title: string; links: [string, string][] }[] = [
   {
-    title: "For Brides",
+    title: "Bridal",
     links: [
-      ["Wedding Dresses", "/shop"],
+      ["Shop All", "/shop"],
       ["Collections", "/collections"],
       ["Accessories", "/accessories"],
-      ["Appointment Request", "/support"],
+      ["Journal", "/blog"],
     ],
   },
   {
-    title: "Services",
+    title: "Occasions",
     links: [
-      ["Store Finder", "/#stores"],
-      ["Trunk Shows", "/blog"],
-      ["Consultations", "/support"],
-      ["Order Tracking", "/account"],
+      ["Nikkah", "/occasions/nikkah"],
+      ["Mehndi", "/occasions/mehndi"],
+      ["Baraat", "/occasions/baraat"],
+      ["Walima", "/occasions/walima"],
+      ["Party & Reception", "/occasions/party"],
+      ["Wedding Guest", "/occasions/wedding-guest"],
     ],
   },
   {
-    title: "Company & Legal",
+    title: "Company",
     links: [
       ["About Us", "/pages/about"],
-      ["Press", "/blog"],
+      ["FAQ", "/faq"],
       ["Contact", "/support"],
+      ["Track Order", "/account"],
       ["Terms & Privacy", "/pages/terms"],
     ],
   },
@@ -75,10 +78,10 @@ export default function SiteFooter() {
           <div>
             <p className="eyebrow">The List</p>
             <h2 className="mt-2 font-[family-name:var(--font-display)] text-3xl font-light tracking-wide">
-              First looks, trunk shows &amp; atelier stories
+              New collections &amp; atelier stories
             </h2>
           </div>
-          <div className="md:justify-self-end md:w-96">
+          <div className="md:w-96 md:justify-self-end">
             <NewsletterForm />
           </div>
         </div>
@@ -91,8 +94,8 @@ export default function SiteFooter() {
             BRIDAL DRESSES
           </p>
           <p className="mt-4 max-w-xs text-xs font-light leading-relaxed text-stone-500">
-            High-fashion wedding dresses, made to measure. Hand-crafted in our atelier —
-            debuting in the United States.
+            Handcrafted Pakistani bridal couture — zardozi, dabka and resham, made to order and
+            shipped across the USA.
           </p>
           <div className="mt-6 flex gap-4 text-stone-500">
             {SOCIALS.map((s) => (

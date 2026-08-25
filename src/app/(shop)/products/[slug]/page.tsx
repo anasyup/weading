@@ -104,7 +104,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     name: product.name,
     description: product.description,
     sku: variants[0]?.sku,
-    brand: { "@type": "Brand", name: "Noor Bridal" },
+    brand: { "@type": "Brand", name: "Bridal Dresses" },
     offers: {
       "@type": "Offer",
       price: ((countryPrice ? countryPrice.salePrice ?? countryPrice.price : product.salePrice ?? product.basePrice) / 100).toFixed(2),
@@ -132,10 +132,14 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       <div className="grid gap-10 lg:grid-cols-2">
         {/* Gallery */}
         <div className="space-y-3">
-          <div className="aspect-[3/4] border border-line bg-sand">
+          <div className="group aspect-[3/4] overflow-hidden border border-line bg-sand">
             {images[0] ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={images[0].url} alt={images[0].altText ?? product.name} className="h-full w-full object-cover" />
+              <img
+                src={images[0].url}
+                alt={images[0].altText ?? product.name}
+                className="media-zoom h-full w-full object-cover"
+              />
             ) : (
               <div className="flex h-full items-center justify-center text-sm text-stone-400">No image</div>
             )}
@@ -143,9 +147,9 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           {images.length > 1 && (
             <div className="grid grid-cols-4 gap-3">
               {images.slice(1, 5).map((m) => (
-                <div key={m.id} className="aspect-square border border-line bg-sand">
+                <div key={m.id} className="group aspect-square overflow-hidden border border-line bg-sand">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={m.url} alt={m.altText ?? ""} className="h-full w-full object-cover" />
+                  <img src={m.url} alt={m.altText ?? ""} className="media-zoom h-full w-full object-cover" />
                 </div>
               ))}
             </div>
@@ -159,10 +163,15 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             {product.name}
           </h1>
 
-          <div className="mt-4 flex items-center gap-4 text-[11px] uppercase tracking-[0.14em] text-stone-500">
+          <div className="mt-4 flex flex-wrap items-center gap-4 text-[11px] uppercase tracking-[0.14em] text-stone-500">
             <span className="badge border-line bg-white text-stone-600">
               {product.productType === "MADE_TO_ORDER" ? "Made to Order" : "Ready to Wear"}
             </span>
+            {product.productType === "MADE_TO_ORDER" && (
+              <span>
+                Handmade to your measurements · {product.productionDaysMin}–{product.productionDaysMax} days
+              </span>
+            )}
             <span>Ships to US · CA · PK</span>
           </div>
 
@@ -195,14 +204,14 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               <summary className="cursor-pointer list-none text-[11px] font-semibold uppercase tracking-[0.16em]">
                 Description
               </summary>
-              <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-stone-700">{product.description}</p>
+              <p className="details-body mt-3 whitespace-pre-line text-sm leading-relaxed text-stone-700">{product.description}</p>
             </details>
             {product.sizeChart && (
               <details className="py-4">
                 <summary className="cursor-pointer list-none text-[11px] font-semibold uppercase tracking-[0.16em]">
                   Size chart
                 </summary>
-                <div className="mt-3 overflow-x-auto">
+                <div className="details-body mt-3 overflow-x-auto">
                   <table className="w-full min-w-80 border-collapse text-xs" dangerouslySetInnerHTML={{ __html: product.sizeChart }} />
                 </div>
               </details>
@@ -212,7 +221,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                 <summary className="cursor-pointer list-none text-[11px] font-semibold uppercase tracking-[0.16em]">
                   Care instructions
                 </summary>
-                <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-stone-700">{product.careInstructions}</p>
+                <p className="details-body mt-3 whitespace-pre-line text-sm leading-relaxed text-stone-700">{product.careInstructions}</p>
               </details>
             )}
           </div>

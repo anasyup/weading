@@ -82,9 +82,79 @@ body {
 .hero-entrance > *:nth-child(3) { animation-delay: 0.5s; }
 .hero-entrance > *:nth-child(4) { animation-delay: 0.75s; }
 
+/* ------------------------------------------------------------------ */
+/* Announcement marquee — slow, seamless, always readable               */
+/* ------------------------------------------------------------------ */
+@keyframes marquee-x {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-x 55s linear infinite;
+}
+
+/* Soft luminous shapes gently floating behind editorial content */
+@keyframes lux-float {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(0, -16px, 0); }
+}
+.glow-orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(72px);
+  pointer-events: none;
+  animation: lux-float 9s ease-in-out infinite alternate;
+}
+
+/* Cart badge pop + wishlist heart pulse (micro-interactions) */
+@keyframes badge-pop {
+  0% { transform: scale(0.4); }
+  60% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+.badge-pop { animation: badge-pop 0.45s cubic-bezier(0.2, 0.6, 0.2, 1); }
+
+@keyframes heart-pulse {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.35); }
+  100% { transform: scale(1); }
+}
+.heart-pulse { animation: heart-pulse 0.4s ease; }
+
+/* Accordion (details) open animation */
+details > summary { transition: color 0.3s ease; }
+details[open] > summary { color: var(--color-gold-deep); }
+details[open] .details-body { animation: lux-fade-up 0.5s cubic-bezier(0.2, 0.6, 0.2, 1) both; }
+
+/* Mobile accordion expand */
+.acc-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.45s cubic-bezier(0.2, 0.6, 0.2, 1);
+}
+.acc-panel[data-open="true"] { grid-template-rows: 1fr; }
+.acc-panel > div { overflow: hidden; }
+
 @media print {
   .no-print, header, footer, aside { display: none !important; }
   body { background: white !important; }
+}
+
+/* Reduced motion — one master switch for every decorative effect */
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track,
+  .glow-orb,
+  .badge-pop,
+  .heart-pulse,
+  .acc-panel {
+    animation: none !important;
+    transition: none !important;
+  }
+  .media-zoom { transition: none !important; }
+  .reveal { transition: none; opacity: 1; transform: none; }
+  .hero-entrance > * { animation: none !important; }
 }
 
 @layer components {
