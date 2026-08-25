@@ -255,16 +255,25 @@ export async function runProductionSeed(prisma: PrismaClient, adminEmail: string
     }
   }
 
-  // Super Admin
+  // Super Admin — a guarded setup run also RESETS credentials, so it doubles
+  // as the documented account-recovery path (endpoint dies with SETUP_KEY removed).
   const admin = await prisma.user.upsert({
     where: { email: adminEmail },
-    update: {},
+    update: {
+      passwordHash: await bcrypt.hash(adminPassword, 10),
+      emailVerifiedAt: new Date(),
+      status: "ACTIVE",
+    },
     create: {
       email: adminEmail,
       passwordHash: await bcrypt.hash(adminPassword, 10),
       emailVerifiedAt: new Date(),
-      roles: { create: { roleId: superAdminRole.id } },
     },
+  });
+  await prisma.userRole.upsert({
+    where: { userId_roleId: { userId: admin.id, roleId: superAdminRole.id } },
+    update: {},
+    create: { userId: admin.id, roleId: superAdminRole.id },
   });
 
   summary.push(`${productsCreated} products`, `admin: ${adminEmail}`);
