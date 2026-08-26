@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useTransition, useState } from "react";
 
-const LABELS: Record<string, string> = { US: "USD $", CA: "USD $", PK: "PKR ₨" };
+const LABELS: Record<string, string> = { US: "USD $", PK: "PKR ₨" };
 
 export default function CountrySelect({
   current,

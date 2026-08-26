@@ -11,7 +11,6 @@ const OCCASIONS = [
   { label: "Mehndi", slug: "mehndi", line: "Colour, mirror-work & joy" },
   { label: "Baraat", slug: "baraat", line: "The classic red lehenga" },
   { label: "Walima", slug: "walima", line: "Soft pastels & reception gowns" },
-  { label: "Party", slug: "party", line: "Festive formal wear" },
   { label: "Others", slug: "others", line: "Dholki, engagement & more" },
 ] as const;
 
@@ -132,12 +131,12 @@ export default function SiteHeader({
           } ${light ? "text-cream" : "text-ink"}`}
         >
           <div
-            className={`grid grid-cols-[1fr_auto_1fr] items-center gap-4 px-6 transition-all duration-500 xl:px-10 ${
+            className={`relative flex items-center justify-between px-6 transition-all duration-500 xl:px-10 ${
               scrolled ? "h-16" : "h-[88px]"
             }`}
           >
             {/* ============ LEFT — primary links (desktop) ============ */}
-            <nav className="hidden items-center gap-9 justify-self-start lg:flex">
+            <nav className="hidden items-center gap-5 lg:flex">
               {NAV_LEFT.map((n) =>
                 "dropdown" in n && n.dropdown ? (
                   <div key={n.label} className="group relative">
@@ -174,14 +173,6 @@ export default function SiteHeader({
                               </Link>
                             </li>
                           ))}
-                          <li>
-                            <Link
-                              href="/occasions"
-                              className="mt-4 inline-block text-[10px] font-semibold uppercase tracking-[0.22em] text-gold-deep"
-                            >
-                              All occasions →
-                            </Link>
-                          </li>
                         </ul>
                         <Link href="/occasions" className="group/img relative block overflow-hidden bg-sand">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -210,30 +201,26 @@ export default function SiteHeader({
             <button
               aria-label="Menu"
               onClick={() => setMenuOpen(true)}
-              className="flex h-9 w-9 items-center justify-center justify-self-start opacity-90 transition-opacity hover:opacity-100 lg:hidden"
+              className="flex h-9 w-9 items-center justify-center opacity-90 transition-opacity hover:opacity-100 lg:hidden"
             >
               <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                 <path d="M3 6h18M3 12h18M3 18h18" />
               </svg>
             </button>
 
-            {/* ============ CENTER — centered logo ============ */}
-            <Link href="/" className="flex items-center gap-3 justify-self-center">
+            {/* ============ CENTER — logo pinned to the exact bar center ============ */}
+            <Link
+              href="/"
+              className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center"
+            >
               <span className="nav-roman whitespace-nowrap text-[19px] font-normal leading-none tracking-[0.34em] transition-opacity hover:opacity-80 sm:text-[21px]">
                 {brand.toUpperCase()}
               </span>
-              <span
-                className={`hidden text-[8px] font-semibold uppercase leading-none tracking-[0.4em] sm:block ${
-                  light ? "text-gold" : "text-gold-deep"
-                }`}
-              >
-                USA
-              </span>
             </Link>
 
-            {/* ============ RIGHT — secondary links + actions + CTA ============ */}
-            <div className="flex items-center gap-5 justify-self-end lg:gap-7">
-              <nav className="hidden items-center gap-9 lg:flex">
+            {/* ============ RIGHT — secondary links + utility icons ============ */}
+            <div className="flex items-center gap-2 lg:gap-2.5">
+              <nav className="mr-2 hidden items-center gap-5 lg:mr-4 lg:flex">
                 {NAV_RIGHT.map((n) => (
                   <Link key={n.label} href={n.href} className={navLink}>
                     {n.label}
@@ -325,18 +312,6 @@ export default function SiteHeader({
                   </span>
                 )}
               </Link>
-
-              {/* CTA — outlined, uppercase sans (appointment-style) */}
-              <Link
-                href="/shop"
-                className={`hidden items-center border px-6 py-2.5 text-[10px] font-semibold uppercase tracking-[0.22em] transition-all duration-300 xl:inline-flex ${
-                  light
-                    ? "border-cream/60 text-cream hover:bg-cream hover:text-ink"
-                    : "border-ink text-ink hover:bg-ink hover:text-cream"
-                }`}
-              >
-                Shop Bridal
-              </Link>
             </div>
           </div>
         </div>
@@ -406,14 +381,6 @@ export default function SiteHeader({
                         </Link>
                       </li>
                     ))}
-                    <li>
-                      <Link
-                        href="/occasions"
-                        className="inline-block py-2.5 text-[10px] font-semibold uppercase tracking-[0.22em] text-gold-deep"
-                      >
-                        All occasions →
-                      </Link>
-                    </li>
                   </ul>
                 </div>
               </div>
