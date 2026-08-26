@@ -32,12 +32,6 @@ const MOST_LOVED_LAYERS: {
   { title: "The Baraat Red", line: "The classic red lehenga", img: "/uploads/pk-hero.jpg", href: "/occasions/baraat", position: "50% 30%", left: "71%", top: "11.5%", width: "29%", height: "75.4%", z: "z-20", shadow: true },
 ];
 
-const BEYOND_BRIDE = [
-  { title: "Wedding Guest", img: "/uploads/p-blush-organza.jpg", href: "/occasions/wedding-guest" },
-  { title: "Bridesmaids", img: "/uploads/p-emerald-zardozi.jpg", href: "/occasions/bridesmaids" },
-  { title: "Mother of the Bride", img: "/uploads/p-ivory-gown.jpg", href: "/occasions/mother-of-the-bride" },
-];
-
 export default async function HomePage() {
   const country = await getCountry();
 
@@ -334,46 +328,7 @@ export default async function HomePage() {
       )}
 
       {/* ================================================================ */}
-      {/* 8 — BEYOND THE BRIDE (dark band, 3 dimmed image cards)          */}
-      {/* ================================================================ */}
-      <section className="snap-section snap-pad bg-ink py-24 text-cream lg:py-0">
-        <div className="mx-auto max-w-7xl px-6">
-          <Reveal className="mb-14 text-center">
-            <p className="text-[10px] font-medium uppercase tracking-[0.5em] text-gold">Beyond the bride</p>
-            <h2 className="mt-3 font-[family-name:var(--font-display)] text-4xl font-light tracking-wide sm:text-5xl">
-              For everyone at the wedding
-            </h2>
-          </Reveal>
-
-          <div className="grid gap-6 md:grid-cols-3">
-            {BEYOND_BRIDE.map((c, i) => (
-              <Reveal key={c.title} delay={i * 130}>
-                <Link href={c.href} className="group relative block aspect-[3/4] overflow-hidden lg:aspect-auto lg:h-[54vh]">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={c.img}
-                    alt={c.title}
-                    loading="lazy"
-                    className="media-zoom h-full w-full object-cover opacity-70 transition-opacity duration-700 group-hover:opacity-90"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-ink/10 to-transparent" />
-                  <div className="absolute inset-x-0 bottom-0 p-7">
-                    <h3 className="font-[family-name:var(--font-display)] text-2xl font-light uppercase tracking-[0.18em]">
-                      {c.title}
-                    </h3>
-                    <span className="nav-link mt-3 inline-block border-b border-cream/60 pb-1 text-[10px] font-semibold uppercase tracking-[0.3em] text-cream transition-colors group-hover:border-gold">
-                      Discover
-                    </span>
-                  </div>
-                </Link>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ================================================================ */}
-      {/* 9 — FOR EVERY CELEBRATION (text left, image right)              */}
+      {/* 8 — FOR EVERY CELEBRATION (text left, image right)              */}
       {/* ================================================================ */}
       <section className="snap-section snap-pad mx-auto max-w-7xl px-6 py-24 lg:py-0">
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
@@ -404,7 +359,7 @@ export default async function HomePage() {
       </section>
 
       {/* ================================================================ */}
-      {/* 10 — MADE TO ORDER (30–45 days)                                  */}
+      {/* 9 — MADE TO ORDER (30–45 days)                                  */}
       {/* ================================================================ */}
       <section className="snap-section snap-pad relative overflow-hidden border-t border-line bg-ink text-cream">
         <GoldDust density={0.5} />
