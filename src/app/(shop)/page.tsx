@@ -6,10 +6,31 @@ import ParallaxImage from "@/components/parallax-image";
 import GoldDust, { CursorGlow } from "@/components/gold-dust";
 import ProductCard from "@/components/product-card";
 import OccasionWall from "@/components/occasion-wall";
-import LovedCarousel from "@/components/loved-carousel";
 import SnapRoot from "@/components/snap-root";
 
 export const dynamic = "force-dynamic";
+
+/* Editorial layered canvas — overlapping, custom-cut compositions (Allure-style).
+   Pure CSS hover: the hovered layer lifts, grows and comes to the front. */
+const MOST_LOVED_LAYERS: {
+  title: string;
+  line: string;
+  img: string;
+  href: string;
+  position?: string;
+  left: string;
+  top: string;
+  width: string;
+  aspect: string;
+  z: string;
+}[] = [
+  { title: "The Mehndi Green", line: "Colour, mirror-work & joy", img: "/uploads/pk-mehndi.jpg", href: "/occasions/mehndi", left: "0%", top: "14%", width: "23%", aspect: "aspect-[3/4]", z: "z-10" },
+  { title: "The Walima Pastel", line: "Soft pastels & reception gowns", img: "/uploads/pk-walima.jpg", href: "/occasions/walima", left: "13%", top: "6%", width: "20%", aspect: "aspect-[4/5]", z: "z-20" },
+  { title: "The Nikkah Ivory", line: "Ivory whites & pearl details", img: "/uploads/pk-nikkah.jpg", href: "/occasions/nikkah", left: "31%", top: "0%", width: "25%", aspect: "aspect-[3/4]", z: "z-30" },
+  { title: "The Ceremony Blush", line: "Dholki, engagement & more", img: "/uploads/pk-ceremony.jpg", href: "/occasions/others", left: "50%", top: "44%", width: "14%", aspect: "aspect-[4/3]", z: "z-40" },
+  { title: "The Baraat Red", line: "The classic red lehenga", img: "/uploads/pk-hero.jpg", href: "/occasions/baraat", position: "50% 30%", left: "60%", top: "9%", width: "22%", aspect: "aspect-[4/5]", z: "z-20" },
+  { title: "The Festive Organza", line: "Festive formal wear", img: "/uploads/p-blush-organza.jpg", href: "/occasions/party", position: "50% 25%", left: "78%", top: "15%", width: "22%", aspect: "aspect-[3/4]", z: "z-10" },
+];
 
 const BEYOND_BRIDE = [
   { title: "Wedding Guest", img: "/uploads/p-blush-organza.jpg", href: "/occasions/wedding-guest" },
@@ -188,10 +209,44 @@ export default async function HomePage() {
       </section>
 
       {/* ================================================================ */}
-      {/* 4 — MOST LOVED (centered header + swipe/drag carousel)        */}
+      {/* 4 — MOST LOVED (editorial layered canvas + text below)         */}
       {/* ================================================================ */}
       <section className="snap-section snap-pad mx-auto max-w-7xl px-6 py-24 lg:py-0">
-        <Reveal className="mx-auto mb-16 max-w-2xl text-center lg:mb-10">
+        <Reveal>
+          <div className="relative mx-auto h-[62vw] min-h-[240px] sm:h-[46vw] sm:min-h-[300px] lg:h-[48vh] lg:min-h-[400px] lg:max-h-[580px]">
+            {MOST_LOVED_LAYERS.map((l, i) => (
+              <Link
+                key={l.title}
+                href={l.href}
+                aria-label={`${l.title} — ${l.line}`}
+                className={`group absolute block overflow-hidden bg-sand ${l.aspect} ${l.z} transition-[transform,box-shadow] duration-700 ease-[cubic-bezier(0.2,0.6,0.2,1)] hover:z-50 hover:scale-[1.045] hover:shadow-[0_26px_64px_rgba(28,26,23,0.28)] motion-reduce:transition-none motion-reduce:hover:transform-none`}
+                style={{ left: l.left, top: l.top, width: l.width }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={l.img}
+                  alt={`${l.title} — Pakistani bridal couture`}
+                  loading={i < 3 ? "eager" : "lazy"}
+                  draggable={false}
+                  className="h-full w-full object-cover"
+                  style={l.position ? { objectPosition: l.position } : undefined}
+                />
+                {/* hover caption */}
+                <div className="absolute inset-0 bg-gradient-to-t from-ink/55 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                <div className="absolute inset-x-0 bottom-0 translate-y-2 p-3 text-cream opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100 sm:p-4">
+                  <p className="font-[family-name:var(--font-display)] text-base font-light tracking-wide sm:text-xl">
+                    {l.title}
+                  </p>
+                  <p className="mt-0.5 hidden text-[8px] font-light uppercase tracking-[0.2em] text-cream/75 sm:block sm:text-[9px]">
+                    {l.line}
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </Reveal>
+
+        <Reveal className="mx-auto mt-10 max-w-2xl text-center sm:mt-12 lg:mt-14">
           <p className="eyebrow justify-center">Most Loved</p>
           <h2 className="mt-3 font-[family-name:var(--font-display)] text-4xl font-light tracking-wide sm:text-5xl">
             Silhouettes brides return to
@@ -205,10 +260,6 @@ export default async function HomePage() {
           >
             Discover
           </Link>
-        </Reveal>
-
-        <Reveal>
-          <LovedCarousel />
         </Reveal>
       </section>
 
