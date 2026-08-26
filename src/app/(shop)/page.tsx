@@ -152,7 +152,54 @@ export default async function HomePage() {
       </section>
 
       {/* ================================================================ */}
-      {/* 3 — CRAFTSMANSHIP (image left, text right)                      */}
+      {/* 4 — MOST LOVED / COLLECTIONS (editorial layered canvas)         */}
+      {/* ================================================================ */}
+      <section className="snap-section snap-pad mx-auto max-w-7xl overflow-x-clip px-6 py-24 lg:py-0">
+        <Reveal className="mb-12 text-center sm:mb-14">
+          <h2 className="font-[family-name:var(--font-display)] text-5xl font-light tracking-wide sm:text-6xl">
+            Collections
+          </h2>
+        </Reveal>
+
+        <Reveal>
+          <div className="relative mx-auto aspect-[1108/610] w-[135%] max-w-none -translate-x-[12.9%] sm:w-full sm:max-w-[980px] sm:translate-x-0">
+            {MOST_LOVED_LAYERS.map((l, i) => (
+              <Link
+                key={l.title}
+                href={l.href}
+                aria-label={`${l.title} — ${l.line}`}
+                className={`group absolute block overflow-hidden bg-sand ${l.z} ${
+                  l.shadow ? "shadow-[0_18px_50px_rgba(28,26,23,0.16)]" : ""
+                } transition-[transform,box-shadow] duration-700 ease-[cubic-bezier(0.2,0.6,0.2,1)] hover:z-50 hover:scale-[1.045] hover:shadow-[0_26px_64px_rgba(28,26,23,0.28)] motion-reduce:transition-none motion-reduce:hover:transform-none`}
+                style={{ left: l.left, top: l.top, width: l.width, height: l.height }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={l.img}
+                  alt={`${l.title} — Pakistani bridal couture`}
+                  loading={i < 3 ? "eager" : "lazy"}
+                  draggable={false}
+                  className="h-full w-full object-cover"
+                  style={l.position ? { objectPosition: l.position } : undefined}
+                />
+                {/* hover caption */}
+                <div className="absolute inset-0 bg-gradient-to-t from-ink/55 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                <div className="absolute inset-x-0 bottom-0 translate-y-2 p-3 text-cream opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100 sm:p-4">
+                  <p className="font-[family-name:var(--font-display)] text-base font-light tracking-wide sm:text-xl">
+                    {l.title}
+                  </p>
+                  <p className="mt-0.5 hidden text-[8px] font-light uppercase tracking-[0.2em] text-cream/75 sm:block sm:text-[9px]">
+                    {l.line}
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </Reveal>
+      </section>
+
+      {/* ================================================================ */}
+      {/* 5 — CRAFTSMANSHIP (video left, text right)                      */}
       {/* ================================================================ */}
       <section id="craft" className="snap-section snap-pad relative overflow-hidden border-y border-line bg-sand/60">
         <div className="glow-orb left-[-6rem] top-16 h-72 w-72 bg-gold/25" aria-hidden="true" />
@@ -209,64 +256,8 @@ export default async function HomePage() {
       </section>
 
       {/* ================================================================ */}
-      {/* 4 — MOST LOVED (editorial layered canvas + text below)         */}
       {/* ================================================================ */}
-      <section className="snap-section snap-pad mx-auto max-w-7xl overflow-x-clip px-6 py-24 lg:py-0">
-        <Reveal>
-          <div className="relative mx-auto aspect-[1108/610] w-[135%] max-w-none -translate-x-[12.9%] sm:w-full sm:max-w-[980px] sm:translate-x-0">
-            {MOST_LOVED_LAYERS.map((l, i) => (
-              <Link
-                key={l.title}
-                href={l.href}
-                aria-label={`${l.title} — ${l.line}`}
-                className={`group absolute block overflow-hidden bg-sand ${l.z} ${
-                  l.shadow ? "shadow-[0_18px_50px_rgba(28,26,23,0.16)]" : ""
-                } transition-[transform,box-shadow] duration-700 ease-[cubic-bezier(0.2,0.6,0.2,1)] hover:z-50 hover:scale-[1.045] hover:shadow-[0_26px_64px_rgba(28,26,23,0.28)] motion-reduce:transition-none motion-reduce:hover:transform-none`}
-                style={{ left: l.left, top: l.top, width: l.width, height: l.height }}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={l.img}
-                  alt={`${l.title} — Pakistani bridal couture`}
-                  loading={i < 3 ? "eager" : "lazy"}
-                  draggable={false}
-                  className="h-full w-full object-cover"
-                  style={l.position ? { objectPosition: l.position } : undefined}
-                />
-                {/* hover caption */}
-                <div className="absolute inset-0 bg-gradient-to-t from-ink/55 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                <div className="absolute inset-x-0 bottom-0 translate-y-2 p-3 text-cream opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100 sm:p-4">
-                  <p className="font-[family-name:var(--font-display)] text-base font-light tracking-wide sm:text-xl">
-                    {l.title}
-                  </p>
-                  <p className="mt-0.5 hidden text-[8px] font-light uppercase tracking-[0.2em] text-cream/75 sm:block sm:text-[9px]">
-                    {l.line}
-                  </p>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </Reveal>
-
-        <Reveal className="mx-auto mt-10 max-w-2xl text-center sm:mt-12 lg:mt-14">
-          <p className="eyebrow justify-center">Most Loved</p>
-          <h2 className="mt-3 font-[family-name:var(--font-display)] text-4xl font-light tracking-wide sm:text-5xl">
-            Silhouettes brides return to
-          </h2>
-          <p className="mt-4 text-sm font-light leading-relaxed text-stone-600">
-            The pieces our brides choose again and again — each one handmade to order.
-          </p>
-          <Link
-            href="/shop"
-            className="nav-link mt-6 inline-block border-b border-ink/60 pb-1 text-[10px] font-semibold uppercase tracking-[0.3em] text-ink transition-colors hover:border-gold-deep hover:text-gold-deep"
-          >
-            Discover
-          </Link>
-        </Reveal>
-      </section>
-
-      {/* ================================================================ */}
-      {/* 5 — FEATURED PIECES (live, shoppable)                           */}
+      {/* 6 — FEATURED PIECES (live, shoppable)                           */}
       {/* ================================================================ */}
       {products.length > 0 && (
         <section className="snap-section snap-pad border-y border-line bg-white/60">
@@ -302,7 +293,7 @@ export default async function HomePage() {
       )}
 
       {/* ================================================================ */}
-      {/* 6 — REVIEWS (live, approved)                                    */}
+      {/* 7 — REVIEWS (live, approved)                                    */}
       {/* ================================================================ */}
       {reviews.length > 0 && (
         <section className="snap-section snap-pad mx-auto max-w-7xl px-6 py-24 lg:py-0">
@@ -343,7 +334,7 @@ export default async function HomePage() {
       )}
 
       {/* ================================================================ */}
-      {/* 7 — BEYOND THE BRIDE (dark band, 3 dimmed image cards)          */}
+      {/* 8 — BEYOND THE BRIDE (dark band, 3 dimmed image cards)          */}
       {/* ================================================================ */}
       <section className="snap-section snap-pad bg-ink py-24 text-cream lg:py-0">
         <div className="mx-auto max-w-7xl px-6">
@@ -382,7 +373,7 @@ export default async function HomePage() {
       </section>
 
       {/* ================================================================ */}
-      {/* 8 — FOR EVERY CELEBRATION (text left, image right)              */}
+      {/* 9 — FOR EVERY CELEBRATION (text left, image right)              */}
       {/* ================================================================ */}
       <section className="snap-section snap-pad mx-auto max-w-7xl px-6 py-24 lg:py-0">
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
@@ -413,7 +404,7 @@ export default async function HomePage() {
       </section>
 
       {/* ================================================================ */}
-      {/* 9 — MADE TO ORDER (30–45 days)                                  */}
+      {/* 10 — MADE TO ORDER (30–45 days)                                  */}
       {/* ================================================================ */}
       <section className="snap-section snap-pad relative overflow-hidden border-t border-line bg-ink text-cream">
         <GoldDust density={0.5} />
