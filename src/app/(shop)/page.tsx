@@ -5,7 +5,7 @@ import Reveal from "@/components/reveal";
 import ParallaxImage from "@/components/parallax-image";
 import GoldDust, { CursorGlow } from "@/components/gold-dust";
 import ProductCard from "@/components/product-card";
-import OccasionSwitcher from "@/components/occasion-switcher";
+import OccasionWall from "@/components/occasion-wall";
 import SnapRoot from "@/components/snap-root";
 
 export const dynamic = "force-dynamic";
@@ -129,18 +129,10 @@ export default async function HomePage() {
       </section>
 
       {/* ================================================================ */}
-      {/* 3 — OCCASION SELECTOR (labels left, crossfading image right)    */}
+      {/* 3 — SHOP BY OCCASION (full-bleed wall, dynamic hover background)*/}
       {/* ================================================================ */}
-      <section className="snap-section snap-pad mx-auto max-w-7xl px-6 py-24 lg:py-0">
-        <Reveal className="mb-14 text-center lg:mb-12">
-          <p className="eyebrow">Shop by Occasion</p>
-          <h2 className="mt-3 font-[family-name:var(--font-display)] text-4xl font-light tracking-wide sm:text-5xl">
-            Every moment of the wedding
-          </h2>
-        </Reveal>
-        <Reveal delay={120}>
-          <OccasionSwitcher />
-        </Reveal>
+      <section className="snap-section relative h-screen min-h-[560px] w-full overflow-hidden [@supports(height:100svh)]:h-[100svh] [@supports(height:100svh)]:min-h-[560px]">
+        <OccasionWall />
       </section>
 
       {/* ================================================================ */}
