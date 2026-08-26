@@ -144,7 +144,18 @@ export default async function HomePage() {
         <div className="relative mx-auto grid max-w-7xl gap-14 px-6 py-24 lg:grid-cols-2 lg:py-0">
           <Reveal className="relative">
             <div className="relative aspect-[4/5] overflow-hidden lg:aspect-auto lg:h-full lg:min-h-[560px]">
-              <ParallaxImage src="/uploads/pk-craft-zardozi.jpg" alt="Zardozi hand embroidery on red silk" strength={0.12} />
+              {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+              <video
+                className="absolute inset-0 h-full w-full object-cover"
+                src="/uploads/craft-aari.mp4"
+                poster="/uploads/pk-craft-zardozi.jpg"
+                autoPlay
+                loop
+                muted
+                playsInline
+                preload="metadata"
+                aria-label="Hand embroidery worked on an aari frame"
+              />
             </div>
             {/* Floating pearl/threadwork detail frame */}
             <div className="absolute -bottom-6 right-4 hidden w-40 overflow-hidden border-4 border-cream shadow-[0_18px_44px_rgba(28,26,23,0.18)] sm:block lg:right-8 lg:w-48">
@@ -176,21 +187,6 @@ export default async function HomePage() {
                 Nothing here is mass-made. Your dress is cut and embellished after you order it, to
                 your measurements — the way bridal wear is meant to be.
               </p>
-            </Reveal>
-            <Reveal delay={220}>
-              <ul className="mt-9 flex flex-wrap gap-2.5">
-                {["Zardozi", "Dabka", "Resham", "Pearls", "Beads", "Sequins", "Threadwork"].map((t) => (
-                  <li
-                    key={t}
-                    className="border border-line bg-white px-4 py-2 text-[10px] font-medium uppercase tracking-[0.2em] text-stone-600 transition-colors duration-300 hover:border-gold/50 hover:text-gold-deep"
-                  >
-                    {t}
-                  </li>
-                ))}
-              </ul>
-              <Link href="/pages/about" className="btn-ghost btn-sm mt-10">
-                Our story
-              </Link>
             </Reveal>
           </div>
         </div>
