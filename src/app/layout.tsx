@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Inter } from "next/font/google";
+import { Cormorant_Garamond, Inter, Cinzel } from "next/font/google";
 import "./globals.css";
 
 const cormorant = Cormorant_Garamond({
@@ -14,6 +14,14 @@ const inter = Inter({
   subsets: ["latin"],
   weight: ["300", "400", "500"],
   variable: "--font-inter",
+  display: "swap",
+});
+
+// Classic Roman serif — navigation strip typography (Rosa Clará style)
+const cinzel = Cinzel({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-cinzel",
   display: "swap",
 });
 

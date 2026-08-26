@@ -211,6 +211,10 @@ details[open] .details-body { animation: lux-fade-up 0.5s cubic-bezier(0.2, 0.6,
 }
 
 @layer components {
+  /* Classic Roman serif for the split navigation strip */
+  .nav-roman {
+    font-family: var(--font-cinzel), Georgia, serif;
+  }
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2 bg-ink text-cream px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] transition hover:bg-stone-700 disabled:opacity-40 disabled:cursor-not-allowed;
   }

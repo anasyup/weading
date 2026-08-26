@@ -15,7 +15,22 @@ const OCCASIONS = [
   { label: "Others", slug: "others", line: "Dholki, engagement & more" },
 ] as const;
 
-const NAV = [
+// Split navigation (Rosa Clará layout): primary links LEFT of the centered
+// logo, secondary links + search + outlined CTA RIGHT of it.
+const NAV_LEFT = [
+  { label: "Bridal", href: "/shop" },
+  { label: "Occasions", href: "/occasions", dropdown: true },
+  { label: "Collections", href: "/collections" },
+] as const;
+
+const NAV_RIGHT = [
+  { label: "Craftsmanship", href: "/#craft" },
+  { label: "Journal", href: "/blog" },
+  { label: "Order Tracking", href: "/account" },
+] as const;
+
+// All items, for the mobile overlay menu.
+const NAV_MOBILE = [
   { label: "Bridal", href: "/shop" },
   { label: "Occasions", href: "/occasions", dropdown: true },
   { label: "Collections", href: "/collections" },
@@ -93,8 +108,8 @@ export default function SiteHeader({
   // Over-hero (light text) only on the homepage before scrolling
   const light = isHome && !scrolled;
 
-  const navItem =
-    "nav-link whitespace-nowrap py-1 text-[10px] font-medium uppercase tracking-[0.26em] opacity-90 transition-opacity hover:opacity-100";
+  const navLink =
+    "nav-roman nav-link whitespace-nowrap py-1 text-[11px] font-normal uppercase tracking-[0.28em] opacity-90 transition-opacity hover:opacity-100";
 
   return (
     <>
@@ -117,30 +132,16 @@ export default function SiteHeader({
           } ${light ? "text-cream" : "text-ink"}`}
         >
           <div
-            className={`mx-auto grid max-w-7xl grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-4 px-6 transition-all duration-500 ${
-              scrolled ? "h-16" : "h-20"
+            className={`grid grid-cols-[1fr_auto_1fr] items-center gap-4 px-6 transition-all duration-500 xl:px-10 ${
+              scrolled ? "h-16" : "h-[88px]"
             }`}
           >
-            {/* Brand */}
-            <Link href="/" className="flex min-w-0 items-center gap-2.5 lg:pr-8">
-              <span className="whitespace-nowrap font-[family-name:var(--font-display)] text-[22px] font-light leading-none tracking-[0.14em] transition-opacity hover:opacity-80">
-                {brand.toUpperCase()}
-              </span>
-              <span
-                className={`hidden text-[8px] font-semibold uppercase leading-none tracking-[0.4em] sm:block ${
-                  light ? "text-gold" : "text-gold-deep"
-                }`}
-              >
-                USA
-              </span>
-            </Link>
-
-            {/* Center nav (desktop) */}
-            <nav className="hidden items-center justify-self-center gap-8 xl:gap-10 lg:flex">
-              {NAV.map((n) =>
+            {/* ============ LEFT — primary links (desktop) ============ */}
+            <nav className="hidden items-center gap-9 justify-self-start lg:flex">
+              {NAV_LEFT.map((n) =>
                 "dropdown" in n && n.dropdown ? (
                   <div key={n.label} className="group relative">
-                    <Link href={n.href} className={`${navItem} inline-flex items-center gap-1.5`}>
+                    <Link href={n.href} className={`${navLink} inline-flex items-center gap-1.5`}>
                       {n.label}
                       <svg
                         width="9"
@@ -155,7 +156,7 @@ export default function SiteHeader({
                       </svg>
                     </Link>
                     {/* Editorial dropdown panel */}
-                    <div className="invisible absolute left-1/2 top-full -translate-x-1/2 pt-3 opacity-0 transition-all duration-300 group-hover:visible group-hover:opacity-100">
+                    <div className="invisible absolute left-0 top-full pt-3 opacity-0 transition-all duration-300 group-hover:visible group-hover:opacity-100">
                       <div className="grid w-[600px] translate-y-2 grid-cols-[1fr_230px] overflow-hidden border border-line bg-white text-ink shadow-[0_28px_60px_rgba(28,26,23,0.14)] transition-all duration-300 group-hover:translate-y-0">
                         <ul className="p-7">
                           {OCCASIONS.map((o) => (
@@ -198,15 +199,48 @@ export default function SiteHeader({
                     </div>
                   </div>
                 ) : (
-                  <Link key={n.label} href={n.href} className={navItem}>
+                  <Link key={n.label} href={n.href} className={navLink}>
                     {n.label}
                   </Link>
                 )
               )}
             </nav>
 
-            {/* Utility (right) */}
-            <div className="flex items-center justify-self-end gap-4 md:gap-5">
+            {/* ============ LEFT on mobile — hamburger ============ */}
+            <button
+              aria-label="Menu"
+              onClick={() => setMenuOpen(true)}
+              className="flex h-9 w-9 items-center justify-center justify-self-start opacity-90 transition-opacity hover:opacity-100 lg:hidden"
+            >
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M3 6h18M3 12h18M3 18h18" />
+              </svg>
+            </button>
+
+            {/* ============ CENTER — centered logo ============ */}
+            <Link href="/" className="flex items-center gap-3 justify-self-center">
+              <span className="nav-roman whitespace-nowrap text-[19px] font-normal leading-none tracking-[0.34em] transition-opacity hover:opacity-80 sm:text-[21px]">
+                {brand.toUpperCase()}
+              </span>
+              <span
+                className={`hidden text-[8px] font-semibold uppercase leading-none tracking-[0.4em] sm:block ${
+                  light ? "text-gold" : "text-gold-deep"
+                }`}
+              >
+                USA
+              </span>
+            </Link>
+
+            {/* ============ RIGHT — secondary links + actions + CTA ============ */}
+            <div className="flex items-center gap-5 justify-self-end lg:gap-7">
+              <nav className="hidden items-center gap-9 lg:flex">
+                {NAV_RIGHT.map((n) => (
+                  <Link key={n.label} href={n.href} className={navLink}>
+                    {n.label}
+                  </Link>
+                ))}
+              </nav>
+
               {/* Search */}
               <div className="relative">
                 <button
@@ -252,7 +286,7 @@ export default function SiteHeader({
               <Link
                 href={isAdmin ? "/admin" : isLoggedIn ? "/account" : "/login"}
                 aria-label="Account"
-                className="flex h-9 w-9 items-center justify-center opacity-90 transition-opacity hover:opacity-100"
+                className="hidden h-9 w-9 items-center justify-center opacity-90 transition-opacity hover:opacity-100 md:flex"
               >
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                   <circle cx="12" cy="8" r="4" />
@@ -264,7 +298,7 @@ export default function SiteHeader({
               <Link
                 href="/account"
                 aria-label="Wishlist"
-                className="hidden h-9 w-9 items-center justify-center opacity-90 transition-opacity hover:opacity-100 sm:flex"
+                className="hidden h-9 w-9 items-center justify-center opacity-90 transition-opacity hover:opacity-100 md:flex"
               >
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                   <path d="M12 20.5C7 16.5 3.5 13.2 3.5 9.4 3.5 6.8 5.5 5 8 5c1.6 0 3.1.8 4 2.1C12.9 5.8 14.4 5 16 5c2.5 0 4.5 1.8 4.5 4.4 0 3.8-3.5 7.1-8.5 11.1Z" />
@@ -292,16 +326,17 @@ export default function SiteHeader({
                 )}
               </Link>
 
-              {/* Mobile menu button */}
-              <button
-                aria-label="Menu"
-                onClick={() => setMenuOpen(true)}
-                className="flex h-9 w-9 items-center justify-center opacity-90 transition-opacity hover:opacity-100 lg:hidden"
+              {/* CTA — outlined, uppercase sans (appointment-style) */}
+              <Link
+                href="/shop"
+                className={`hidden items-center border px-6 py-2.5 text-[10px] font-semibold uppercase tracking-[0.22em] transition-all duration-300 xl:inline-flex ${
+                  light
+                    ? "border-cream/60 text-cream hover:bg-cream hover:text-ink"
+                    : "border-ink text-ink hover:bg-ink hover:text-cream"
+                }`}
               >
-                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M3 6h18M3 12h18M3 18h18" />
-                </svg>
-              </button>
+                Shop Bridal
+              </Link>
             </div>
           </div>
         </div>
@@ -314,7 +349,7 @@ export default function SiteHeader({
         }`}
       >
         <div className="flex h-16 items-center justify-between border-b border-line px-6">
-          <span className="font-[family-name:var(--font-display)] text-xl font-light tracking-[0.14em]">
+          <span className="nav-roman text-lg font-normal tracking-[0.26em]">
             {brand.toUpperCase()}
           </span>
           <button
@@ -383,7 +418,9 @@ export default function SiteHeader({
                 </div>
               </div>
             </li>
-            {NAV.filter((n) => !("dropdown" in n && n.dropdown) && n.label !== "Bridal").map((n) => (
+            {NAV_MOBILE.filter(
+              (n) => !("dropdown" in n && n.dropdown) && n.label !== "Bridal"
+            ).map((n) => (
               <li key={n.label}>
                 <Link
                   href={n.href}
