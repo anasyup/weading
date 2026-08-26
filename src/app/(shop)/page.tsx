@@ -10,8 +10,10 @@ import SnapRoot from "@/components/snap-root";
 
 export const dynamic = "force-dynamic";
 
-/* Editorial layered canvas — overlapping, custom-cut compositions (Allure-style).
-   Pure CSS hover: the hovered layer lifts, grows and comes to the front. */
+/* Editorial layered canvas (Allure-style reference): 3 large custom-cut images —
+   the center frame is the tallest and anchored to the top; both flankers are
+   shorter, offset downward and sit IN FRONT of the center with a soft shadow,
+   overlapping its edges. Pure CSS hover: the hovered image lifts to the front. */
 const MOST_LOVED_LAYERS: {
   title: string;
   line: string;
@@ -21,15 +23,13 @@ const MOST_LOVED_LAYERS: {
   left: string;
   top: string;
   width: string;
-  aspect: string;
+  height: string;
   z: string;
+  shadow?: boolean;
 }[] = [
-  { title: "The Mehndi Green", line: "Colour, mirror-work & joy", img: "/uploads/pk-mehndi.jpg", href: "/occasions/mehndi", left: "0%", top: "14%", width: "23%", aspect: "aspect-[3/4]", z: "z-10" },
-  { title: "The Walima Pastel", line: "Soft pastels & reception gowns", img: "/uploads/pk-walima.jpg", href: "/occasions/walima", left: "13%", top: "6%", width: "20%", aspect: "aspect-[4/5]", z: "z-20" },
-  { title: "The Nikkah Ivory", line: "Ivory whites & pearl details", img: "/uploads/pk-nikkah.jpg", href: "/occasions/nikkah", left: "31%", top: "0%", width: "25%", aspect: "aspect-[3/4]", z: "z-30" },
-  { title: "The Ceremony Blush", line: "Dholki, engagement & more", img: "/uploads/pk-ceremony.jpg", href: "/occasions/others", left: "50%", top: "44%", width: "14%", aspect: "aspect-[4/3]", z: "z-40" },
-  { title: "The Baraat Red", line: "The classic red lehenga", img: "/uploads/pk-hero.jpg", href: "/occasions/baraat", position: "50% 30%", left: "60%", top: "9%", width: "22%", aspect: "aspect-[4/5]", z: "z-20" },
-  { title: "The Festive Organza", line: "Festive formal wear", img: "/uploads/p-blush-organza.jpg", href: "/occasions/party", position: "50% 25%", left: "78%", top: "15%", width: "22%", aspect: "aspect-[3/4]", z: "z-10" },
+  { title: "The Mehndi Green", line: "Colour, mirror-work & joy", img: "/uploads/pk-mehndi.jpg", href: "/occasions/mehndi", left: "0%", top: "6.6%", width: "33.7%", height: "86.1%", z: "z-20", shadow: true },
+  { title: "The Nikkah Ivory", line: "Ivory whites & pearl details", img: "/uploads/pk-nikkah.jpg", href: "/occasions/nikkah", left: "32.1%", top: "0%", width: "39.7%", height: "100%", z: "z-10" },
+  { title: "The Baraat Red", line: "The classic red lehenga", img: "/uploads/pk-hero.jpg", href: "/occasions/baraat", position: "50% 30%", left: "71%", top: "11.5%", width: "29%", height: "75.4%", z: "z-20", shadow: true },
 ];
 
 const BEYOND_BRIDE = [
@@ -211,16 +211,18 @@ export default async function HomePage() {
       {/* ================================================================ */}
       {/* 4 — MOST LOVED (editorial layered canvas + text below)         */}
       {/* ================================================================ */}
-      <section className="snap-section snap-pad mx-auto max-w-7xl px-6 py-24 lg:py-0">
+      <section className="snap-section snap-pad mx-auto max-w-7xl overflow-x-clip px-6 py-24 lg:py-0">
         <Reveal>
-          <div className="relative mx-auto h-[62vw] min-h-[240px] sm:h-[46vw] sm:min-h-[300px] lg:h-[48vh] lg:min-h-[400px] lg:max-h-[580px]">
+          <div className="relative mx-auto aspect-[1108/610] w-[135%] max-w-none -translate-x-[12.9%] sm:w-full sm:max-w-[980px] sm:translate-x-0">
             {MOST_LOVED_LAYERS.map((l, i) => (
               <Link
                 key={l.title}
                 href={l.href}
                 aria-label={`${l.title} — ${l.line}`}
-                className={`group absolute block overflow-hidden bg-sand ${l.aspect} ${l.z} transition-[transform,box-shadow] duration-700 ease-[cubic-bezier(0.2,0.6,0.2,1)] hover:z-50 hover:scale-[1.045] hover:shadow-[0_26px_64px_rgba(28,26,23,0.28)] motion-reduce:transition-none motion-reduce:hover:transform-none`}
-                style={{ left: l.left, top: l.top, width: l.width }}
+                className={`group absolute block overflow-hidden bg-sand ${l.z} ${
+                  l.shadow ? "shadow-[0_18px_50px_rgba(28,26,23,0.16)]" : ""
+                } transition-[transform,box-shadow] duration-700 ease-[cubic-bezier(0.2,0.6,0.2,1)] hover:z-50 hover:scale-[1.045] hover:shadow-[0_26px_64px_rgba(28,26,23,0.28)] motion-reduce:transition-none motion-reduce:hover:transform-none`}
+                style={{ left: l.left, top: l.top, width: l.width, height: l.height }}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
