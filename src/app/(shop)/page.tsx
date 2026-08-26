@@ -6,15 +6,10 @@ import ParallaxImage from "@/components/parallax-image";
 import GoldDust, { CursorGlow } from "@/components/gold-dust";
 import ProductCard from "@/components/product-card";
 import OccasionWall from "@/components/occasion-wall";
+import LovedCarousel from "@/components/loved-carousel";
 import SnapRoot from "@/components/snap-root";
 
 export const dynamic = "force-dynamic";
-
-const MOST_LOVED = [
-  { title: "The Nikkah Ivory", img: "/uploads/pk-nikkah.jpg", href: "/occasions/nikkah" },
-  { title: "The Mehndi Green", img: "/uploads/pk-mehndi.jpg", href: "/occasions/mehndi" },
-  { title: "The Baraat Red", img: "/uploads/pk-hero.jpg", href: "/occasions/baraat", position: "50% 30%" },
-];
 
 const BEYOND_BRIDE = [
   { title: "Wedding Guest", img: "/uploads/p-blush-organza.jpg", href: "/occasions/wedding-guest" },
@@ -193,7 +188,7 @@ export default async function HomePage() {
       </section>
 
       {/* ================================================================ */}
-      {/* 4 — MOST LOVED (centered text + 3 staggered tall images)        */}
+      {/* 4 — MOST LOVED (centered header + swipe/drag carousel)        */}
       {/* ================================================================ */}
       <section className="snap-section snap-pad mx-auto max-w-7xl px-6 py-24 lg:py-0">
         <Reveal className="mx-auto mb-16 max-w-2xl text-center lg:mb-10">
@@ -212,27 +207,9 @@ export default async function HomePage() {
           </Link>
         </Reveal>
 
-        <div className="grid gap-6 sm:grid-cols-3">
-          {MOST_LOVED.map((m, i) => (
-            <Reveal key={m.title} delay={i * 140} className={i === 1 ? "sm:translate-y-10 lg:translate-y-14" : ""}>
-              <Link href={m.href} className="group block">
-                <div className="relative aspect-[3/4] overflow-hidden bg-sand lg:aspect-auto lg:h-[46vh]">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={m.img}
-                    alt={m.title}
-                    loading="lazy"
-                    className="media-zoom h-full w-full object-cover"
-                    style={m.position ? { objectPosition: m.position } : undefined}
-                  />
-                </div>
-                <p className="mt-4 text-center text-[10px] font-medium uppercase tracking-[0.26em] text-stone-500 transition-colors duration-300 group-hover:text-gold-deep">
-                  {m.title}
-                </p>
-              </Link>
-            </Reveal>
-          ))}
-        </div>
+        <Reveal>
+          <LovedCarousel />
+        </Reveal>
       </section>
 
       {/* ================================================================ */}

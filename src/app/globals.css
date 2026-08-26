@@ -71,6 +71,15 @@ body {
   transform: scale(1.06);
 }
 
+/* Hide scrollbar on carousel tracks (keep scrolling functional) */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 @keyframes lux-fade-up {
   from { opacity: 0; transform: translateY(40px); }
   to { opacity: 1; transform: none; }
