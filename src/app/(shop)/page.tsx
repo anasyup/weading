@@ -31,10 +31,11 @@ const MOST_LOVED_LAYERS: {
 ];
 
 /* Featured Dresses — full-screen split view: two equal full-height portrait
-   halves with a single centered floating heading over both. */
-const FEATURED_SPLIT: { img: string; alt: string; position?: string }[] = [
-  { img: "/uploads/p-ivory-gown.jpg", alt: "Ivory handcrafted bridal gown" },
-  { img: "/uploads/p-red-lehenga.jpg", alt: "Red bridal lehenga with gold zardozi", position: "50% 25%" },
+   halves with a centered floating heading. On hover each half seamlessly fades
+   to its secondary image (0.3s), returning to the original on mouse-leave. */
+const FEATURED_SPLIT: { img: string; hoverImg: string; alt: string; position?: string }[] = [
+  { img: "/uploads/p-ivory-gown.jpg", hoverImg: "/uploads/p-maroon-jamawar.jpg", alt: "Ivory handcrafted bridal gown" },
+  { img: "/uploads/p-red-lehenga.jpg", hoverImg: "/uploads/p-emerald-zardozi.jpg", alt: "Red bridal lehenga with gold zardozi", position: "50% 25%" },
 ];
 
 export default async function HomePage() {
@@ -253,10 +254,19 @@ export default async function HomePage() {
                 src={f.img}
                 alt={f.alt}
                 loading="lazy"
-                className="media-zoom h-full w-full object-cover"
+                className="absolute inset-0 h-full w-full object-cover"
                 style={f.position ? { objectPosition: f.position } : undefined}
               />
-              <div className="absolute inset-0 bg-ink/15 transition-colors duration-700 group-hover:bg-ink/25" />
+              {/* secondary image — fades in on hover, back out on leave (0.3s) */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={f.hoverImg}
+                alt=""
+                aria-hidden="true"
+                loading="lazy"
+                className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100 motion-reduce:transition-none"
+              />
+              <div className="absolute inset-0 bg-ink/15" />
             </Link>
           ))}
         </div>
