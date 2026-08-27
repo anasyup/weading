@@ -110,7 +110,7 @@ export default function SiteHeader({
 
   return (
     <>
-      <header className="fixed inset-x-0 top-0 z-50">
+      <header className="fixed inset-x-0 top-0 z-[60]">
         {/* Announcement — slides away on scroll */}
         <div
           className={`overflow-hidden transition-all duration-500 ${
@@ -306,7 +306,7 @@ export default function SiteHeader({
 
       {/* ==================== mobile overlay menu ==================== */}
       <div
-        className={`fixed inset-0 z-[70] flex flex-col bg-cream text-ink transition-all duration-500 lg:hidden ${
+        className={`fixed inset-0 z-[90] flex flex-col bg-cream text-ink transition-all duration-500 lg:hidden ${
           menuOpen ? "visible opacity-100" : "invisible opacity-0"
         }`}
       >
