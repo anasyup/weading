@@ -1,11 +1,8 @@
 import Link from "next/link";
 import { prisma } from "@/lib/db";
-import { getCountry } from "@/lib/country";
 import Reveal from "@/components/reveal";
 import ParallaxImage from "@/components/parallax-image";
 import GoldDust, { CursorGlow } from "@/components/gold-dust";
-import { formatMoney } from "@/lib/money";
-import { resolveUnitPrice } from "@/lib/pricing";
 import OccasionWall from "@/components/occasion-wall";
 import SnapRoot from "@/components/snap-root";
 
@@ -33,32 +30,20 @@ const MOST_LOVED_LAYERS: {
   { title: "The Baraat Red", line: "The classic red lehenga", img: "/uploads/pk-hero.jpg", href: "/occasions/baraat", position: "50% 30%", left: "71%", top: "11.5%", width: "29%", height: "75.4%", z: "z-20", shadow: true },
 ];
 
+/* Featured Dresses — full-screen split view: two equal full-height portrait
+   halves with a single centered floating heading over both. */
+const FEATURED_SPLIT: { img: string; alt: string; position?: string }[] = [
+  { img: "/uploads/p-ivory-gown.jpg", alt: "Ivory handcrafted bridal gown" },
+  { img: "/uploads/p-red-lehenga.jpg", alt: "Red bridal lehenga with gold zardozi", position: "50% 25%" },
+];
+
 export default async function HomePage() {
-  const country = await getCountry();
-
-  const [featured, reviews] = await Promise.all([
-    prisma.product.findMany({
-      where: { status: "ACTIVE", isFeatured: true, countries: { some: { countryId: country.id } } },
-      include: { prices: true, media: true },
-      take: 4,
-    }),
-    prisma.review.findMany({
-      where: { status: "APPROVED" },
-      include: { customer: true, product: { select: { name: true, slug: true } } },
-      orderBy: { createdAt: "desc" },
-      take: 3,
-    }),
-  ]);
-
-  const products =
-    featured.length > 0
-      ? featured
-      : await prisma.product.findMany({
-          where: { status: "ACTIVE", countries: { some: { countryId: country.id } } },
-          include: { prices: true, media: true },
-          orderBy: { createdAt: "desc" },
-          take: 4,
-        });
+  const reviews = await prisma.review.findMany({
+    where: { status: "APPROVED" },
+    include: { customer: true, product: { select: { name: true, slug: true } } },
+    orderBy: { createdAt: "desc" },
+    take: 3,
+  });
 
   return (
     <div className="bg-cream">
@@ -252,75 +237,44 @@ export default async function HomePage() {
 
       {/* ================================================================ */}
       {/* ================================================================ */}
-      {/* 6 — FEATURED PIECES (asymmetric split: text left, portraits right)*/}
+      {/* 6 — FEATURED DRESSES (full-screen 50/50 split + center heading)   */}
       {/* ================================================================ */}
-      {products.length > 0 && (
-        <section className="snap-section snap-pad overflow-hidden border-y border-line bg-white/60">
-          <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-8 px-6 py-16 lg:grid-cols-12 lg:py-0">
-            {/* LEFT — text column (isolated from the image grid) */}
-            <Reveal className="flex flex-col items-start gap-6 lg:col-span-5">
-              <p className="eyebrow">Featured pieces</p>
-              <h2 className="max-w-md font-[family-name:var(--font-display)] text-4xl font-light leading-[1.18] tracking-wide sm:text-5xl xl:text-[3.2rem]">
-                Handmade to your measurements after you order — never pulled from a rack.
-              </h2>
-              <div>
-                <Link href="/shop" className="btn-primary">
-                  Explore bridal
-                </Link>
-              </div>
-            </Reveal>
+      <section className="snap-section relative h-screen min-h-[560px] w-full overflow-hidden [@supports(height:100svh)]:h-[100svh] [@supports(height:100svh)]:min-h-[560px]">
+        <div className="grid h-full w-full grid-cols-1 overflow-hidden sm:grid-cols-2">
+          {FEATURED_SPLIT.map((f) => (
+            <Link
+              key={f.img}
+              href="/shop"
+              aria-label={f.alt}
+              className="group relative block h-[50svh] w-full overflow-hidden sm:h-full"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={f.img}
+                alt={f.alt}
+                loading="lazy"
+                className="media-zoom h-full w-full object-cover"
+                style={f.position ? { objectPosition: f.position } : undefined}
+              />
+              <div className="absolute inset-0 bg-ink/15 transition-colors duration-700 group-hover:bg-ink/25" />
+            </Link>
+          ))}
+        </div>
 
-            {/* RIGHT — isolated 2×2 portrait grid (own stacking context) */}
-            <div className="lg:col-span-7">
-              <div className="grid grid-cols-2 gap-4">
-                {products.map((p, i) => {
-                  const image = p.media.find((m) => m.type === "IMAGE");
-                  const countryPrice = p.prices.find((x) => x.countryId === country.id);
-                  const { effective } = resolveUnitPrice({
-                    basePrice: p.basePrice,
-                    salePrice: p.salePrice,
-                    countryPrice: countryPrice?.price ?? null,
-                    countrySalePrice: countryPrice?.salePrice ?? null,
-                    currency: country.currency,
-                  });
-                  return (
-                    <Reveal key={p.id} delay={i * 90} className={i % 2 === 1 ? "lg:translate-y-8" : ""}>
-                      <Link
-                        href={`/products/${p.slug}`}
-                        className="group relative block aspect-[3/4] overflow-hidden bg-sand lg:aspect-auto lg:h-[26vh] xl:h-[28vh]"
-                      >
-                        {image ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img
-                            src={image.url}
-                            alt={image.altText ?? p.name}
-                            loading="lazy"
-                            className="media-zoom h-full w-full object-cover"
-                          />
-                        ) : (
-                          <div className="flex h-full items-center justify-center text-xs text-stone-400">
-                            No image
-                          </div>
-                        )}
-                        {/* hover caption — name + price */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-ink/55 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                        <div className="absolute inset-x-0 bottom-0 translate-y-2 p-4 text-cream opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
-                          <p className="font-[family-name:var(--font-display)] text-base font-light tracking-wide">
-                            {p.name}
-                          </p>
-                          <p className="mt-0.5 text-[10px] font-light uppercase tracking-[0.18em] text-cream/80">
-                            {formatMoney(effective, country.currency)}
-                          </p>
-                        </div>
-                      </Link>
-                    </Reveal>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
+        {/* Floating heading — exact absolute center of both images, click-through */}
+        <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center px-6">
+          <Reveal>
+            <h2
+              className="text-center font-[family-name:var(--font-display)] text-[2.9rem] font-light uppercase leading-[1.05] tracking-[0.16em] text-cream sm:text-7xl"
+              style={{
+                textShadow: "0 3px 44px rgba(28,26,23,0.55), 0 1px 10px rgba(28,26,23,0.4)",
+              }}
+            >
+              Featured Dresses
+            </h2>
+          </Reveal>
+        </div>
+      </section>
 
       {/* ================================================================ */}
       {/* 7 — REVIEWS (live, approved)                                    */}
