@@ -61,7 +61,7 @@ const COLUMNS: { title: string; links: [string, string][] }[] = [
       ["About Us", "/pages/about"],
       ["FAQ", "/faq"],
       ["Contact", "/support"],
-      ["Track Order", "/account"],
+      ["Order Tracking", "/order-tracking"],
       ["Terms & Privacy", "/pages/terms"],
     ],
   },

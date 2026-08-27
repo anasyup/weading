@@ -25,7 +25,6 @@ const NAV_LEFT = [
 const NAV_RIGHT = [
   { label: "Craftsmanship", href: "/#craft" },
   { label: "Journal", href: "/blog" },
-  { label: "Order Tracking", href: "/account" },
 ] as const;
 
 // All items, for the mobile overlay menu.
@@ -35,7 +34,6 @@ const NAV_MOBILE = [
   { label: "Collections", href: "/collections" },
   { label: "Craftsmanship", href: "/#craft" },
   { label: "Journal", href: "/blog" },
-  { label: "Order Tracking", href: "/account" },
 ] as const;
 
 // Luxury sticky header: announcement strip on top, main bar below.
@@ -278,17 +276,6 @@ export default function SiteHeader({
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                   <circle cx="12" cy="8" r="4" />
                   <path d="M4 21c1.5-3.5 4.5-5 8-5s6.5 1.5 8 5" />
-                </svg>
-              </Link>
-
-              {/* Wishlist */}
-              <Link
-                href="/account"
-                aria-label="Wishlist"
-                className="hidden h-9 w-9 items-center justify-center opacity-90 transition-opacity hover:opacity-100 md:flex"
-              >
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M12 20.5C7 16.5 3.5 13.2 3.5 9.4 3.5 6.8 5.5 5 8 5c1.6 0 3.1.8 4 2.1C12.9 5.8 14.4 5 16 5c2.5 0 4.5 1.8 4.5 4.4 0 3.8-3.5 7.1-8.5 11.1Z" />
                 </svg>
               </Link>
 
