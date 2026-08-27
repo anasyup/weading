@@ -4,7 +4,8 @@ import { getCountry } from "@/lib/country";
 import Reveal from "@/components/reveal";
 import ParallaxImage from "@/components/parallax-image";
 import GoldDust, { CursorGlow } from "@/components/gold-dust";
-import ProductCard from "@/components/product-card";
+import { formatMoney } from "@/lib/money";
+import { resolveUnitPrice } from "@/lib/pricing";
 import OccasionWall from "@/components/occasion-wall";
 import SnapRoot from "@/components/snap-root";
 
@@ -251,37 +252,68 @@ export default async function HomePage() {
 
       {/* ================================================================ */}
       {/* ================================================================ */}
-      {/* 6 — FEATURED PIECES (live, shoppable)                           */}
+      {/* 6 — FEATURED PIECES (asymmetric split: text left, portraits right)*/}
       {/* ================================================================ */}
       {products.length > 0 && (
         <section className="snap-section snap-pad border-y border-line bg-white/60">
-          <div className="mx-auto max-w-7xl px-6 py-24 lg:py-0">
-            <Reveal className="mx-auto mb-14 max-w-2xl text-center lg:mb-10">
-              <p className="eyebrow justify-center">From the current book</p>
-              <h2 className="mt-3 font-[family-name:var(--font-display)] text-4xl font-light tracking-wide sm:text-5xl">
-                Featured pieces
-              </h2>
-              <p className="mt-4 text-sm font-light leading-relaxed text-stone-600">
+          <div className="mx-auto grid max-w-7xl items-center gap-12 px-6 py-24 sm:gap-14 lg:grid-cols-[1fr_1.15fr] lg:gap-16 lg:py-0">
+            {/* LEFT — pure typography */}
+            <Reveal className="flex flex-col items-start justify-center lg:pr-6">
+              <p className="eyebrow">Featured pieces</p>
+              <h2 className="mt-5 max-w-md font-[family-name:var(--font-display)] text-4xl font-light leading-[1.18] tracking-wide sm:text-5xl xl:text-[3.4rem]">
                 Handmade to your measurements after you order — never pulled from a rack.
-              </p>
-            </Reveal>
-
-            <div className="grid grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-4">
-              {products.map((p, i) => (
-                <Reveal key={p.id} delay={i * 90}>
-                  <ProductCard product={p} country={country} />
-                </Reveal>
-              ))}
-            </div>
-
-            <Reveal className="mt-14 text-center">
-              <Link
-                href="/shop"
-                className="nav-link inline-block border-b border-ink/60 pb-1 text-[10px] font-semibold uppercase tracking-[0.3em] text-ink transition-colors hover:border-gold-deep hover:text-gold-deep"
-              >
-                Discover all
+              </h2>
+              <Link href="/shop" className="btn-primary mt-10">
+                Explore bridal
               </Link>
             </Reveal>
+
+            {/* RIGHT — clean portrait showcase (staggered 2×2) */}
+            <div className="grid grid-cols-2 gap-4 sm:gap-5 lg:gap-6">
+              {products.map((p, i) => {
+                const image = p.media.find((m) => m.type === "IMAGE");
+                const countryPrice = p.prices.find((x) => x.countryId === country.id);
+                const { effective } = resolveUnitPrice({
+                  basePrice: p.basePrice,
+                  salePrice: p.salePrice,
+                  countryPrice: countryPrice?.price ?? null,
+                  countrySalePrice: countryPrice?.salePrice ?? null,
+                  currency: country.currency,
+                });
+                return (
+                  <Reveal key={p.id} delay={i * 90} className={i % 2 === 1 ? "lg:translate-y-8" : ""}>
+                    <Link
+                      href={`/products/${p.slug}`}
+                      className="group relative block aspect-[3/4] overflow-hidden bg-sand lg:aspect-auto lg:h-[26vh] xl:h-[28vh]"
+                    >
+                      {image ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={image.url}
+                          alt={image.altText ?? p.name}
+                          loading="lazy"
+                          className="media-zoom h-full w-full object-cover"
+                        />
+                      ) : (
+                        <div className="flex h-full items-center justify-center text-xs text-stone-400">
+                          No image
+                        </div>
+                      )}
+                      {/* hover caption — name + price */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-ink/55 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                      <div className="absolute inset-x-0 bottom-0 translate-y-2 p-4 text-cream opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
+                        <p className="font-[family-name:var(--font-display)] text-base font-light tracking-wide">
+                          {p.name}
+                        </p>
+                        <p className="mt-0.5 text-[10px] font-light uppercase tracking-[0.18em] text-cream/80">
+                          {formatMoney(effective, country.currency)}
+                        </p>
+                      </div>
+                    </Link>
+                  </Reveal>
+                );
+              })}
+            </div>
           </div>
         </section>
       )}
