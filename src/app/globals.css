@@ -71,15 +71,6 @@ body {
   transform: scale(1.06);
 }
 
-/* Hide scrollbar on carousel tracks (keep scrolling functional) */
-.no-scrollbar {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-
 /* Soft crossfade when a Collections-canvas frame swaps its image */
 @keyframes swap-in {
   from {
@@ -182,59 +173,6 @@ details[open] .details-body { animation: lux-fade-up 0.5s cubic-bezier(0.2, 0.6,
   .media-zoom { transition: none !important; }
   .reveal { transition: none; opacity: 1; transform: none; }
   .hero-entrance > * { animation: none !important; }
-}
-
-/* ------------------------------------------------------------------ */
-/* Full-page CSS scroll snap (HOME only, desktop lg+)                   */
-/* Enabled at runtime via html.snap-home (mounted by the homepage).     */
-/* - y mandatory  = sections snap, no free scrolling between them       */
-/* - snap-stop    = one wheel gesture advances exactly one section      */
-/* Mobile/tablet keep normal scrolling so content never gets cut off.   */
-/* ------------------------------------------------------------------ */
-@media (min-width: 1024px) {
-  html.snap-home {
-    scroll-snap-type: y mandatory;
-    scroll-behavior: smooth;
-  }
-  html.snap-home .snap-section {
-    height: 100vh;
-    min-height: 620px;
-    scroll-snap-align: start;
-    scroll-snap-stop: always;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-  html.snap-home .snap-pad {
-    padding-top: 5.5rem; /* clear the fixed header */
-    padding-bottom: 2rem;
-  }
-  html.snap-home footer {
-    min-height: 100vh;
-    scroll-snap-align: start;
-    scroll-snap-stop: always;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
-  html.snap-home footer .footer-manifesto {
-    flex: none;
-    display: flex;
-    align-items: center;
-  }
-  html.snap-home footer .footer-dark {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-  }
-  html.snap-home footer .footer-cols {
-    flex: 1;
-    align-content: center;
-  }
-}
-@media (min-width: 1024px) and (prefers-reduced-motion: reduce) {
-  html.snap-home { scroll-behavior: auto; }
 }
 
 @layer components {
