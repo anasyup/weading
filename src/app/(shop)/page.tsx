@@ -4,31 +4,10 @@ import Reveal from "@/components/reveal";
 import ParallaxImage from "@/components/parallax-image";
 import GoldDust, { CursorGlow } from "@/components/gold-dust";
 import OccasionWall from "@/components/occasion-wall";
+import CollectionsCanvas from "@/components/collections-canvas";
 import SnapRoot from "@/components/snap-root";
 
 export const dynamic = "force-dynamic";
-
-/* Editorial layered canvas (Allure-style reference): 3 large custom-cut images —
-   the center frame is the tallest and anchored to the top; both flankers are
-   shorter, offset downward and sit IN FRONT of the center with a soft shadow,
-   overlapping its edges. Pure CSS hover: the hovered image lifts to the front. */
-const MOST_LOVED_LAYERS: {
-  title: string;
-  line: string;
-  img: string;
-  href: string;
-  position?: string;
-  left: string;
-  top: string;
-  width: string;
-  height: string;
-  z: string;
-  shadow?: boolean;
-}[] = [
-  { title: "The Mehndi Green", line: "Colour, mirror-work & joy", img: "/uploads/pk-mehndi.jpg", href: "/occasions/mehndi", left: "0%", top: "6.6%", width: "33.7%", height: "86.1%", z: "z-20", shadow: true },
-  { title: "The Nikkah Ivory", line: "Ivory whites & pearl details", img: "/uploads/pk-nikkah.jpg", href: "/occasions/nikkah", left: "32.1%", top: "0%", width: "39.7%", height: "100%", z: "z-10" },
-  { title: "The Baraat Red", line: "The classic red lehenga", img: "/uploads/pk-hero.jpg", href: "/occasions/baraat", position: "50% 30%", left: "71%", top: "11.5%", width: "29%", height: "75.4%", z: "z-20", shadow: true },
-];
 
 export default async function HomePage() {
   const reviews = await prisma.review.findMany({
@@ -135,39 +114,7 @@ export default async function HomePage() {
         </Reveal>
 
         <Reveal>
-          <div className="relative mx-auto aspect-[1108/610] w-[135%] max-w-none -translate-x-[12.9%] sm:w-full sm:max-w-[980px] sm:translate-x-0">
-            {MOST_LOVED_LAYERS.map((l, i) => (
-              <Link
-                key={l.title}
-                href={l.href}
-                aria-label={`${l.title} — ${l.line}`}
-                className={`group absolute block overflow-hidden bg-sand ${l.z} ${
-                  l.shadow ? "shadow-[0_18px_50px_rgba(28,26,23,0.16)]" : ""
-                } transition-[transform,box-shadow] duration-700 ease-[cubic-bezier(0.2,0.6,0.2,1)] hover:z-50 hover:scale-[1.045] hover:shadow-[0_26px_64px_rgba(28,26,23,0.28)] motion-reduce:transition-none motion-reduce:hover:transform-none`}
-                style={{ left: l.left, top: l.top, width: l.width, height: l.height }}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={l.img}
-                  alt={`${l.title} — Pakistani bridal couture`}
-                  loading={i < 3 ? "eager" : "lazy"}
-                  draggable={false}
-                  className="h-full w-full object-cover"
-                  style={l.position ? { objectPosition: l.position } : undefined}
-                />
-                {/* hover caption */}
-                <div className="absolute inset-0 bg-gradient-to-t from-ink/55 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                <div className="absolute inset-x-0 bottom-0 translate-y-2 p-3 text-cream opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100 sm:p-4">
-                  <p className="font-[family-name:var(--font-display)] text-base font-light tracking-wide sm:text-xl">
-                    {l.title}
-                  </p>
-                  <p className="mt-0.5 hidden text-[8px] font-light uppercase tracking-[0.2em] text-cream/75 sm:block sm:text-[9px]">
-                    {l.line}
-                  </p>
-                </div>
-              </Link>
-            ))}
-          </div>
+          <CollectionsCanvas />
         </Reveal>
       </section>
 
