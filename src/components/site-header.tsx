@@ -16,7 +16,6 @@ export default async function SiteHeader() {
       currencyComponent={<CountrySelect current="US" minimal />}
       cartCount={cartCount}
       isLoggedIn={!!user}
-      isAdmin={!!user?.isAdmin}
     />
   );
 }

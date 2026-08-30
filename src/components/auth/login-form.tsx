@@ -56,12 +56,6 @@ export default function LoginForm({ next }: { next?: string }) {
           <Link href="/register" className="text-gold-deep hover:underline">Create account</Link>
         </div>
       </div>
-
-      <div className="mt-4 border border-line bg-white/60 px-4 py-3 text-[11px] leading-relaxed text-stone-500">
-        <p className="font-semibold uppercase tracking-[0.14em] text-stone-600">Dev preview accounts</p>
-        <p className="mt-1">Admin · admin@noorbridal.test / Admin#2026</p>
-        <p>Customer · sarah@example.com / Test#1234</p>
-      </div>
     </div>
   );
 }

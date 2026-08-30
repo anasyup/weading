@@ -44,13 +44,11 @@ export default function SiteHeader({
   currencyComponent,
   cartCount,
   isLoggedIn,
-  isAdmin,
 }: {
   brand: string;
   currencyComponent: React.ReactNode;
   cartCount: number;
   isLoggedIn: boolean;
-  isAdmin: boolean;
 }) {
   const pathname = usePathname();
   const isHome = pathname === "/";
@@ -269,7 +267,7 @@ export default function SiteHeader({
 
               {/* Account */}
               <Link
-                href={isAdmin ? "/admin" : isLoggedIn ? "/account" : "/login"}
+                href={isLoggedIn ? "/account" : "/login"}
                 aria-label="Account"
                 className="hidden h-9 w-9 items-center justify-center opacity-90 transition-opacity hover:opacity-100 md:flex"
               >

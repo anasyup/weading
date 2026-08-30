@@ -12,6 +12,6 @@ export const metadata = {
 export default async function OrderTrackingPage() {
   const user = await getSessionUser();
   if (!user) redirect("/login?next=/account");
-  if (!user.customerId) redirect("/admin");
+  if (!user.customerId) redirect("/");
   redirect("/account#orders");
 }

@@ -131,8 +131,7 @@ export async function loginAction(_prev: AuthState, formData: FormData): Promise
   await createSession(user.id, await clientIp(), (await headers()).get("user-agent") ?? undefined);
   await prisma.user.update({ where: { id: user.id }, data: { lastLoginAt: new Date() } });
 
-  const isAdmin = user.roles.some((r) => r.role.key === "SUPER_ADMIN");
-  redirect(next || (isAdmin ? "/admin" : "/account"));
+  redirect(next || "/account");
 }
 
 // ---------------------------------------------------------------------------

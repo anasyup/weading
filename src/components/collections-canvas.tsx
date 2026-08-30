@@ -2,7 +2,10 @@
 
 import Link from "next/link";
 import { useCallback, useState } from "react";
-import type { ArrowStyle, CollectionItem } from "@/lib/homepage-config";
+type Item = { title: string; line: string; img: string; href: string; position?: string };
+
+type CollectionItem = Item;
+type ArrowStyle = "filigree" | "line";
 
 const ITEMS: CollectionItem[] = [
   { title: "The Mehndi Green", line: "Colour, mirror-work & joy", img: "/uploads/pk-mehndi.jpg", href: "/occasions/mehndi" },

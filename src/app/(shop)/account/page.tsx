@@ -11,7 +11,7 @@ export const metadata = { title: "My Account" };
 export default async function AccountPage() {
   const user = await getSessionUser();
   if (!user) redirect("/login?next=/account");
-  if (!user.customerId) redirect("/admin");
+  if (!user.customerId) redirect("/");
 
   const customer = await prisma.customer.findUnique({
     where: { id: user.customerId },
