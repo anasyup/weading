@@ -30,14 +30,6 @@ const MOST_LOVED_LAYERS: {
   { title: "The Baraat Red", line: "The classic red lehenga", img: "/uploads/pk-hero.jpg", href: "/occasions/baraat", position: "50% 30%", left: "71%", top: "11.5%", width: "29%", height: "75.4%", z: "z-20", shadow: true },
 ];
 
-/* Featured Dresses — full-screen split view: two equal full-height portrait
-   halves with a centered floating heading. On hover each half seamlessly fades
-   to its secondary image (0.3s), returning to the original on mouse-leave. */
-const FEATURED_SPLIT: { img: string; hoverImg: string; alt: string; position?: string }[] = [
-  { img: "/uploads/p-ivory-gown.jpg", hoverImg: "/uploads/p-maroon-jamawar.jpg", alt: "Ivory handcrafted bridal gown" },
-  { img: "/uploads/p-red-lehenga.jpg", hoverImg: "/uploads/p-emerald-zardozi.jpg", alt: "Red bridal lehenga with gold zardozi", position: "50% 25%" },
-];
-
 export default async function HomePage() {
   const reviews = await prisma.review.findMany({
     where: { status: "APPROVED" },
@@ -238,56 +230,7 @@ export default async function HomePage() {
 
       {/* ================================================================ */}
       {/* ================================================================ */}
-      {/* 6 — FEATURED DRESSES (full-screen 50/50 split + center heading)   */}
-      {/* ================================================================ */}
-      <section className="snap-section relative h-screen min-h-[560px] w-full overflow-hidden [@supports(height:100svh)]:h-[100svh] [@supports(height:100svh)]:min-h-[560px]">
-        <div className="grid h-full w-full grid-cols-1 overflow-hidden sm:grid-cols-2">
-          {FEATURED_SPLIT.map((f) => (
-            <Link
-              key={f.img}
-              href="/shop"
-              aria-label={f.alt}
-              className="group relative block h-[50svh] w-full overflow-hidden sm:h-full"
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={f.img}
-                alt={f.alt}
-                loading="lazy"
-                className="absolute inset-0 h-full w-full object-cover"
-                style={f.position ? { objectPosition: f.position } : undefined}
-              />
-              {/* secondary image — fades in on hover, back out on leave (0.3s) */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={f.hoverImg}
-                alt=""
-                aria-hidden="true"
-                loading="lazy"
-                className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100 motion-reduce:transition-none"
-              />
-              <div className="absolute inset-0 bg-ink/15" />
-            </Link>
-          ))}
-        </div>
-
-        {/* Floating heading — exact absolute center of both images, click-through */}
-        <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center px-6">
-          <Reveal>
-            <h2
-              className="text-center font-[family-name:var(--font-display)] text-[2.9rem] font-light uppercase leading-[1.05] tracking-[0.16em] text-cream sm:text-7xl"
-              style={{
-                textShadow: "0 3px 44px rgba(28,26,23,0.55), 0 1px 10px rgba(28,26,23,0.4)",
-              }}
-            >
-              Featured Dresses
-            </h2>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* ================================================================ */}
-      {/* 7 — REVIEWS (live, approved)                                    */}
+      {/* 6 — REVIEWS (live, approved)                                    */}
       {/* ================================================================ */}
       {reviews.length > 0 && (
         <section className="snap-section snap-pad mx-auto max-w-7xl px-6 py-24 lg:py-0">
@@ -328,7 +271,7 @@ export default async function HomePage() {
       )}
 
       {/* ================================================================ */}
-      {/* 8 — FOR EVERY CELEBRATION (text left, image right)              */}
+      {/* 7 — FOR EVERY CELEBRATION (text left, image right)              */}
       {/* ================================================================ */}
       <section className="snap-section snap-pad mx-auto max-w-7xl px-6 py-24 lg:py-0">
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
@@ -359,7 +302,7 @@ export default async function HomePage() {
       </section>
 
       {/* ================================================================ */}
-      {/* 9 — MADE TO ORDER (30–45 days)                                  */}
+      {/* 8 — MADE TO ORDER (30–45 days)                                  */}
       {/* ================================================================ */}
       <section className="snap-section snap-pad relative overflow-hidden border-t border-line bg-ink text-cream">
         <GoldDust density={0.5} />
