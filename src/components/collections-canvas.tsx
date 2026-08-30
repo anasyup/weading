@@ -2,19 +2,16 @@
 
 import Link from "next/link";
 import { useCallback, useState } from "react";
+import type { ArrowStyle, CollectionItem } from "@/lib/homepage-config";
 
-type Item = { title: string; line: string; img: string; href: string; position?: string };
-
-const ITEMS: Item[] = [
+const ITEMS: CollectionItem[] = [
   { title: "The Mehndi Green", line: "Colour, mirror-work & joy", img: "/uploads/pk-mehndi.jpg", href: "/occasions/mehndi" },
   { title: "The Nikkah Ivory", line: "Ivory whites & pearl details", img: "/uploads/pk-nikkah.jpg", href: "/occasions/nikkah" },
-  { title: "The Baraat Red", line: "The classic red lehenga", img: "/uploads/pk-hero.jpg", href: "/occasions/baraat", position: "50% 30%" },
+  { title: "The Baraat Red", line: "The classic red lehenga", img: "/uploads/pk-hero.jpg", href: "/occasions/baraat" },
   { title: "The Walima Pastel", line: "Soft pastels & reception gowns", img: "/uploads/pk-walima.jpg", href: "/occasions/walima" },
-  { title: "The Festive Organza", line: "Festive formal wear", img: "/uploads/p-blush-organza.jpg", href: "/occasions/party", position: "50% 25%" },
+  { title: "The Festive Organza", line: "Festive formal wear", img: "/uploads/p-blush-organza.jpg", href: "/occasions/party" },
   { title: "The Ceremony Blush", line: "Dholki, engagement & more", img: "/uploads/pk-ceremony.jpg", href: "/occasions/others" },
 ];
-
-const N = ITEMS.length;
 
 /* Allure-style 3-frame geometry (unchanged): the center frame is tallest and
    top-anchored; flankers are shorter, offset downward and overlap its edges in
@@ -104,37 +101,61 @@ function CopperArrow({ flip = false }: { flip?: boolean }) {
   );
 }
 
-export default function CollectionsCanvas() {
-  const [index, setIndex] = useState(1); // centre = Nikkah Ivory (original look)
-  const prev = useCallback(() => setIndex((i) => (i - 1 + N) % N), []);
-  const next = useCallback(() => setIndex((i) => (i + 1) % N), []);
+/* Minimalist alternative — thin ring + line chevron in ink/gold. */
+function LineArrow({ flip = false }: { flip?: boolean }) {
+  return (
+    <svg
+      viewBox="0 0 48 48"
+      aria-hidden="true"
+      className={`h-10 w-10 text-ink transition-colors duration-300 group-hover/arrow:text-gold-deep sm:h-12 sm:w-12 ${flip ? "-scale-x-100" : ""}`}
+    >
+      <circle cx="24" cy="24" r="21" fill="rgba(250,248,244,0.75)" stroke="currentColor" strokeWidth="1.4" />
+      <path d="M27 16l-8 8 8 8" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+export default function CollectionsCanvas({
+  items = ITEMS,
+  arrowStyle = "filigree",
+}: {
+  items?: CollectionItem[];
+  arrowStyle?: ArrowStyle;
+}) {
+  const list = items.length >= 3 ? items : ITEMS;
+  const N = list.length;
+  const [index, setIndex] = useState(1);
+  const prev = useCallback(() => setIndex((i) => (i - 1 + N) % N), [N]);
+  const next = useCallback(() => setIndex((i) => (i + 1) % N), [N]);
 
   const shown = {
-    left: ITEMS[(index - 1 + N) % N],
-    center: ITEMS[index],
-    right: ITEMS[(index + 1) % N],
+    left: list[(index - 1 + N) % N],
+    center: list[index % N],
+    right: list[(index + 1) % N],
   };
+
+  const Arrow = arrowStyle === "line" ? LineArrow : CopperArrow;
 
   return (
     <div className="relative">
-      {/* copper filigree arrows — vertically centred on the image row */}
+      {/* nav arrows — vertically centred on the image row */}
       <button
         type="button"
         aria-label="Previous dress"
         onClick={prev}
-        className="absolute left-0.5 top-1/2 z-30 -translate-y-1/2 transition-all duration-300 hover:scale-110 sm:left-1 lg:left-2"
-        style={{ filter: "drop-shadow(0 6px 14px rgba(126,76,33,0.4))" }}
+        className="group/arrow absolute left-0.5 top-1/2 z-30 -translate-y-1/2 transition-all duration-300 hover:scale-110 sm:left-1 lg:left-2"
+        style={arrowStyle === "filigree" ? { filter: "drop-shadow(0 6px 14px rgba(126,76,33,0.4))" } : undefined}
       >
-        <CopperArrow />
+        <Arrow />
       </button>
       <button
         type="button"
         aria-label="Next dress"
         onClick={next}
-        className="absolute right-0.5 top-1/2 z-30 -translate-y-1/2 transition-all duration-300 hover:scale-110 sm:right-1 lg:right-2"
-        style={{ filter: "drop-shadow(0 6px 14px rgba(126,76,33,0.4))" }}
+        className="group/arrow absolute right-0.5 top-1/2 z-30 -translate-y-1/2 transition-all duration-300 hover:scale-110 sm:right-1 lg:right-2"
+        style={arrowStyle === "filigree" ? { filter: "drop-shadow(0 6px 14px rgba(126,76,33,0.4))" } : undefined}
       >
-        <CopperArrow flip />
+        <Arrow flip />
       </button>
 
       {/* 3-frame layered canvas (composition itself unchanged) */}
@@ -144,9 +165,9 @@ export default function CollectionsCanvas() {
           const it = shown[slot];
           return (
             <Link
-              key={`${slot}-${it.img}`}
+              key={`${slot}-${it.img}-${it.title}`}
               href={it.href}
-              aria-label={`${it.title} — ${it.line}`}
+              aria-label={it.line ? `${it.title} — ${it.line}` : it.title}
               className={`group absolute block overflow-hidden bg-sand ${g.z} ${
                 g.shadow ? "shadow-[0_18px_50px_rgba(28,26,23,0.16)]" : ""
               } transition-[transform,box-shadow] duration-700 ease-[cubic-bezier(0.2,0.6,0.2,1)] hover:z-50 hover:scale-[1.045] hover:shadow-[0_26px_64px_rgba(28,26,23,0.28)] motion-reduce:transition-none motion-reduce:hover:transform-none`}
@@ -159,7 +180,6 @@ export default function CollectionsCanvas() {
                 alt={`${it.title} — Pakistani bridal couture`}
                 draggable={false}
                 className="swap-in h-full w-full object-cover"
-                style={it.position ? { objectPosition: it.position } : undefined}
               />
               {/* hover caption */}
               <div className="absolute inset-0 bg-gradient-to-t from-ink/55 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
@@ -167,9 +187,11 @@ export default function CollectionsCanvas() {
                 <p className="font-[family-name:var(--font-display)] text-base font-light tracking-wide sm:text-xl">
                   {it.title}
                 </p>
-                <p className="mt-0.5 hidden text-[8px] font-light uppercase tracking-[0.2em] text-cream/75 sm:block sm:text-[9px]">
-                  {it.line}
-                </p>
+                {it.line && (
+                  <p className="mt-0.5 hidden text-[8px] font-light uppercase tracking-[0.2em] text-cream/75 sm:block sm:text-[9px]">
+                    {it.line}
+                  </p>
+                )}
               </div>
             </Link>
           );
