@@ -106,9 +106,12 @@ export default async function HomePage() {
       {/* ================================================================ */}
       <section className="mx-auto max-w-7xl overflow-x-clip px-6 py-16 lg:py-20">
         <Reveal className="mb-12 text-center sm:mb-14">
-          <h2 className="font-[family-name:var(--font-display)] text-5xl font-light tracking-wide sm:text-6xl">
+          <h2 className="font-[family-name:var(--font-display)] text-5xl font-light uppercase tracking-[0.14em] sm:text-6xl">
             Collections
           </h2>
+          <p className="mt-3 text-sm font-light tracking-wide text-stone-600 sm:text-[15px]">
+            Stories of celebration, craftsmanship, and style
+          </p>
         </Reveal>
 
         <Reveal>
