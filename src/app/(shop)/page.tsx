@@ -251,60 +251,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ================================================================ */}
-      {/* 8 — MADE TO ORDER (30–45 days)                                  */}
-      {/* ================================================================ */}
-      <section className="snap-slide relative overflow-hidden border-t border-line bg-ink text-cream">
-        <GoldDust density={0.5} />
-        <div className="glow-orb left-1/3 top-0 h-80 w-80 bg-gold/20" aria-hidden="true" />
-        <div className="relative z-10 mx-auto max-w-7xl px-6 py-16 lg:py-20">
-          <Reveal className="mb-16 text-center">
-            <p className="text-[10px] font-medium uppercase tracking-[0.5em] text-gold">Made to Order</p>
-            <h2 className="mx-auto mt-4 max-w-2xl font-[family-name:var(--font-display)] text-4xl font-light tracking-wide sm:text-5xl">
-              Your dress is made after — and for — you
-            </h2>
-          </Reveal>
-
-          <div className="grid gap-10 md:grid-cols-3">
-            {[
-              {
-                n: "01",
-                title: "Choose your piece",
-                copy: "Pick a silhouette from the collection and make it yours — fabric, colour and finishing touches.",
-              },
-              {
-                n: "02",
-                title: "Handmade to your measurements",
-                copy: "Hand embroidery begins on your order. Crafting a couture piece takes 30–45 days — and it is worth every one.",
-              },
-              {
-                n: "03",
-                title: "Shipped across the USA",
-                copy: "Finished, checked and sent with tracked delivery — across the United States, Canada and Pakistan.",
-              },
-            ].map((s, i) => (
-              <Reveal key={s.n} delay={i * 130}>
-                <div className="border-t border-cream/20 pt-7">
-                  <p className="font-[family-name:var(--font-display)] text-4xl font-light text-gold">{s.n}</p>
-                  <h3 className="mt-4 font-[family-name:var(--font-display)] text-2xl font-light tracking-wide">
-                    {s.title}
-                  </h3>
-                  <p className="mt-3 max-w-xs text-sm font-light leading-loose text-cream/70">{s.copy}</p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-
-          <Reveal delay={160} className="mt-16 text-center">
-            <Link
-              href="/shop"
-              className="nav-link inline-block border-b border-cream/70 pb-1.5 text-[11px] font-semibold uppercase tracking-[0.34em] text-cream transition-colors hover:border-gold"
-            >
-              Start with the collection
-            </Link>
-          </Reveal>
-        </div>
-      </section>
     </div>
   );
 }
