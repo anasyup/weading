@@ -4,6 +4,7 @@ import Reveal from "@/components/reveal";
 import ParallaxImage from "@/components/parallax-image";
 import GoldDust, { CursorGlow } from "@/components/gold-dust";
 import OccasionWall from "@/components/occasion-wall";
+import SnapRoot from "@/components/snap-root";
 import CollectionsCanvas from "@/components/collections-canvas";
 
 export const dynamic = "force-dynamic";
@@ -18,10 +19,11 @@ export default async function HomePage() {
 
   return (
     <div className="bg-cream">
+      <SnapRoot />
       {/* ================================================================ */}
       {/* 1 — HERO (parallax + gold dust + cursor glow + single CTA)      */}
       {/* ================================================================ */}
-      <section className="relative h-screen min-h-[600px] w-full overflow-hidden [@supports(height:100svh)]:h-[100svh] [@supports(height:100svh)]:min-h-[600px]">
+      <section className="snap-slide relative h-screen min-h-[600px] w-full overflow-hidden [@supports(height:100svh)]:h-[100svh] [@supports(height:100svh)]:min-h-[600px]">
         <ParallaxImage
           src="/uploads/pk-hero.jpg"
           alt="Pakistani bride in red couture with gold embroidery"
@@ -71,7 +73,7 @@ export default async function HomePage() {
       {/* ================================================================ */}
       {/* 2 — BEGIN YOUR BRIDAL STORY (full-width CTA banner)             */}
       {/* ================================================================ */}
-      <section className="relative">
+      <section className="snap-slide relative">
         <div className="relative h-[62vh] min-h-[420px] w-full overflow-hidden lg:h-screen">
           <ParallaxImage src="/uploads/pk-baraat.jpg" alt="Baraat bride in red lehenga" strength={0.18} />
           <div className="absolute inset-0 bg-ink/40" />
@@ -97,14 +99,14 @@ export default async function HomePage() {
       {/* ================================================================ */}
       {/* 3 — SHOP BY OCCASION (full-bleed wall, dynamic hover background)*/}
       {/* ================================================================ */}
-      <section className="relative h-screen min-h-[560px] w-full overflow-hidden [@supports(height:100svh)]:h-[100svh] [@supports(height:100svh)]:min-h-[560px]">
+      <section className="snap-slide relative h-screen min-h-[560px] w-full overflow-hidden [@supports(height:100svh)]:h-[100svh] [@supports(height:100svh)]:min-h-[560px]">
         <OccasionWall />
       </section>
 
       {/* ================================================================ */}
       {/* 4 — MOST LOVED / COLLECTIONS (editorial layered canvas)         */}
       {/* ================================================================ */}
-      <section className="mx-auto max-w-7xl overflow-x-clip px-6 py-16 lg:py-20">
+      <section className="snap-slide mx-auto max-w-7xl overflow-x-clip px-6 py-16 lg:py-20">
         <Reveal className="mb-12 text-center sm:mb-14">
           <h2 className="font-[family-name:var(--font-display)] text-5xl font-light uppercase tracking-[0.14em] sm:text-6xl">
             Collections
@@ -122,7 +124,7 @@ export default async function HomePage() {
       {/* ================================================================ */}
       {/* 5 — CRAFTSMANSHIP (video left, text right)                      */}
       {/* ================================================================ */}
-      <section id="craft" className="relative overflow-hidden border-y border-line bg-sand/60">
+      <section id="craft" className="snap-slide relative overflow-hidden border-y border-line bg-sand/60">
         <div className="glow-orb left-[-6rem] top-16 h-72 w-72 bg-gold/25" aria-hidden="true" />
         <div className="glow-orb bottom-10 right-[-8rem] h-96 w-96 bg-gold/15" style={{ animationDelay: "2s" }} aria-hidden="true" />
         <div className="relative mx-auto grid max-w-7xl gap-14 px-6 py-16 lg:grid-cols-2 lg:py-20">
@@ -181,7 +183,7 @@ export default async function HomePage() {
       {/* 6 — REVIEWS (live, approved)                                    */}
       {/* ================================================================ */}
       {reviews.length > 0 && (
-        <section className="mx-auto max-w-7xl px-6 py-16 lg:py-20">
+        <section className="snap-slide mx-auto max-w-7xl px-6 py-16 lg:py-20">
           <Reveal className="mb-12 text-center">
             <p className="eyebrow justify-center">Brides across America</p>
             <h2 className="mt-3 font-[family-name:var(--font-display)] text-4xl font-light tracking-wide sm:text-5xl">
@@ -221,7 +223,7 @@ export default async function HomePage() {
       {/* ================================================================ */}
       {/* 7 — FOR EVERY CELEBRATION (text left, image right)              */}
       {/* ================================================================ */}
-      <section className="mx-auto max-w-7xl px-6 py-16 lg:py-20">
+      <section className="snap-slide mx-auto max-w-7xl px-6 py-16 lg:py-20">
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
           <Reveal>
             <p className="eyebrow">From dholki to walima</p>
@@ -252,7 +254,7 @@ export default async function HomePage() {
       {/* ================================================================ */}
       {/* 8 — MADE TO ORDER (30–45 days)                                  */}
       {/* ================================================================ */}
-      <section className="relative overflow-hidden border-t border-line bg-ink text-cream">
+      <section className="snap-slide relative overflow-hidden border-t border-line bg-ink text-cream">
         <GoldDust density={0.5} />
         <div className="glow-orb left-1/3 top-0 h-80 w-80 bg-gold/20" aria-hidden="true" />
         <div className="relative z-10 mx-auto max-w-7xl px-6 py-16 lg:py-20">

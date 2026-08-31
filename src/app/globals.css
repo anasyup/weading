@@ -175,6 +175,36 @@ details[open] .details-body { animation: lux-fade-up 0.5s cubic-bezier(0.2, 0.6,
   .hero-entrance > * { animation: none !important; }
 }
 
+/* ------------------------------------------------------------------ */
+/* Full-page CSS scroll snap (HOME only, desktop lg+)                   */
+/* Enabled at runtime via html.snap-home (mounted by the homepage).     */
+/* Desktop: every homepage section snaps into a full-viewport slide;    */
+/* the FOOTER stays in normal flow (scrolls in naturally after the last */
+/* section — no forced 100vh empty slide). Mobile/tablet scroll freely. */
+/* ------------------------------------------------------------------ */
+@media (min-width: 1024px) {
+  html.snap-home {
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
+  }
+  html.snap-home .snap-slide {
+    height: 100vh;
+    min-height: 600px;
+    width: 100%;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+}
+@media (min-width: 1024px) and (prefers-reduced-motion: reduce) {
+  html.snap-home {
+    scroll-behavior: auto;
+  }
+}
+
 @layer components {
   /* Classic Roman serif for the split navigation strip */
   .nav-roman {
