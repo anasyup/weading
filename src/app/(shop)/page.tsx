@@ -221,33 +221,103 @@ export default async function HomePage() {
       )}
 
       {/* ================================================================ */}
-      {/* 7 — FOR EVERY CELEBRATION (text left, image right)              */}
+      {/* 7 — OCCASION JOURNAL (editorial card grid + vertical VIEW ALL)  */}
       {/* ================================================================ */}
-      <section className="snap-slide mx-auto max-w-7xl px-6 py-16 lg:py-20">
-        <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
-          <Reveal>
-            <p className="eyebrow">From dholki to walima</p>
-            <h2 className="mt-3 font-[family-name:var(--font-display)] text-4xl font-light leading-tight tracking-wide sm:text-5xl">
-              One wedding, many celebrations.
-            </h2>
-            <p className="mt-6 max-w-md text-[15px] font-light leading-loose text-stone-700">
-              From the dholki night to the walima reception — every moment of a South Asian wedding
-              asks for its own dress. Discover pieces for each celebration, handcrafted with the
-              same devotion.
-            </p>
+      <section className="snap-slide relative border-t border-line bg-white">
+        <div className="mx-auto flex max-w-[1600px] items-stretch gap-10 px-6 py-16 lg:py-20">
+          {/* Vertical VIEW ALL rail — extreme left */}
+          <div className="hidden w-10 items-center justify-center lg:flex">
             <Link
               href="/occasions"
-              className="nav-link mt-8 inline-block border-b border-ink/60 pb-1 text-[10px] font-semibold uppercase tracking-[0.3em] text-ink transition-colors hover:border-gold-deep hover:text-gold-deep"
+              className="group flex flex-col items-center gap-6"
+              aria-label="View all occasions"
             >
-              Discover occasions
+              <span className="text-[10px] font-semibold uppercase tracking-[0.5em] text-ink [writing-mode:vertical-rl] rotate-180 transition-colors group-hover:text-gold-deep">
+                View all
+              </span>
+              <span className="h-20 w-px bg-ink/30 transition-colors group-hover:bg-gold-deep" />
             </Link>
-          </Reveal>
+          </div>
 
-          <Reveal delay={140}>
-            <div className="relative aspect-[4/3] overflow-hidden bg-sand lg:aspect-[5/4]">
-              <ParallaxImage src="/uploads/pk-ceremony.jpg" alt="Pakistani wedding celebration" strength={0.12} />
+          {/* Cards */}
+          <div className="flex-1">
+            <div className="mb-8 lg:hidden">
+              <Link
+                href="/occasions"
+                className="nav-link border-b border-ink/60 pb-1 text-[10px] font-semibold uppercase tracking-[0.3em] text-ink transition-colors hover:border-gold-deep hover:text-gold-deep"
+              >
+                View all occasions
+              </Link>
             </div>
-          </Reveal>
+
+            <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-[1.35fr_1fr_1fr_1fr] lg:gap-8">
+              {[
+                {
+                  img: "/uploads/pk-baraat.jpg",
+                  alt: "Baraat bride in crimson couture",
+                  metaL: "Zardozi · Dabka",
+                  metaR: "30–45 days",
+                  title: "Crimson pomp, the baraat bride",
+                  href: "/occasions/baraat",
+                  featured: true,
+                },
+                {
+                  img: "/uploads/pk-nikkah.jpg",
+                  alt: "Nikkah bride in ivory",
+                  metaL: "Resham · Pearl",
+                  metaR: "Made to order",
+                  title: "Ivory vows for the nikkah",
+                  href: "/occasions/nikkah",
+                  featured: false,
+                },
+                {
+                  img: "/uploads/pk-mehndi.jpg",
+                  alt: "Mehndi night attire in green",
+                  metaL: "Gota · Mirror",
+                  metaR: "Made to order",
+                  title: "Dholki colour, mehndi green",
+                  href: "/occasions/mehndi",
+                  featured: false,
+                },
+                {
+                  img: "/uploads/pk-walima.jpg",
+                  alt: "Walima reception wear in pastel",
+                  metaL: "Sequin Work",
+                  metaR: "Made to order",
+                  title: "Pastel grace for the walima",
+                  href: "/occasions/walima",
+                  featured: false,
+                },
+              ].map((c) => (
+                <Link key={c.href} href={c.href} className="group block">
+                  <div
+                    className={`relative overflow-hidden bg-sand ${
+                      c.featured ? "aspect-[3/4]" : "aspect-[4/5] lg:aspect-[3/4]"
+                    }`}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={c.img}
+                      alt={c.alt}
+                      loading="lazy"
+                      className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.05]"
+                    />
+                  </div>
+                  <div className="mt-5 flex items-baseline justify-between text-[10px] font-medium uppercase tracking-[0.22em] text-stone-500">
+                    <span>{c.metaL}</span>
+                    <span className="text-stone-400">{c.metaR}</span>
+                  </div>
+                  <h3
+                    className={`mt-3 font-[family-name:var(--font-display)] font-light leading-snug text-ink transition-colors group-hover:text-gold-deep ${
+                      c.featured ? "text-3xl sm:text-4xl" : "text-2xl"
+                    }`}
+                  >
+                    {c.title}
+                  </h3>
+                </Link>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
