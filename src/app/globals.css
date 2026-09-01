@@ -179,8 +179,8 @@ details[open] .details-body { animation: lux-fade-up 0.5s cubic-bezier(0.2, 0.6,
 /* Full-page CSS scroll snap (HOME only, desktop lg+)                   */
 /* Enabled at runtime via html.snap-home (mounted by the homepage).     */
 /* Desktop: every homepage section snaps into a full-viewport slide;    */
-/* the FOOTER stays in normal flow (scrolls in naturally after the last */
-/* section — no forced 100vh empty slide). Mobile/tablet scroll freely. */
+/* the FOOTER is the final snap slide (internal scroll if taller).      */
+/* Mobile/tablet scroll freely.                                         */
 /* ------------------------------------------------------------------ */
 @media (min-width: 1024px) {
   html.snap-home {
@@ -197,6 +197,34 @@ details[open] .details-body { animation: lux-fade-up 0.5s cubic-bezier(0.2, 0.6,
     display: flex;
     flex-direction: column;
     justify-content: center;
+  }
+  /* Footer = final mandatory slide. With snap-type mandatory the page can
+     only rest at snap points, so a plain (non-snap) footer was unreachable —
+     the page snapped back to the last section. Making the footer its own
+     100vh snap slide lets it always be reached; if the footer is taller than
+     the viewport it scrolls internally (scrollbar hidden); when shorter, the
+     dark block stretches to fill the rest and the legal bar pins to bottom. */
+  html.snap-home footer {
+    height: 100vh;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    display: flex;
+    flex-direction: column;
+  }
+  html.snap-home footer::-webkit-scrollbar {
+    display: none;
+  }
+  html.snap-home footer > .footer-dark {
+    flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
+  }
+  html.snap-home footer > .footer-dark > :last-child {
+    margin-top: auto;
   }
 }
 @media (min-width: 1024px) and (prefers-reduced-motion: reduce) {
