@@ -17,7 +17,7 @@ const OCCASIONS = [
 // Split navigation (Rosa Clará layout): primary links LEFT of the centered
 // logo, secondary links + search + outlined CTA RIGHT of it.
 const NAV_LEFT = [
-  { label: "Bridal", href: "/shop" },
+  { label: "Bridal", href: "/bridal" },
   { label: "Occasions", href: "/occasions", dropdown: true },
   { label: "Collections", href: "/collections" },
 ] as const;
@@ -29,7 +29,7 @@ const NAV_RIGHT = [
 
 // All items, for the mobile overlay menu.
 const NAV_MOBILE = [
-  { label: "Bridal", href: "/shop" },
+  { label: "Bridal", href: "/bridal" },
   { label: "Occasions", href: "/occasions", dropdown: true },
   { label: "Collections", href: "/collections" },
   { label: "Craftsmanship", href: "/#craft" },
@@ -327,7 +327,7 @@ export default function SiteHeader({
           <ul className="divide-y divide-line/70">
             <li>
               <Link
-                href="/shop"
+                href="/bridal"
                 className="block py-4 font-[family-name:var(--font-display)] text-2xl font-light tracking-wide"
               >
                 Bridal
