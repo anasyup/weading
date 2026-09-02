@@ -84,7 +84,7 @@ export default async function BridalPage() {
             {products.length} {products.length === 1 ? "piece" : "pieces"} · made to order in 30–45 days
           </p>
 
-          {/* Product carousel — 4 visible on desktop, swipe/snap on mobile */}
+          {/* Product carousel — continuous auto-scroll marquee, arrows step one card */}
           <div className="mt-14 pb-4 text-left">
             {products.length === 0 ? (
               <div className="border border-line bg-white px-6 py-16 text-center">
