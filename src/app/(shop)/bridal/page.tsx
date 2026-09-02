@@ -2,6 +2,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { getCountry } from "@/lib/country";
 import ProductCard from "@/components/product-card";
+import ArrivalsCarousel from "@/components/arrivals-carousel";
 
 export const dynamic = "force-dynamic";
 
@@ -83,7 +84,7 @@ export default async function BridalPage() {
             {products.length} {products.length === 1 ? "piece" : "pieces"} · made to order in 30–45 days
           </p>
 
-          {/* Product grid */}
+          {/* Product carousel — 4 visible on desktop, swipe/snap on mobile */}
           <div className="mt-14 pb-4 text-left">
             {products.length === 0 ? (
               <div className="border border-line bg-white px-6 py-16 text-center">
@@ -93,11 +94,11 @@ export default async function BridalPage() {
                 </p>
               </div>
             ) : (
-              <div className="grid grid-cols-2 gap-6 xl:grid-cols-3">
+              <ArrivalsCarousel>
                 {products.map((p) => (
                   <ProductCard key={p.id} product={p} country={country} />
                 ))}
-              </div>
+              </ArrivalsCarousel>
             )}
           </div>
         </div>
