@@ -118,13 +118,16 @@ export default function SiteHeader({
           <AnnouncementBar />
         </div>
 
-        {/* Main bar */}
+        {/* Main bar — default transparent on every page; pure white on hover;
+            glass solid appears on scroll for readability */}
         <div
-          className={`transition-all duration-500 ${
-            scrolled || !isHome
-              ? "border-b border-line/70 bg-cream/95 shadow-[0_1px_24px_rgba(28,26,23,0.05)] backdrop-blur-md"
-              : "bg-gradient-to-b from-ink/35 via-ink/15 to-transparent"
-          } ${light ? "text-cream" : "text-ink"}`}
+          className={`transition-all duration-300 ease-in-out hover:bg-none hover:shadow-[0_1px_24px_rgba(28,26,23,0.05)] ${
+            scrolled
+              ? "border-b border-line/70 bg-cream/95 shadow-[0_1px_24px_rgba(28,26,23,0.05)] backdrop-blur-md hover:bg-white"
+              : isHome
+                ? "bg-gradient-to-b from-ink/35 via-ink/15 to-transparent hover:bg-white"
+                : "bg-transparent hover:bg-white"
+          } ${light ? "text-cream hover:text-ink" : "text-ink"}`}
         >
           <div
             className={`relative flex items-center justify-between px-6 transition-all duration-500 xl:px-10 ${
