@@ -1,5 +1,5 @@
 import Link from "next/link";
-import NewsletterForm from "./newsletter-form";
+import FooterManifesto from "./footer-manifesto";
 
 const SOCIALS = [
   {
@@ -70,22 +70,8 @@ const COLUMNS: { title: string; links: [string, string][] }[] = [
 export default function SiteFooter() {
   return (
     <footer>
-      {/* Manifesto — centered, white */}
-      <div className="footer-manifesto border-t border-line bg-white">
-        <div className="mx-auto max-w-3xl px-6 py-20 text-center lg:py-24">
-          <h2 className="text-[12px] font-semibold uppercase tracking-[0.34em] text-ink">
-            The dress of your celebration
-          </h2>
-          <p className="mx-auto mt-6 max-w-2xl text-sm font-light leading-relaxed text-stone-600">
-            Some dresses are worn once and remembered forever. Ours are hand-embroidered in
-            Pakistan — zardozi, dabka, resham — cut to your measurements and made only after you
-            order, then shipped across the USA.
-          </p>
-          <div className="mx-auto mt-9 max-w-md">
-            <NewsletterForm />
-          </div>
-        </div>
-      </div>
+      {/* Manifesto — centered, white (hidden on /bridal) */}
+      <FooterManifesto />
 
       {/* Dark footer — navy ink, big brand + columns */}
       <div className="footer-dark bg-ink text-cream">
